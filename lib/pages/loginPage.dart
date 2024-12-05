@@ -38,6 +38,8 @@ import 'package:delightsome_software/pages/universalPages/category_list.page.dar
 import 'package:delightsome_software/pages/universalPages/manage_category.page.dart';
 import 'package:delightsome_software/pages/record_testPage.dart';
 import 'package:delightsome_software/pages/universalPages/print.page.dart';
+import 'package:delightsome_software/pages/userPages/customer_list.page.dart';
+import 'package:delightsome_software/pages/userPages/staff_list.page.dart';
 import 'package:delightsome_software/utils/appdata.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -91,54 +93,68 @@ class _LoginPageState extends State<LoginPage> {
                     SizedBox(width: 10),
                   ]),
 
-            SizedBox(height: 50),
+            Wrap(
+              children: [
+                ElevatedButton(
+                    onPressed: () async {
+                      await showDialog(
+                        context: context,
+                        builder: (context) => StaffListPage(),
+                      );
+                    },
+                    child: Text('Staff List')),
+
+                    SizedBox(width: 20),
+
+                ElevatedButton(
+                    onPressed: () async {
+                      await showDialog(
+                        context: context,
+                        builder: (context) => CustomerListPage(),
+                      );
+                    },
+                    child: Text('Customer List')),
+              ],
+            ),
+
+            SizedBox(height: 10),
 
             Text('Sales'),
             ElevatedButton(
-                    onPressed: () async {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => SalesReportPage()));
-                      
-                    },
-                    child: Text('Sales Report')),
+                onPressed: () async {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => SalesReportPage()));
+                },
+                child: Text('Sales Report')),
 
-                    SizedBox(height: 20),
+            SizedBox(height: 20),
 
             Wrap(
               children: [
                 ElevatedButton(
-                        onPressed: () async {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => SalesPage()));
-                          
-                        },
-                        child: Text('Outlet Shop')),
-
-                        SizedBox(width: 20),
-
-                        ElevatedButton(
                     onPressed: () async {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => SalesRecordPage()));
-                      
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => SalesPage()));
+                    },
+                    child: Text('Outlet Shop')),
+                SizedBox(width: 20),
+                ElevatedButton(
+                    onPressed: () async {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => SalesRecordPage()));
                     },
                     child: Text('Outlet Sales Record')),
-
-                    SizedBox(width: 20),
-
-                        ElevatedButton(
+                SizedBox(width: 20),
+                ElevatedButton(
                     onPressed: () async {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => DailySalesRecordPage()));
-                      
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => DailySalesRecordPage()));
                     },
                     child: Text('Outlet Daily Product Record')),
               ],
@@ -149,42 +165,36 @@ class _LoginPageState extends State<LoginPage> {
             Wrap(
               children: [
                 ElevatedButton(
-                        onPressed: () async {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => TerminalSalesPage()));
-                          
-                        },
-                        child: Text('Terminal Shop')),
-
-                        SizedBox(width: 20),
-
-                        ElevatedButton(
                     onPressed: () async {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => TerminalSalesRecordPage()));
-                      
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => TerminalSalesPage()));
+                    },
+                    child: Text('Terminal Shop')),
+                SizedBox(width: 20),
+                ElevatedButton(
+                    onPressed: () async {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => TerminalSalesRecordPage()));
                     },
                     child: Text('Terminal Sales Record')),
-
-                    SizedBox(width: 20),
-
-                        ElevatedButton(
+                SizedBox(width: 20),
+                ElevatedButton(
                     onPressed: () async {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => TerminalDailySalesRecordPage()));
-                      
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  TerminalDailySalesRecordPage()));
                     },
                     child: Text('Terminal Daily Product Record')),
               ],
             ),
 
-                    SizedBox(height: 50),
+            SizedBox(height: 50),
 
             Text('Product Store Form'),
 
@@ -294,7 +304,6 @@ class _LoginPageState extends State<LoginPage> {
                       var collectionType = await showDialog(
                           context: context,
                           builder: (context) => Dialog(
-                            
                                 child: Container(
                                   width: 300,
                                   padding: EdgeInsets.all(20),
@@ -380,7 +389,7 @@ class _LoginPageState extends State<LoginPage> {
                     },
                     child: Text('Product Received Record')),
 
-                     SizedBox(width: 20),
+                SizedBox(width: 20),
 
                 // ProductRequestRecordPage
                 ElevatedButton(
@@ -401,12 +410,9 @@ class _LoginPageState extends State<LoginPage> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) =>
-                                  ProductionRecordPage()));
+                              builder: (context) => ProductionRecordPage()));
                     },
                     child: Text('Production Record')),
-
-               
 
                 SizedBox(width: 20),
 
@@ -420,36 +426,29 @@ class _LoginPageState extends State<LoginPage> {
                                   TerminalCollectionRecordPage()));
                     },
                     child: Text('Terminal Collection Record')),
-
-               
               ],
             ),
 
-             SizedBox(height: 20),
+            SizedBox(height: 20),
 
-                // ProductionSummaryPage
-                ElevatedButton(
-                    onPressed: () async {
-                      double width = MediaQuery.of(context).size.width;
+            // ProductionSummaryPage
+            ElevatedButton(
+                onPressed: () async {
+                  double width = MediaQuery.of(context).size.width;
 
-                      if (width > 600) {
-                        showDialog(
-                            context: context,
-                            barrierDismissible: false,
-                            builder: (context) => ProductionSummaryPage(
-                                  
-                                ));
-                      } else {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    ProductionSummaryPage(
-                                      
-                                    )));
-                      }
-                    },
-                    child: Text('Production Summary')),
+                  if (width > 600) {
+                    showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (context) => ProductionSummaryPage());
+                  } else {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ProductionSummaryPage()));
+                  }
+                },
+                child: Text('Production Summary')),
 
             SizedBox(height: 50),
 

@@ -6,7 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+
 class UserHelpers {
+  // ! CONSTANTS
   static String usersUrl = '${server_url}/api/users';
 
   // Post Data to server
@@ -29,7 +31,7 @@ class UserHelpers {
 
     UniversalHelpers.showLoadingScreen(context: context);
     try {
-      var response = await http.post(Uri.parse('${server_url}/${route}'),
+      var response = await http.post(Uri.parse('${usersUrl}/${route}'),
           headers: {"Content-Type": "application/json"}, body: body);
 
       var jsonResponse = jsonDecode(response.body);
@@ -86,7 +88,7 @@ class UserHelpers {
 
     UniversalHelpers.showLoadingScreen(context: context);
     try {
-      var response = await http.delete(Uri.parse('${server_url}/${route}/$id'),
+      var response = await http.delete(Uri.parse('${usersUrl}/${route}/$id'),
           headers: {"Content-Type": "application/json"}, body: body);
 
       var jsonResponse = jsonDecode(response.body);
@@ -195,6 +197,13 @@ class UserHelpers {
     return await sendDataToServer(context,
         route: 'add_update_customer', data: data);
   }
+
+  // reset user password
+  static Future<bool> reset_user_password(BuildContext context, Map data) async {
+    return await sendDataToServer(context,
+        route: 'reset_user_password', data: data);
+  }
+
 
   // ! REMOVALS
 

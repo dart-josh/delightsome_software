@@ -102,19 +102,18 @@ class _ManageCustomerPageState extends State<ManageCustomerPage> {
                     Expanded(
                       child: SingleChildScrollView(
                         child: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 15, vertical: 10),
                           child: Column(
                             children: [
                               // details
                               if (widget.customer != null) details(),
-                      
+
                               SizedBox(height: 20),
-                      
+
                               formBox(),
-                      
+
                               // SizedBox(height: 20),
-                      
-                              
                             ],
                           ),
                         ),
@@ -124,7 +123,7 @@ class _ManageCustomerPageState extends State<ManageCustomerPage> {
                     SizedBox(height: 10),
 
                     // submit
-                        if (edit) submit_button(),
+                    if (edit) submit_button(),
                   ],
                 ),
               ),
@@ -254,7 +253,7 @@ class _ManageCustomerPageState extends State<ManageCustomerPage> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Customer Nickname', style: labelStyle),
+              Text('Nickname', style: labelStyle),
               Text(widget.customer!.nickName, style: mainStyle),
             ],
           ),
@@ -262,8 +261,8 @@ class _ManageCustomerPageState extends State<ManageCustomerPage> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Text('Customer Fullname', style: labelStyle),
-              Text(widget.customer!.fullname, style: mainStyle),
+              Text('Customer Type', style: labelStyle),
+              Text(widget.customer!.customerType, style: mainStyle),
             ],
           ),
         ],
@@ -277,6 +276,21 @@ class _ManageCustomerPageState extends State<ManageCustomerPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // customer type
+          Container(
+            padding: EdgeInsets.symmetric(vertical: 10),
+            child: Select_form(
+              label: 'Customer Type',
+              edit: edit,
+              options: customer_type_list,
+              text_value: customer_type,
+              setval: (val) {
+                customer_type = val;
+                setState(() {});
+              },
+            ),
+          ),
+
           // nickname
           Container(
             padding: EdgeInsets.symmetric(vertical: 10),
@@ -294,6 +308,21 @@ class _ManageCustomerPageState extends State<ManageCustomerPage> {
               controller: fullname_controller,
               label: 'Customer Fullname',
               edit: !edit,
+            ),
+          ),
+
+          // gender
+          Container(
+            padding: EdgeInsets.symmetric(vertical: 10),
+            child: Select_form(
+              label: 'Gender',
+              edit: edit,
+              options: ['Male', 'Female'],
+              text_value: gender,
+              setval: (val) {
+                gender = val;
+                setState(() {});
+              },
             ),
           ),
 
@@ -346,36 +375,6 @@ class _ManageCustomerPageState extends State<ManageCustomerPage> {
                       },
                       icon: Icon(Icons.date_range))
                   : null,
-            ),
-          ),
-
-          // gender
-          Container(
-            padding: EdgeInsets.symmetric(vertical: 10),
-            child: Select_form(
-              label: 'Gender',
-              edit: edit,
-              options: ['Male', 'Female'],
-              text_value: gender,
-              setval: (val) {
-                gender = val;
-                setState(() {});
-              },
-            ),
-          ),
-
-          // customer type
-          Container(
-            padding: EdgeInsets.symmetric(vertical: 10),
-            child: Select_form(
-              label: 'Customer Type',
-              edit: edit,
-              options: customer_type_list,
-              text_value: customer_type,
-              setval: (val) {
-                customer_type = val;
-                setState(() {});
-              },
             ),
           ),
         ],

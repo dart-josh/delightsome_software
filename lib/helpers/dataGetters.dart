@@ -153,14 +153,16 @@ class DataGetters {
   static get_terminal_sales_record(context) async {
     var rec = await SaleHelpers.get_terminal_sales_record();
 
-    Provider.of<AppData>(context, listen: false).update_terminal_sales_record(rec);
+    Provider.of<AppData>(context, listen: false)
+        .update_terminal_sales_record(rec);
   }
 
   // get terminal daily sales record
   static get_terminal_daily_sales_record(context) async {
     var rec = await SaleHelpers.get_terminal_daily_sales_record();
 
-    Provider.of<AppData>(context, listen: false).update_terminal_daily_sales_record(rec);
+    Provider.of<AppData>(context, listen: false)
+        .update_terminal_daily_sales_record(rec);
   }
 
   // ? USER
@@ -188,7 +190,7 @@ class DataGetters {
   // get active staff
   static get_active_staff() async {
     // active staff
-    print('Active staff')
+    print('Active staff');
   }
 
   //

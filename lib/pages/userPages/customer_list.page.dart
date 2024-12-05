@@ -43,10 +43,10 @@ class _CustomerListPageState extends State<CustomerListPage> {
     store_list =
         customers.where((element) => element.customerType == 'Store').toList();
     online_list = customers
-        .where((element) => element.customerType == 'Terminal')
+        .where((element) => element.customerType == 'Online')
         .toList();
     terminal_list =
-        customers.where((element) => element.customerType == 'Online').toList();
+        customers.where((element) => element.customerType == 'Terminal').toList();
   }
 
   @override
