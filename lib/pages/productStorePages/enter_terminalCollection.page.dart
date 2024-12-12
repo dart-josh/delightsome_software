@@ -806,22 +806,19 @@ class _EnterTerminalcollectionPageState
                   );
 
                   if (res != null) {
-                    if (widget.collectionType == 'Collected') {
-                      int qty = products
-                          .where(
-                              (element) => element.key == product.product.key)
-                          .first
-                          .quantity;
+                    int qty = products
+                        .where((element) => element.key == product.product.key)
+                        .first
+                        .quantity;
 
-                      if (res > qty) {
-                        UniversalHelpers.showToast(
-                          context: context,
-                          color: Colors.redAccent,
-                          toastText: 'Insufficient quantity',
-                          icon: Icons.error,
-                        );
-                        return;
-                      }
+                    if (res > qty) {
+                      UniversalHelpers.showToast(
+                        context: context,
+                        color: Colors.redAccent,
+                        toastText: 'Insufficient quantity',
+                        icon: Icons.error,
+                      );
+                      return;
                     }
 
                     product.quantity = res;
@@ -931,6 +928,7 @@ class _EnterTerminalcollectionPageState
                         staff: staff,
                         note: shortNote,
                         date: widget.editModel?.recordDate,
+                        staff_list_type: 'Terminal',
                       ),
                     );
 
@@ -963,9 +961,22 @@ class _EnterTerminalcollectionPageState
                         }
                       }
 
+                      var auth_staff =
+                          Provider.of<AppData>(context, listen: false)
+                              .active_staff;
+
+                      if (auth_staff == null) {
+                        return UniversalHelpers.showToast(
+                          context: context,
+                          color: Colors.red,
+                          toastText: 'Invalid Authentication',
+                          icon: Icons.error,
+                        );
+                      }
+
                       Map map = tcrm.enter_toJson(
                           staffResponsible: staff!.key!,
-                          editedBy: activeStaff?.key ?? '');
+                          editedBy: auth_staff.key ?? '');
 
                       bool done = await ProductStoreHelpers
                           .enter_terminalCollection_record(context, map);
@@ -1045,16 +1056,14 @@ class _EnterTerminalcollectionPageState
       );
 
       if (res != null) {
-        if (widget.collectionType == 'Collected') {
-          if (res > product.quantity) {
-            UniversalHelpers.showToast(
-              context: context,
-              color: Colors.redAccent,
-              toastText: 'Insufficient quantity',
-              icon: Icons.error,
-            );
-            return;
-          }
+        if (res > product.quantity) {
+          UniversalHelpers.showToast(
+            context: context,
+            color: Colors.redAccent,
+            toastText: 'Insufficient quantity',
+            icon: Icons.error,
+          );
+          return;
         }
 
         selected_products.add(

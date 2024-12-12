@@ -1,20 +1,20 @@
 import 'package:delightsome_software/globalvariables.dart';
 import 'package:delightsome_software/helpers/dataGetters.dart';
+import 'package:delightsome_software/utils/appdata.dart';
+import 'package:provider/provider.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:flutter/foundation.dart';
 
 class ServerHelpers {
   static bool is_socket_connected = false;
 
+  static late IO.Socket socket;
+
   // start socket & listen
   static void start_socket_listerners(context) {
-    IO.Socket socket = IO.io(server_url, <String, dynamic>{
+    socket = IO.io(server_url, <String, dynamic>{
       "transports": ["websocket"],
     });
-
-    // socket.onConnect((_) {
-
-    // });
 
     //? MATERIALS STORE
 
@@ -135,11 +135,14 @@ class ServerHelpers {
     });
 
     // staffId
-    socket.on(activeStaff?.key ?? '', (data) {
-      DataGetters.get_active_staff();
+    var auth_staff = Provider.of<AppData>(context, listen: false).active_staff;
+    socket.on(auth_staff?.staffId ?? '', (data) {
+      print('staff active');
+      DataGetters.get_active_staff(context, auth_staff?.staffId ?? '');
     });
   }
 
+  // get all data
   static void get_all_data(context) {
     if (!kIsWeb) {
       // ? MATERIALS STORE
@@ -184,4 +187,12 @@ class ServerHelpers {
       }
     }
   }
+
+  // disconnect socket
+  static void disconnect_socket() {
+    socket.dispose();
+    is_socket_connected = false;
+  }
+
+  //
 }

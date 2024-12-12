@@ -1,5 +1,4 @@
 import 'package:delightsome_software/appColors.dart';
-import 'package:delightsome_software/globalvariables.dart';
 import 'package:delightsome_software/helpers/universalHelpers.dart';
 import 'package:delightsome_software/utils/appdata.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +17,8 @@ class _SaleInfoDialogState extends State<SaleInfoDialog> {
   Widget build(BuildContext context) {
     bool isDarkTheme =
         Provider.of<AppData>(context).themeMode == ThemeMode.dark;
+
+        var auth_staff = Provider.of<AppData>(context).active_staff;
 
     return Dialog(
       surfaceTintColor: Colors.transparent,
@@ -61,7 +62,7 @@ class _SaleInfoDialogState extends State<SaleInfoDialog> {
 
                         SizedBox(height: 10),
 
-                        if (activeStaff!.fullaccess)
+                        if (auth_staff!.fullaccess)
                           InkWell(
                             onTap: () {
                               Navigator.pop(context, 'change_pmt');
@@ -108,6 +109,8 @@ class _SaleInfoDialogState extends State<SaleInfoDialog> {
 
   // top bar
   Widget top_bar() {
+    var auth_staff = Provider.of<AppData>(context).active_staff;
+
     return Container(
       width: double.infinity,
       height: 40,
@@ -134,7 +137,7 @@ class _SaleInfoDialogState extends State<SaleInfoDialog> {
               Expanded(child: Container()),
 
               // delete button
-              if (activeStaff!.fullaccess)
+              if (auth_staff!.fullaccess)
                 InkWell(
                   onTap: () async {
                     var res = await UniversalHelpers.showConfirmBox(

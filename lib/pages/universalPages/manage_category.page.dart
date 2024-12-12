@@ -116,6 +116,8 @@ class _ManageCategoryState extends State<ManageCategory> {
 
   // top bar
   Widget top_bar() {
+    var auth_staff = Provider.of<AppData>(context).active_staff;
+
     return Container(
       width: double.infinity,
       height: 40,
@@ -142,7 +144,7 @@ class _ManageCategoryState extends State<ManageCategory> {
               Expanded(child: Container()),
 
               // edit button
-              if (!new_cat && activeStaff!.fullaccess)
+              if (!new_cat && (auth_staff!.fullaccess || auth_staff.role == 'Admin'))
                 InkWell(
                   onTap: () {
                     edit = !edit;
@@ -160,7 +162,7 @@ class _ManageCategoryState extends State<ManageCategory> {
               SizedBox(width: 10),
 
               // delete button
-              if (edit && !new_cat && activeStaff!.fullaccess)
+              if (edit && !new_cat && auth_staff!.fullaccess)
                 InkWell(
                   onTap: () async {
                     if (category_type.isEmpty ||

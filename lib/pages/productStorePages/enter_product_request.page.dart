@@ -911,6 +911,7 @@ class _EnterProductRequestPageState extends State<EnterProductRequestPage> {
                         staff: staff,
                         note: shortNote,
                         date: widget.editModel?.recordDate,
+                        staff_list_type: 'Production, Sales, Terminal, Admin, Management',
                       ),
                     );
 
@@ -936,13 +937,25 @@ class _EnterProductRequestPageState extends State<EnterProductRequestPage> {
                         saved_product_request_model = prrm_s;
                       }
 
+                      var auth_staff =
+                          Provider.of<AppData>(context, listen: false)
+                              .active_staff;
+
+                      if (auth_staff == null) {
+                        return UniversalHelpers.showToast(
+                          context: context,
+                          color: Colors.red,
+                          toastText: 'Invalid Authentication',
+                          icon: Icons.error,
+                        );
+                      }
+
                       Map map = prrm.enter_toJson(
                           requestedBy: staff!.key!,
-                          editedBy: activeStaff?.key ?? '');
+                          editedBy: auth_staff.key ?? '');
 
-                      bool done =
-                          await ProductStoreHelpers.enter_product_request_record(
-                              context, map);
+                      bool done = await ProductStoreHelpers
+                          .enter_product_request_record(context, map);
 
                       if (widget.editModel?.key != null) {
                         Navigator.pop(context);

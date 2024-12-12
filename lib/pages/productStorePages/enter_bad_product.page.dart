@@ -910,6 +910,7 @@ class _EnterBadProductPageState extends State<EnterBadProductPage> {
                         staff: staff,
                         note: shortNote,
                         date: widget.editModel?.recordDate,
+                        staff_list_type: 'Production, Sales, Terminal, Admin',
                       ),
                     );
 
@@ -935,9 +936,22 @@ class _EnterBadProductPageState extends State<EnterBadProductPage> {
                         saved_bad_product_model = bprm_s;
                       }
 
+                      var auth_staff =
+                          Provider.of<AppData>(context, listen: false)
+                              .active_staff;
+
+                      if (auth_staff == null) {
+                        return UniversalHelpers.showToast(
+                          context: context,
+                          color: Colors.red,
+                          toastText: 'Invalid Authentication',
+                          icon: Icons.error,
+                        );
+                      }
+
                       Map map = bprm.enter_toJson(
                           staffResponsible: staff!.key!,
-                          editedBy: activeStaff?.key ?? '');
+                          editedBy: auth_staff.key ?? '');
 
                       bool done =
                           await ProductStoreHelpers.enter_bad_product_record(

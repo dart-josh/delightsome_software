@@ -1,7 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:delightsome_software/appColors.dart';
 import 'package:delightsome_software/dataModels/productStoreModels/product.model.dart';
-import 'package:delightsome_software/globalvariables.dart';
 import 'package:delightsome_software/helpers/productStoreHelpers.dart';
 import 'package:delightsome_software/helpers/universalHelpers.dart';
 import 'package:delightsome_software/pages/productStorePages/add_update_product.page.dart';
@@ -202,6 +201,7 @@ class _ProductListPageState extends State<ProductListPage> {
   // top bar
   Widget top_bar() {
     double width = MediaQuery.of(context).size.width;
+    var auth_staff = Provider.of<AppData>(context).active_staff;
 
     return Container(
       width: double.infinity,
@@ -229,7 +229,7 @@ class _ProductListPageState extends State<ProductListPage> {
               Expanded(child: Container()),
 
               if (!restock_page && (widget.page != 'terminal_product'))
-                if (activeStaff!.fullaccess)
+                if (auth_staff!.fullaccess)
                   Padding(
                     padding: EdgeInsets.only(right: 10),
                     child: add_product_button(),
@@ -272,7 +272,11 @@ class _ProductListPageState extends State<ProductListPage> {
           // title
           Center(
             child: Text(
-              (widget.page == 'terminal_product') ? 'Terminal Products' : restock_page ? 'Products to Restock' : 'Product List',
+              (widget.page == 'terminal_product')
+                  ? 'Terminal Products'
+                  : restock_page
+                      ? 'Products to Restock'
+                      : 'Product List',
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 16,
@@ -427,7 +431,7 @@ class _ProductListPageState extends State<ProductListPage> {
       ),
     );
   }
-  
+
   // product list
   Widget product_list(
       List<GroupedProductModel> g_list, bool isExpanded, String key) {
@@ -480,6 +484,8 @@ class _ProductListPageState extends State<ProductListPage> {
 
     bool isDarkTheme =
         Provider.of<AppData>(context).themeMode == ThemeMode.dark;
+
+    var auth_staff = Provider.of<AppData>(context).active_staff;
 
     Color text_color = isDarkTheme
         ? product.isAvailable
@@ -585,7 +591,7 @@ class _ProductListPageState extends State<ProductListPage> {
 
                 // delete
                 if (!restock_page && (widget.page != 'terminal_product'))
-                  if (activeStaff!.fullaccess)
+                  if (auth_staff!.fullaccess)
                     InkWell(
                       onTap: () async {
                         bool? response = await UniversalHelpers.showConfirmBox(

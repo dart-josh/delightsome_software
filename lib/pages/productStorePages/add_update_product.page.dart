@@ -1,6 +1,5 @@
 import 'package:delightsome_software/appColors.dart';
 import 'package:delightsome_software/dataModels/productStoreModels/product.model.dart';
-import 'package:delightsome_software/globalvariables.dart';
 import 'package:delightsome_software/helpers/productStoreHelpers.dart';
 import 'package:delightsome_software/helpers/universalHelpers.dart';
 import 'package:delightsome_software/utils/appdata.dart';
@@ -217,6 +216,8 @@ class _AddUpdateProductState extends State<AddUpdateProduct> {
 
   // top bar
   Widget top_bar() {
+    var auth_staff = Provider.of<AppData>(context).active_staff;
+
     return Container(
       width: double.infinity,
       height: 40,
@@ -244,8 +245,7 @@ class _AddUpdateProductState extends State<AddUpdateProduct> {
 
               // edit button
               if (!new_product && (widget.page != 'terminal_product') &&
-                  (activeStaff!.role == 'Management' ||
-                      activeStaff!.fullaccess))
+                  (auth_staff!.fullaccess))
                 InkWell(
                   onTap: () {
                     edit = !edit;
@@ -266,7 +266,7 @@ class _AddUpdateProductState extends State<AddUpdateProduct> {
               SizedBox(width: 10),
 
               // delete button
-              if (edit && !new_product && (widget.page != 'terminal_product') && (activeStaff!.fullaccess))
+              if (edit && !new_product && (widget.page != 'terminal_product') && (auth_staff!.fullaccess))
                 InkWell(
                   onTap: () async {
                     bool? response = await UniversalHelpers.showConfirmBox(

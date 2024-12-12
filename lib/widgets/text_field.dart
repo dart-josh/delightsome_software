@@ -114,12 +114,7 @@ class Text_field extends StatelessWidget {
                 (maxLine == 1) ? 6 : 15,
               ),
               suffixIcon: icon,
-              prefix: prefix != null
-                  ? Padding(
-                      padding: EdgeInsets.only(right: 5),
-                      child: prefix,
-                    )
-                  : null,
+              prefixIcon: prefix,
             ),
             onTap: ontap,
           ),

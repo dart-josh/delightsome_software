@@ -1,5 +1,5 @@
 import 'package:delightsome_software/helpers/serverHelpers.dart';
-import 'package:delightsome_software/pages/loginPage.dart';
+import 'package:delightsome_software/pages/landing.page.dart';
 
 import 'package:flutter/material.dart';
 
@@ -19,7 +19,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return LoginPage();
+    return LandingPage();
   }
 
   // WIDGETS

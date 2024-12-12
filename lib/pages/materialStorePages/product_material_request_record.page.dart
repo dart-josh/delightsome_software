@@ -1,7 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:delightsome_software/appColors.dart';
 import 'package:delightsome_software/dataModels/materialStoreModels/productMaterialsRequest.model.dart';
-import 'package:delightsome_software/globalvariables.dart';
 import 'package:delightsome_software/helpers/materialStoreHelpers.dart';
 import 'package:delightsome_software/helpers/universalHelpers.dart';
 import 'package:delightsome_software/pages/materialStorePages/enter_product_material_request.page.dart';
@@ -550,17 +549,31 @@ class _ProductMaterialRequestRecordPageState
                       approve_label: 'Authorize',
                       staff: record.receiver!,
                       recordId: record.recordId ?? 'No ID',
+                      auth_approve_staff: 'Admin',
                     ),
                   );
 
                   if (res != null) {
                     // authorize
                     if (res == 'Authorize') {
+                      var auth_staff =
+                          Provider.of<AppData>(context, listen: false)
+                              .active_staff;
+
+                      if (auth_staff == null) {
+                        return UniversalHelpers.showToast(
+                          context: context,
+                          color: Colors.red,
+                          toastText: 'Invalid Authentication',
+                          icon: Icons.error,
+                        );
+                      }
+
                       MaterialStoreHelpers
                           .verify_product_materials_request_record(
                               context,
                               record.verify_toJson(
-                                  authorizedBy: activeStaff?.key ?? ''));
+                                  authorizedBy: auth_staff.key ?? ''));
                     }
 
                     // edit

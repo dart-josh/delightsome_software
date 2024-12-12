@@ -73,6 +73,8 @@ class AppData extends ChangeNotifier {
   List<StaffModel> staff_list = [];
   List<CustomerModel> customer_list = [];
 
+  StaffModel? active_staff;
+
   // SETTERS
 
   // ! APP DEFAULTS
@@ -262,6 +264,12 @@ class AppData extends ChangeNotifier {
   // customer_list
   void update_customer_list(List<CustomerModel> value) {
     customer_list = value;
+    notifyListeners();
+  }
+
+  // update active staff
+  void update_active_staff(StaffModel? value) {
+    active_staff = value;
     notifyListeners();
   }
 

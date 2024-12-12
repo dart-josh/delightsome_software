@@ -895,6 +895,7 @@ class _EnterProductionPageState extends State<EnterProductionPage> {
                         staff: staff,
                         note: shortNote,
                         date: widget.editModel?.recordDate,
+                        staff_list_type: 'Production, Sales',
                       ),
                     );
 
@@ -920,9 +921,22 @@ class _EnterProductionPageState extends State<EnterProductionPage> {
                         saved_production_model = prm_s;
                       }
 
+                      var auth_staff =
+                          Provider.of<AppData>(context, listen: false)
+                              .active_staff;
+
+                      if (auth_staff == null) {
+                        return UniversalHelpers.showToast(
+                          context: context,
+                          color: Colors.red,
+                          toastText: 'Invalid Authentication',
+                          icon: Icons.error,
+                        );
+                      }
+
                       Map map = prm.enter_toJson(
                           producer: staff!.key!,
-                          editedBy: activeStaff?.key ?? '');
+                          editedBy: auth_staff.key ?? '');
 
                       bool done =
                           await ProductStoreHelpers.enter_production_record(

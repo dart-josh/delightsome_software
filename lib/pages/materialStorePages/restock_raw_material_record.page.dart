@@ -1,7 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:delightsome_software/appColors.dart';
 import 'package:delightsome_software/dataModels/materialStoreModels/restockRawMaterial.model.dart';
-import 'package:delightsome_software/globalvariables.dart';
 import 'package:delightsome_software/helpers/materialStoreHelpers.dart';
 import 'package:delightsome_software/helpers/universalHelpers.dart';
 import 'package:delightsome_software/pages/materialStorePages/enter_restock_raw_material.page.dart';
@@ -635,16 +634,30 @@ class _RestockRawMaterialRecordPageState
                       approve_label: 'Verify',
                       staff: record.receiver!,
                       recordId: record.recordId ?? 'No ID',
+                      auth_approve_staff: 'Admin',
                     ),
                   );
 
                   if (res != null) {
                     // Verify
                     if (res == 'Verify') {
+                      var auth_staff =
+                          Provider.of<AppData>(context, listen: false)
+                              .active_staff;
+
+                      if (auth_staff == null) {
+                        return UniversalHelpers.showToast(
+                          context: context,
+                          color: Colors.red,
+                          toastText: 'Invalid Authentication',
+                          icon: Icons.error,
+                        );
+                      }
+
                       MaterialStoreHelpers.verify_restock_raw_materials_record(
                           context,
                           record.verify_toJson(
-                              verifiedBy: activeStaff?.key ?? ''));
+                              verifiedBy: auth_staff.key ?? ''));
                     }
 
                     // edit

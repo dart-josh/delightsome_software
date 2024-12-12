@@ -1,6 +1,5 @@
 import 'package:delightsome_software/appColors.dart';
 import 'package:delightsome_software/dataModels/userModels/customer.model.dart';
-import 'package:delightsome_software/globalvariables.dart';
 import 'package:delightsome_software/helpers/universalHelpers.dart';
 import 'package:delightsome_software/helpers/userHelpers.dart';
 import 'package:delightsome_software/utils/appdata.dart';
@@ -13,7 +12,8 @@ import 'package:provider/provider.dart';
 
 class ManageCustomerPage extends StatefulWidget {
   final CustomerModel? customer;
-  const ManageCustomerPage({super.key, this.customer});
+  final String customer_type;
+  const ManageCustomerPage({super.key, this.customer, required this.customer_type,});
 
   @override
   State<ManageCustomerPage> createState() => _ManageCustomerPageState();
@@ -36,6 +36,7 @@ class _ManageCustomerPageState extends State<ManageCustomerPage> {
 
   void get_values() {
     if (widget.customer == null) {
+      customer_type = widget.customer_type;
       new_cat = true;
       edit = true;
     } else {
@@ -138,6 +139,8 @@ class _ManageCustomerPageState extends State<ManageCustomerPage> {
 
   // top bar
   Widget top_bar() {
+    var auth_staff = Provider.of<AppData>(context).active_staff;
+
     return Container(
       width: double.infinity,
       height: 40,
@@ -164,7 +167,11 @@ class _ManageCustomerPageState extends State<ManageCustomerPage> {
               Expanded(child: Container()),
 
               // edit button
-              if (!new_cat)
+              if (!new_cat &&
+                  (auth_staff!.fullaccess ||
+                      auth_staff.role == 'Sales' ||
+                      auth_staff.role == 'Admin' ||
+                      auth_staff.role == 'Terminal'))
                 InkWell(
                   onTap: () {
                     edit = !edit;
@@ -182,7 +189,7 @@ class _ManageCustomerPageState extends State<ManageCustomerPage> {
               SizedBox(width: 10),
 
               // delete button
-              if (edit && !new_cat && activeStaff!.fullaccess)
+              if (edit && !new_cat && auth_staff!.fullaccess)
                 InkWell(
                   onTap: () async {
                     bool? res = await UniversalHelpers.showConfirmBox(

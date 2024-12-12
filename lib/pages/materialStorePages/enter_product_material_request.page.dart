@@ -877,6 +877,7 @@ class _EnterProductMaterialRequestState
                     staff: staff,
                     note: purpose,
                     date: widget.editModel?.recordDate,
+                    staff_list_type: 'Production, Sales',
                   ),
                 );
 
@@ -902,8 +903,20 @@ class _EnterProductMaterialRequestState
                     saved_product_material_request_model = pmrm_s;
                   }
 
+                  var auth_staff =
+                      Provider.of<AppData>(context, listen: false).active_staff;
+
+                  if (auth_staff == null) {
+                    return UniversalHelpers.showToast(
+                      context: context,
+                      color: Colors.red,
+                      toastText: 'Invalid Authentication',
+                      icon: Icons.error,
+                    );
+                  }
+
                   Map map = pmrm.enter_toJson(
-                      receiver: staff!.key!, editedBy: activeStaff?.key ?? '');
+                      receiver: staff!.key!, editedBy: auth_staff.key ?? '');
 
                   bool done = await MaterialStoreHelpers
                       .enter_product_materials_request_record(context, map);

@@ -1,7 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:delightsome_software/appColors.dart';
 import 'package:delightsome_software/dataModels/productStoreModels/terminalCollectionRecord.model.dart';
-import 'package:delightsome_software/globalvariables.dart';
 import 'package:delightsome_software/helpers/productStoreHelpers.dart';
 import 'package:delightsome_software/helpers/universalHelpers.dart';
 import 'package:delightsome_software/pages/productStorePages/enter_terminalCollection.page.dart';
@@ -16,17 +15,18 @@ class TerminalCollectionRecordPage extends StatefulWidget {
   const TerminalCollectionRecordPage({super.key});
 
   @override
-  State<TerminalCollectionRecordPage> createState() => _TerminalCollectionRecordPageState();
+  State<TerminalCollectionRecordPage> createState() =>
+      _TerminalCollectionRecordPageState();
 }
 
-class _TerminalCollectionRecordPageState extends State<TerminalCollectionRecordPage> {
+class _TerminalCollectionRecordPageState
+    extends State<TerminalCollectionRecordPage> {
   List<TerminalCollectionRecordModel> auth_record = [];
   List<GroupedTerminalCollectionRecordModel> grouped_record = [];
   List<TerminalCollectionRecordModel> selected_record = [];
   List<TerminalCollectionRecordModel> pending_record = [];
 
   DateTime? selected_date;
-     
 
   int index = 0;
 
@@ -566,16 +566,30 @@ class _TerminalCollectionRecordPageState extends State<TerminalCollectionRecordP
                       approve_label: 'Verify',
                       staff: record.staffResponsible!,
                       recordId: record.recordId ?? 'No ID',
+                      auth_approve_staff: 'Sales',
                     ),
                   );
 
                   if (res != null) {
                     // authorize
                     if (res == 'Verify') {
+                      var auth_staff =
+                          Provider.of<AppData>(context, listen: false)
+                              .active_staff;
+
+                      if (auth_staff == null) {
+                        return UniversalHelpers.showToast(
+                          context: context,
+                          color: Colors.red,
+                          toastText: 'Invalid Authentication',
+                          icon: Icons.error,
+                        );
+                      }
+
                       ProductStoreHelpers.verify_terminalCollection_record(
                           context,
                           record.verify_toJson(
-                              verifiedBy: activeStaff?.key ?? ''));
+                              verifiedBy: auth_staff.key ?? ''));
                     }
 
                     // edit
@@ -594,7 +608,8 @@ class _TerminalCollectionRecordPageState extends State<TerminalCollectionRecordP
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => EnterTerminalcollectionPage(
+                                builder: (context) =>
+                                    EnterTerminalcollectionPage(
                                       editModel: record,
                                       collectionType: record.collectionType,
                                     )));
@@ -712,8 +727,8 @@ class _TerminalCollectionRecordPageState extends State<TerminalCollectionRecordP
                       'month': UniversalHelpers.get_raw_month(month),
                     })
                   : (dateRange != null && isOffList)
-                      ? ProductStoreHelpers.get_selected_terminalCollection_record(
-                          context, {
+                      ? ProductStoreHelpers
+                          .get_selected_terminalCollection_record(context, {
                           'timeFrame': [
                             UniversalHelpers.get_raw_date(dateRange.start),
                             UniversalHelpers.get_raw_date(dateRange.end)

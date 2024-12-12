@@ -1,6 +1,5 @@
 import 'package:delightsome_software/appColors.dart';
 import 'package:delightsome_software/dataModels/userModels/staff.model.dart';
-import 'package:delightsome_software/globalvariables.dart';
 import 'package:delightsome_software/helpers/universalHelpers.dart';
 import 'package:delightsome_software/utils/appdata.dart';
 import 'package:delightsome_software/widgets/text_field.dart';
@@ -15,6 +14,7 @@ class SelectStaffDialog extends StatefulWidget {
   final DateTime? date;
   final String? additional_label;
   final String? additional_value;
+  final String staff_list_type;
 
   const SelectStaffDialog({
     super.key,
@@ -25,6 +25,7 @@ class SelectStaffDialog extends StatefulWidget {
     required this.date,
     this.additional_label,
     this.additional_value,
+    required this.staff_list_type,
   });
 
   @override
@@ -59,7 +60,17 @@ class _SelectStaffDialogState extends State<SelectStaffDialog> {
   DateTime? date;
 
   get_staffs() {
-    staffs = Provider.of<AppData>(context).staff_list;
+    // ['Management', 'Production', 'Sales', 'Terminal', 'Admin'];
+
+    var all_staff = Provider.of<AppData>(context).staff_list;
+
+    var sel_staff = all_staff.where((e) => !e.fullaccess).toList();
+
+    staffs = sel_staff
+        .where((staff) => widget.staff_list_type
+            .toLowerCase()
+            .contains(staff.role.toLowerCase()))
+        .toList();
   }
 
   @override
@@ -83,12 +94,14 @@ class _SelectStaffDialogState extends State<SelectStaffDialog> {
     bool isDarkTheme =
         Provider.of<AppData>(context).themeMode == ThemeMode.dark;
 
+    var auth_staff = Provider.of<AppData>(context).active_staff;
+
     return Dialog(
       surfaceTintColor: Colors.transparent,
       backgroundColor: Colors.transparent,
       child: Container(
         width: 320,
-        height: (activeStaff!.fullaccess || activeStaff!.backDate) ? 350 : 290,
+        height: (auth_staff!.fullaccess || auth_staff.backDate) ? 350 : 290,
         child: Column(
           children: [
             // top bar
@@ -178,11 +191,11 @@ class _SelectStaffDialogState extends State<SelectStaffDialog> {
                             label: widget.additional_label ?? '',
                           ),
 
-                        if (activeStaff!.fullaccess || activeStaff!.backDate)
+                        if (auth_staff.fullaccess || auth_staff.backDate)
                           SizedBox(height: 15),
 
                         // date
-                        if (activeStaff!.fullaccess || activeStaff!.backDate)
+                        if (auth_staff.fullaccess || auth_staff.backDate)
                           Text_field(
                             controller: date_controller,
                             icon: InkWell(

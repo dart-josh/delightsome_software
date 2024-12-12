@@ -7,11 +7,8 @@ import 'package:delightsome_software/dataModels/productStoreModels/productReceiv
 import 'package:delightsome_software/dataModels/productStoreModels/productRequestRecord.model.dart';
 import 'package:delightsome_software/dataModels/productStoreModels/productionRecord.model.dart';
 import 'package:delightsome_software/dataModels/productStoreModels/terminalCollectionRecord.model.dart';
-import 'package:delightsome_software/dataModels/userModels/staff.model.dart';
 
 String server_url = 'http://localhost:5000';
-
-StaffModel? activeStaff;
 
 //? SAVED RECORDS
 ProductMaterialsRequestModel? saved_product_material_request_model;
@@ -35,8 +32,3 @@ List<String> category_type_list = [
   ];
 
 // String current_version = '1.6.6';
-
-// ValueNotifier<bool> isConnected = ValueNotifier(false);
-// bool offline_mode = false;
-
-// bool offline_store = false;

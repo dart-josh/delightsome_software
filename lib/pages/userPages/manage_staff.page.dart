@@ -1,6 +1,6 @@
 import 'package:delightsome_software/appColors.dart';
 import 'package:delightsome_software/dataModels/userModels/staff.model.dart';
-import 'package:delightsome_software/globalvariables.dart';
+import 'package:delightsome_software/helpers/authHelpers.dart';
 import 'package:delightsome_software/helpers/universalHelpers.dart';
 import 'package:delightsome_software/helpers/userHelpers.dart';
 import 'package:delightsome_software/utils/appdata.dart';
@@ -138,6 +138,8 @@ class _ManageStaffPageState extends State<ManageStaffPage> {
 
   // top bar
   Widget top_bar() {
+    var auth_staff = Provider.of<AppData>(context).active_staff;
+
     return Container(
       width: double.infinity,
       height: 40,
@@ -164,7 +166,7 @@ class _ManageStaffPageState extends State<ManageStaffPage> {
               Expanded(child: Container()),
 
               // edit button
-              if (!new_cat)
+              if (!new_cat && auth_staff!.fullaccess)
                 InkWell(
                   onTap: () {
                     edit = !edit;
@@ -182,7 +184,7 @@ class _ManageStaffPageState extends State<ManageStaffPage> {
               SizedBox(width: 10),
 
               // delete button
-              if (edit && !new_cat && activeStaff!.fullaccess)
+              if (edit && !new_cat && auth_staff!.fullaccess)
                 InkWell(
                   onTap: () async {
                     bool? res = await UniversalHelpers.showConfirmBox(
@@ -274,6 +276,8 @@ class _ManageStaffPageState extends State<ManageStaffPage> {
     bool isDarkTheme =
         Provider.of<AppData>(context).themeMode == ThemeMode.dark;
 
+    var auth_staff = Provider.of<AppData>(context).active_staff;
+
     TextStyle labelStyle = TextStyle(
       color: isDarkTheme ? Color(0xFFc3c3c3) : Color.fromARGB(255, 61, 61, 61),
       fontSize: 12,
@@ -330,7 +334,7 @@ class _ManageStaffPageState extends State<ManageStaffPage> {
           ),
 
           // full options
-          if (activeStaff!.fullaccess)
+          if (auth_staff!.fullaccess)
             Container(
               padding: EdgeInsets.symmetric(vertical: 10),
               child: Row(
@@ -377,7 +381,8 @@ class _ManageStaffPageState extends State<ManageStaffPage> {
 
           SizedBox(height: 15),
 
-          if (activeStaff!.fullaccess && !new_cat) reset_password_button(),
+          if (auth_staff.fullaccess && !new_cat && widget.staff != null)
+            reset_password_button(widget.staff!.staffId),
         ],
       ),
     );
@@ -484,7 +489,7 @@ class _ManageStaffPageState extends State<ManageStaffPage> {
   }
 
   // reset button
-  Widget reset_password_button() {
+  Widget reset_password_button(String staff_id) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 10),
       child: InkWell(
@@ -497,7 +502,7 @@ class _ManageStaffPageState extends State<ManageStaffPage> {
           );
 
           if (res != null && res) {
-            bool done = await UserHelpers.reset_user_password(context, {});
+            bool done = await AuthHelpers.reset_password(context, staff_id);
 
             if (done) Navigator.pop(context);
           }

@@ -1,7 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:delightsome_software/appColors.dart';
 import 'package:delightsome_software/dataModels/productStoreModels/productReceivedRecord.model.dart';
-import 'package:delightsome_software/globalvariables.dart';
 import 'package:delightsome_software/helpers/productStoreHelpers.dart';
 import 'package:delightsome_software/helpers/universalHelpers.dart';
 import 'package:delightsome_software/pages/productStorePages/enter_product_received.page.dart';
@@ -464,8 +463,7 @@ class _ProductReceivedRecordPageState extends State<ProductReceivedRecordPage> {
                     children: [
                       Text('Supplier : ', style: label_style),
                       SizedBox(width: 4),
-                      Text(record.supplier ?? '',
-                          style: main_style),
+                      Text(record.supplier ?? '', style: main_style),
                     ],
                   ),
 
@@ -565,16 +563,30 @@ class _ProductReceivedRecordPageState extends State<ProductReceivedRecordPage> {
                       approve_label: 'Verify',
                       staff: record.receiver!,
                       recordId: record.recordId ?? 'No ID',
+                      auth_approve_staff: 'Admin',
                     ),
                   );
 
                   if (res != null) {
                     // authorize
                     if (res == 'Verify') {
+                      var auth_staff =
+                          Provider.of<AppData>(context, listen: false)
+                              .active_staff;
+
+                      if (auth_staff == null) {
+                        return UniversalHelpers.showToast(
+                          context: context,
+                          color: Colors.red,
+                          toastText: 'Invalid Authentication',
+                          icon: Icons.error,
+                        );
+                      }
+
                       ProductStoreHelpers.verify_product_received_record(
                           context,
                           record.verify_toJson(
-                              verifiedBy: activeStaff?.key ?? ''));
+                              verifiedBy: auth_staff.key ?? ''));
                     }
 
                     // edit

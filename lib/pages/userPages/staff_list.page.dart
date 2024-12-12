@@ -1,9 +1,8 @@
 import 'package:delightsome_software/appColors.dart';
 import 'package:delightsome_software/dataModels/userModels/staff.model.dart';
-import 'package:delightsome_software/globalvariables.dart';
 import 'package:delightsome_software/helpers/universalHelpers.dart';
 import 'package:delightsome_software/helpers/userHelpers.dart';
-import 'package:delightsome_software/pages/userPages/add_update_staff.page.dart';
+import 'package:delightsome_software/pages/userPages/manage_staff.page.dart';
 import 'package:delightsome_software/utils/appdata.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -171,6 +170,8 @@ class _StaffListPageState extends State<StaffListPage> {
   Widget top_bar() {
     double width = MediaQuery.of(context).size.width;
 
+    var auth_staff = Provider.of<AppData>(context).active_staff;
+
     return Container(
       width: double.infinity,
       height: 40,
@@ -196,7 +197,7 @@ class _StaffListPageState extends State<StaffListPage> {
 
               Expanded(child: Container()),
 
-              if (activeStaff!.fullaccess)
+              if (auth_staff!.fullaccess)
                 Padding(
                   padding: EdgeInsets.only(right: 10),
                   child: add_staff_button(),
@@ -431,6 +432,8 @@ class _StaffListPageState extends State<StaffListPage> {
         Provider.of<AppData>(context).themeMode == ThemeMode.dark;
     double width = MediaQuery.of(context).size.width;
 
+    var auth_staff = Provider.of<AppData>(context).active_staff;
+
     return InkWell(
       onTap: () {
       },
@@ -501,7 +504,7 @@ class _StaffListPageState extends State<StaffListPage> {
                   ),
 
                   // delete
-                  if (activeStaff!.fullaccess)
+                  if (auth_staff!.fullaccess)
                     InkWell(
                       onTap: () async {
                         bool? response = await UniversalHelpers.showConfirmBox(

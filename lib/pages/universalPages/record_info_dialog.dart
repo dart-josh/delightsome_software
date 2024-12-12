@@ -1,7 +1,6 @@
 import 'package:delightsome_software/appColors.dart';
 import 'package:delightsome_software/dataModels/userModels/editedBy.model.dart';
 import 'package:delightsome_software/dataModels/userModels/staff.model.dart';
-import 'package:delightsome_software/globalvariables.dart';
 import 'package:delightsome_software/helpers/universalHelpers.dart';
 import 'package:delightsome_software/utils/appdata.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +14,7 @@ class RecordInfoDialog extends StatefulWidget {
   final String approve_label;
   final StaffModel staff;
   final String recordId;
+  final String auth_approve_staff;
 
   const RecordInfoDialog({
     super.key,
@@ -25,6 +25,7 @@ class RecordInfoDialog extends StatefulWidget {
     required this.approve_label,
     required this.staff,
     required this.recordId,
+    required this.auth_approve_staff,
   });
 
   @override
@@ -36,6 +37,8 @@ class _RecordInfoDialogState extends State<RecordInfoDialog> {
   Widget build(BuildContext context) {
     bool isDarkTheme =
         Provider.of<AppData>(context).themeMode == ThemeMode.dark;
+
+    var auth_staff = Provider.of<AppData>(context).active_staff;
 
     return Dialog(
       surfaceTintColor: Colors.transparent,
@@ -99,7 +102,8 @@ class _RecordInfoDialogState extends State<RecordInfoDialog> {
                                     Text(widget.approvedBy ?? 'Admin')
                                   ],
                                 )
-                              : Text('Not ${widget.approve_label == 'Authorize' ? 'Authorized' : 'Verified'}'),
+                              : Text(
+                                  'Not ${widget.approve_label == 'Authorize' ? 'Authorized' : 'Verified'}'),
                         ),
 
                         SizedBox(height: 10),
@@ -120,7 +124,8 @@ class _RecordInfoDialogState extends State<RecordInfoDialog> {
                             child: Row(
                               children: [
                                 Expanded(
-                                    child: Text('${widget.approve_label == 'Authorize' ? 'Authorized' : 'Verified'} : ')),
+                                    child: Text(
+                                        '${widget.approve_label == 'Authorize' ? 'Authorized' : 'Verified'} : ')),
                                 Text(UniversalHelpers.format_time_to_string(
                                     widget.approvedDate)),
                               ],
@@ -128,8 +133,8 @@ class _RecordInfoDialogState extends State<RecordInfoDialog> {
                           )
 
                         // approve action button
-                        else if (activeStaff!.role == 'Management' ||
-                            activeStaff!.fullaccess)
+                        else if (auth_staff!.role == 'Admin' ||
+                            auth_staff.fullaccess || auth_staff.role == widget.auth_approve_staff)
                           InkWell(
                             onTap: () async {
                               var res = await UniversalHelpers.showConfirmBox(
@@ -224,9 +229,9 @@ class _RecordInfoDialogState extends State<RecordInfoDialog> {
             ),
 
             // edit button
-            if ((widget.staff.staffId == activeStaff!.staffId ||
-                    activeStaff!.role == 'Management' ||
-                    activeStaff!.fullaccess) &&
+            if ((widget.staff.staffId == auth_staff!.staffId ||
+                    auth_staff.role == 'Admin' ||
+                    auth_staff.fullaccess) &&
                 !widget.approved)
               edit_button(),
           ],
@@ -239,6 +244,7 @@ class _RecordInfoDialogState extends State<RecordInfoDialog> {
 
   // top bar
   Widget top_bar() {
+    var auth_staff = Provider.of<AppData>(context).active_staff;
     return Container(
       width: double.infinity,
       height: 40,
@@ -265,10 +271,10 @@ class _RecordInfoDialogState extends State<RecordInfoDialog> {
               Expanded(child: Container()),
 
               // delete button
-              if (((widget.staff.staffId == activeStaff!.staffId ||
-                          activeStaff!.role == 'Management') &&
+              if (((widget.staff.staffId == auth_staff!.staffId ||
+                          auth_staff.role == 'Admin') &&
                       !widget.approved) ||
-                  (activeStaff!.fullaccess))
+                  (auth_staff.fullaccess))
                 InkWell(
                   onTap: () async {
                     var res = await UniversalHelpers.showConfirmBox(

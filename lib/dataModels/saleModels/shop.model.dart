@@ -1,5 +1,6 @@
 import 'package:delightsome_software/dataModels/productStoreModels/productItem.model.dart';
 import 'package:delightsome_software/dataModels/userModels/customer.model.dart';
+import 'package:delightsome_software/pages/salePages/print.page.dart';
 import 'package:flutter/material.dart';
 
 class ShopModel {
@@ -10,6 +11,8 @@ class ShopModel {
   bool isExpanded;
   bool done;
   Offset position;
+  PrintModel? printModel;
+  String? orderId;
 
   ShopModel({
     required this.key,
@@ -19,5 +22,7 @@ class ShopModel {
     this.isExpanded = true,
     this.done = false,
     required this.position,
+    this.printModel,
+    this.orderId,
   });
 }

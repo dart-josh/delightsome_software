@@ -1,7 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:delightsome_software/appColors.dart';
 import 'package:delightsome_software/dataModels/materialStoreModels/productMaterials.model.dart';
-import 'package:delightsome_software/globalvariables.dart';
 import 'package:delightsome_software/helpers/materialStoreHelpers.dart';
 import 'package:delightsome_software/helpers/universalHelpers.dart';
 import 'package:delightsome_software/pages/materialStorePages/add_update_product_material.page.dart';
@@ -192,6 +191,7 @@ class _ProductMaterialListPageState extends State<ProductMaterialListPage> {
   // top bar
   Widget top_bar() {
     double width = MediaQuery.of(context).size.width;
+    var auth_staff = Provider.of<AppData>(context).active_staff;
 
     return Container(
       width: double.infinity,
@@ -219,7 +219,7 @@ class _ProductMaterialListPageState extends State<ProductMaterialListPage> {
               Expanded(child: Container()),
 
               if (!restock_page)
-                if (activeStaff!.fullaccess)
+                if (auth_staff!.fullaccess)
                   Padding(
                     padding: EdgeInsets.only(right: 10),
                     child: add_item_button(),
@@ -468,6 +468,8 @@ class _ProductMaterialListPageState extends State<ProductMaterialListPage> {
     double width = MediaQuery.of(context).size.width;
     bool limit = item.quantity <= item.restockLimit;
 
+    var auth_staff = Provider.of<AppData>(context).active_staff;
+
     return Container(
       decoration: BoxDecoration(
         color: !restock_page
@@ -540,7 +542,7 @@ class _ProductMaterialListPageState extends State<ProductMaterialListPage> {
 
                 // delete
                 if (!restock_page)
-                  if (activeStaff!.fullaccess)
+                  if (auth_staff!.fullaccess)
                     InkWell(
                       onTap: () async {
                         bool? response = await UniversalHelpers.showConfirmBox(

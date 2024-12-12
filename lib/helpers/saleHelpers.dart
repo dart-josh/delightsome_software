@@ -1,11 +1,14 @@
 import 'package:delightsome_software/dataModels/saleModels/dailysales.model.dart';
 import 'package:delightsome_software/dataModels/saleModels/sales.model.dart';
 import 'package:delightsome_software/dataModels/saleModels/terminalDailysales.model.dart';
+import 'package:delightsome_software/utils/appdata.dart';
 import 'package:http/http.dart' as http;
 import 'package:delightsome_software/globalvariables.dart';
 import 'package:delightsome_software/helpers/universalHelpers.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
+
+import 'package:provider/provider.dart';
 
 class SaleHelpers {
   // ! CONSTANTS
@@ -14,7 +17,9 @@ class SaleHelpers {
   // Post Data to server
   static Future<bool> sendDataToServer(context,
       {required String route, required Map data}) async {
-    if (activeStaff == null) {
+    var auth_staff = Provider.of<AppData>(context, listen: false).active_staff;
+
+    if (auth_staff == null) {
       UniversalHelpers.showToast(
         context: context,
         color: Colors.red,
@@ -25,7 +30,7 @@ class SaleHelpers {
     }
 
     // add current user to data
-    data.addAll({"user": activeStaff!.key!});
+    data.addAll({"user": auth_staff.key!});
     // Json encode data
     var body = jsonEncode(data);
 
@@ -71,7 +76,9 @@ class SaleHelpers {
   // Post fetch Data to server
   static Future<dynamic> send_get_dataToServer(context,
       {required String route, required Map data}) async {
-    if (activeStaff == null) {
+    var auth_staff = Provider.of<AppData>(context, listen: false).active_staff;
+
+    if (auth_staff == null) {
       UniversalHelpers.showToast(
         context: context,
         color: Colors.red,
@@ -82,7 +89,7 @@ class SaleHelpers {
     }
 
     // add current user to data
-    data.addAll({'user': activeStaff!.key!});
+    data.addAll({'user': auth_staff.key!});
     // Json encode data
     var body = jsonEncode(data);
 
@@ -119,10 +126,71 @@ class SaleHelpers {
     }
   }
 
+  // Post Data to server
+  static Future<List> sendShopDataToServer(context,
+      {required String route, required Map data}) async {
+    var auth_staff = Provider.of<AppData>(context, listen: false).active_staff;
+
+    if (auth_staff == null) {
+      UniversalHelpers.showToast(
+        context: context,
+        color: Colors.red,
+        toastText: 'No User Found',
+        icon: Icons.error,
+      );
+      return [false, ''];
+    }
+
+    // add current user to data
+    data.addAll({"user": auth_staff.key!});
+    // Json encode data
+    var body = jsonEncode(data);
+
+    UniversalHelpers.showLoadingScreen(context: context);
+    try {
+      var response = await http.post(Uri.parse('${salesUrl}/${route}'),
+          headers: {"Content-Type": "application/json"}, body: body);
+
+      var jsonResponse = jsonDecode(response.body);
+
+      // throw error message
+      if (response.statusCode != 200) {
+        throw jsonResponse['message'];
+      }
+
+      Navigator.pop(context);
+      UniversalHelpers.showToast(
+        context: context,
+        color: Colors.green.shade500,
+        toastText: jsonResponse['message'],
+        icon: Icons.check,
+      );
+
+      return [true, jsonResponse['newSale']['orderId']];
+    } catch (e) {
+      Navigator.pop(context);
+      UniversalHelpers.showToast(
+        context: context,
+        color: Colors.red,
+        toastText: (e.toString().toLowerCase().contains('formatexception') ||
+                e.toString().toLowerCase().contains('clientexception') ||
+                e.toString().toLowerCase().contains('socketexception') ||
+                e.toString().toLowerCase().contains('connection'))
+            ? 'Connection Error. Try again later'
+            : e.toString(),
+        icon: Icons.check,
+      );
+
+      return [false, ''];
+    }
+  }
+
   // Delete Data from sever
   static Future<bool> deleteFromServer(context,
       {required String route, required String id}) async {
-    if (activeStaff == null) {
+    var auth_staff = Provider.of<AppData>(context, listen: false).active_staff;
+
+    if (auth_staff == null) {
       UniversalHelpers.showToast(
         context: context,
         color: Colors.red,
@@ -133,7 +201,7 @@ class SaleHelpers {
     }
 
     // add current user to data
-    Map data = {'user': activeStaff!.key!};
+    Map data = {'user': auth_staff.key!};
     // Json encode data
     var body = jsonEncode(data);
 
@@ -231,9 +299,8 @@ class SaleHelpers {
   }
 
   // Get selected sales record
-  static Future<List<SalesModel>>
-      get_selected_sales_record(
-          BuildContext context, Map data) async {
+  static Future<List<SalesModel>> get_selected_sales_record(
+      BuildContext context, Map data) async {
     var map = await send_get_dataToServer(context,
         route: 'get_selected_sales_record', data: data);
     List<SalesModel> recordList = [];
@@ -241,8 +308,7 @@ class SaleHelpers {
     if (map != null) {
       List record = map['record'] ?? [];
       for (var item in record) {
-        SalesModel recordModel =
-            SalesModel.fromJson(item);
+        SalesModel recordModel = SalesModel.fromJson(item);
 
         recordList.add(recordModel);
       }
@@ -252,9 +318,8 @@ class SaleHelpers {
   }
 
 // Get selected Terminal sales record
-  static Future<List<SalesModel>>
-      get_selected_terminal_sales_record(
-          BuildContext context, Map data) async {
+  static Future<List<SalesModel>> get_selected_terminal_sales_record(
+      BuildContext context, Map data) async {
     var map = await send_get_dataToServer(context,
         route: 'get_selected_terminal_sales_record', data: data);
     List<SalesModel> recordList = [];
@@ -262,8 +327,7 @@ class SaleHelpers {
     if (map != null) {
       List record = map['record'] ?? [];
       for (var item in record) {
-        SalesModel recordModel =
-            SalesModel.fromJson(item);
+        SalesModel recordModel = SalesModel.fromJson(item);
 
         recordList.add(recordModel);
       }
@@ -271,7 +335,6 @@ class SaleHelpers {
 
     return recordList;
   }
-
 
   // Get daily sales record
   static Future<List<DailySalesModel>> get_daily_sales_record() async {
@@ -331,7 +394,7 @@ class SaleHelpers {
 
   // Get selected daily sales record
   static Future<List<DailySalesModel>> get_selected_daily_sales_record(
-          BuildContext context, Map data) async {
+      BuildContext context, Map data) async {
     var map = await send_get_dataToServer(context,
         route: 'get_selected_daily_sales_record', data: data);
     List<DailySalesModel> recordList = [];
@@ -339,8 +402,7 @@ class SaleHelpers {
     if (map != null) {
       List record = map['record'] ?? [];
       for (var item in record) {
-        DailySalesModel recordModel =
-            DailySalesModel.fromJson(item);
+        DailySalesModel recordModel = DailySalesModel.fromJson(item);
 
         recordList.add(recordModel);
       }
@@ -373,14 +435,15 @@ class SaleHelpers {
   // ! SETTERS
 
   // Enter new sale
-  static Future<bool> enter_new_sale(BuildContext context, Map data) async {
-    return await sendDataToServer(context, route: 'enter_new_sale', data: data);
+  static Future<List> enter_new_sale(BuildContext context, Map data) async {
+    return await sendShopDataToServer(context,
+        route: 'enter_new_sale', data: data);
   }
 
   // Enter new terminal Sales
-  static Future<bool> enter_new_terminal_sale(
+  static Future<List> enter_new_terminal_sale(
       BuildContext context, Map data) async {
-    return await sendDataToServer(context,
+    return await sendShopDataToServer(context,
         route: 'enter_new_terminal_sale', data: data);
   }
 

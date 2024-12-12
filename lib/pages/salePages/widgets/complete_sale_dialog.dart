@@ -1,6 +1,5 @@
 import 'package:delightsome_software/appColors.dart';
 import 'package:delightsome_software/dataModels/saleModels/paymentMethod.model.dart';
-import 'package:delightsome_software/globalvariables.dart';
 import 'package:delightsome_software/helpers/universalHelpers.dart';
 import 'package:delightsome_software/utils/appdata.dart';
 import 'package:delightsome_software/widgets/text_field.dart';
@@ -62,12 +61,14 @@ class _CompleteSaleDialogState extends State<CompleteSaleDialog> {
     bool isDarkTheme =
         Provider.of<AppData>(context).themeMode == ThemeMode.dark;
 
+        var auth_staff = Provider.of<AppData>(context).active_staff;
+
     return Dialog(
       surfaceTintColor: Colors.transparent,
       backgroundColor: Colors.transparent,
       child: Container(
         width: 320,
-        height: (activeStaff!.fullaccess || activeStaff!.backDate) ? 450 : 400,
+        height: (auth_staff!.fullaccess || auth_staff.backDate) ? 450 : 400,
         child: Column(
           children: [
             // top bar
@@ -250,13 +251,13 @@ class _CompleteSaleDialogState extends State<CompleteSaleDialog> {
                                   ),
                                 ),
 
-                              if (activeStaff!.fullaccess ||
-                                  activeStaff!.backDate)
+                              if (auth_staff.fullaccess ||
+                                  auth_staff.backDate)
                                 SizedBox(height: 15),
 
                               // date
-                              if (activeStaff!.fullaccess ||
-                                  activeStaff!.backDate)
+                              if (auth_staff.fullaccess ||
+                                  auth_staff.backDate)
                                 date_box(),
 
                               SizedBox(height: 6),

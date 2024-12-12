@@ -1,6 +1,5 @@
 import 'package:delightsome_software/appColors.dart';
 import 'package:delightsome_software/dataModels/materialStoreModels/rawMaterials.model.dart';
-import 'package:delightsome_software/globalvariables.dart';
 import 'package:delightsome_software/helpers/materialStoreHelpers.dart';
 import 'package:delightsome_software/helpers/universalHelpers.dart';
 import 'package:delightsome_software/utils/appdata.dart';
@@ -213,6 +212,8 @@ class _AddUpdateRawMaterialState extends State<AddUpdateRawMaterial> {
 
   // top bar
   Widget top_bar() {
+    var auth_staff = Provider.of<AppData>(context).active_staff;
+
     return Container(
       width: double.infinity,
       height: 40,
@@ -240,8 +241,7 @@ class _AddUpdateRawMaterialState extends State<AddUpdateRawMaterial> {
 
               // edit button
               if (!new_item &&
-                  (activeStaff!.role == 'Management' ||
-                      activeStaff!.fullaccess))
+                  (auth_staff!.fullaccess))
                 InkWell(
                   onTap: () {
                     edit = !edit;
@@ -262,7 +262,7 @@ class _AddUpdateRawMaterialState extends State<AddUpdateRawMaterial> {
               SizedBox(width: 10),
 
               // delete button
-              if (edit && !new_item && (activeStaff!.fullaccess))
+              if (edit && !new_item && (auth_staff!.fullaccess))
                 InkWell(
                   onTap: () async {
                     bool? response = await UniversalHelpers.showConfirmBox(

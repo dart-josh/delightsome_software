@@ -1,7 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:delightsome_software/appColors.dart';
 import 'package:delightsome_software/dataModels/materialStoreModels/rawMaterialsRequest.model.dart';
-import 'package:delightsome_software/globalvariables.dart';
 import 'package:delightsome_software/helpers/materialStoreHelpers.dart';
 import 'package:delightsome_software/helpers/universalHelpers.dart';
 import 'package:delightsome_software/pages/materialStorePages/enter_raw_material_request.page.dart';
@@ -550,17 +549,30 @@ class _RawMaterialRequestRecordPageState
                       approve_label: 'Authorize',
                       staff: record.receiver!,
                       recordId: record.recordId ?? 'No ID',
+                      auth_approve_staff: 'Admin',
                     ),
                   );
 
                   if (res != null) {
                     // authorize
                     if (res == 'Authorize') {
-                      MaterialStoreHelpers
-                          .verify_raw_materials_request_record(
-                              context,
-                              record.verify_toJson(
-                                  authorizedBy: activeStaff?.key ?? ''));
+                      var auth_staff =
+                          Provider.of<AppData>(context, listen: false)
+                              .active_staff;
+
+                      if (auth_staff == null) {
+                        return UniversalHelpers.showToast(
+                          context: context,
+                          color: Colors.red,
+                          toastText: 'Invalid Authentication',
+                          icon: Icons.error,
+                        );
+                      }
+
+                      MaterialStoreHelpers.verify_raw_materials_request_record(
+                          context,
+                          record.verify_toJson(
+                              authorizedBy: auth_staff.key ?? ''));
                     }
 
                     // edit
@@ -578,17 +590,15 @@ class _RawMaterialRequestRecordPageState
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) =>
-                                    EnterRawMaterialRequest(
+                                builder: (context) => EnterRawMaterialRequest(
                                       editModel: record,
                                     )));
                       }
                     }
 
                     if (res == 'delete') {
-                      MaterialStoreHelpers
-                          .delete_raw_materials_request_record(
-                              context, record.key!);
+                      MaterialStoreHelpers.delete_raw_materials_request_record(
+                          context, record.key!);
                     }
                   }
                 },
@@ -689,9 +699,8 @@ class _RawMaterialRequestRecordPageState
       future: records.isNotEmpty
           ? null
           : (date != null && isOffList)
-              ? MaterialStoreHelpers
-                  .get_selected_raw_materials_request_record(
-                      context, {'date': UniversalHelpers.get_raw_date(date)})
+              ? MaterialStoreHelpers.get_selected_raw_materials_request_record(
+                  context, {'date': UniversalHelpers.get_raw_date(date)})
               : (month != null && isOffList)
                   ? MaterialStoreHelpers
                       .get_selected_raw_materials_request_record(context, {
@@ -699,8 +708,7 @@ class _RawMaterialRequestRecordPageState
                     })
                   : (dateRange != null && isOffList)
                       ? MaterialStoreHelpers
-                          .get_selected_raw_materials_request_record(
-                              context, {
+                          .get_selected_raw_materials_request_record(context, {
                           'timeFrame': [
                             UniversalHelpers.get_raw_date(dateRange.start),
                             UniversalHelpers.get_raw_date(dateRange.end)

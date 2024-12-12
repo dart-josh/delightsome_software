@@ -1,12 +1,14 @@
 import 'package:collection/collection.dart';
 import 'package:delightsome_software/appColors.dart';
+import 'package:delightsome_software/dataModels/saleModels/paymentMethod.model.dart';
 import 'package:delightsome_software/dataModels/saleModels/sales.model.dart';
-import 'package:delightsome_software/globalvariables.dart';
 import 'package:delightsome_software/helpers/saleHelpers.dart';
 import 'package:delightsome_software/helpers/universalHelpers.dart';
+import 'package:delightsome_software/pages/salePages/print.page.dart';
 import 'package:delightsome_software/pages/salePages/widgets/sale_info_dialog.dart';
 import 'package:delightsome_software/utils/appdata.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:month_year_picker2/month_year_picker2.dart';
 import 'package:provider/provider.dart';
 import 'package:sticky_grouped_list/sticky_grouped_list.dart';
@@ -520,6 +522,8 @@ class _TerminalSalesRecordPageState extends State<TerminalSalesRecordPage> {
     bool isDarkTheme =
         Provider.of<AppData>(context).themeMode == ThemeMode.dark;
 
+        var auth_staff = Provider.of<AppData>(context).active_staff;
+
     TextStyle label_style = TextStyle(
       color: isDarkTheme
           ? AppColors.dark_secondaryTextColor
@@ -768,28 +772,86 @@ class _TerminalSalesRecordPageState extends State<TerminalSalesRecordPage> {
             ),
           ),
 
-          // more button
-          if (activeStaff!.fullaccess)
+          // others
             Positioned(
               top: 2,
               right: 2,
-              child: IconButton(
+              child: Row(
+                children: [
+                  // receipt
+                  IconButton(
                   onPressed: () async {
-                    var res = await showDialog(
+                    List<PrintItemModel> items = record.products
+                        .map((e) => PrintItemModel(
+                            name: e.product.name,
+                            qty: e.quantity,
+                            price: e.price,
+                            total_price: (e.price * e.quantity)))
+                        .toList();
+
+                    List<PaymentMethodModel> pmts =
+                        (record.splitPaymentMethod != null &&
+                                record.splitPaymentMethod!.isNotEmpty)
+                            ? record.splitPaymentMethod ?? []
+                            : [
+                                PaymentMethodModel(
+                                  paymentMethod: record.paymentMethod,
+                                  amount: (is_dicounted
+                                      ? record.discountPrice ?? 0
+                                      : record.orderPrice),
+                                ),
+                              ];
+
+                    PrintModel printModel = PrintModel(
+                      date: DateFormat('dd/MM/yyyy').format(record.recordDate ??
+                          record.createdAt ??
+                          DateTime.now()),
+                      time: DateFormat.jm().format(record.recordDate ??
+                          record.createdAt ??
+                          DateTime.now()),
+                      receipt_id: record.orderId ?? 'null',
+                      store: 'Terminal',
+                      seller: record.soldBy?.nickName ?? 'User',
+                      customer: record.customer?.nickName ?? 'Walk-in',
+                      items: items,
+                      sub_total: record.orderPrice,
+                      discount: (is_dicounted
+                          ? record.orderPrice - (record.discountPrice ?? 0)
+                          : 0),
+                      total: (is_dicounted
+                          ? record.discountPrice ?? 0
+                          : record.orderPrice),
+                      pmts: pmts,
+                    );
+
+                    return showDialog(
                         context: context,
-                        builder: (context) =>
-                            SaleInfoDialog(order_id: record.orderId!));
-
-                    if (res != null) {
-                      if (res == 'delete') {
-                        SaleHelpers.delete_terminal_sale_record(
-                            context, record.key!);
-                      }
-
-                      // change_pmt
-                    }
+                        builder: (context) => PrintPage(print: printModel));
                   },
-                  icon: Icon(Icons.more_vert)),
+                  icon: Icon(Icons.receipt),
+                ),
+
+                  // more button
+                if (auth_staff!.fullaccess)
+                  IconButton(
+                      onPressed: () async {
+                        var res = await showDialog(
+                            context: context,
+                            builder: (context) =>
+                                SaleInfoDialog(order_id: record.orderId!));
+                  
+                        if (res != null) {
+                          if (res == 'delete') {
+                            SaleHelpers.delete_terminal_sale_record(
+                                context, record.key!);
+                          }
+                  
+                          // change_pmt
+                        }
+                      },
+                      icon: Icon(Icons.more_vert)),
+                ],
+              ),
             ),
         ],
       ),

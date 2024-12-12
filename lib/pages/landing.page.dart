@@ -1,8 +1,12 @@
 import 'package:delightsome_software/appColors.dart';
 import 'package:delightsome_software/dataModels/category.model.dart';
 import 'package:delightsome_software/dataModels/productStoreModels/product.model.dart';
+import 'package:delightsome_software/dataModels/userModels/staff.model.dart';
 import 'package:delightsome_software/globalvariables.dart';
+import 'package:delightsome_software/helpers/dataGetters.dart';
 import 'package:delightsome_software/helpers/serverHelpers.dart';
+import 'package:delightsome_software/helpers/universalHelpers.dart';
+import 'package:delightsome_software/pages/login.page.dart';
 import 'package:delightsome_software/pages/materialStorePages/add_update_product_material.page.dart';
 import 'package:delightsome_software/pages/materialStorePages/add_update_raw_material.page.dart';
 import 'package:delightsome_software/pages/materialStorePages/enter_product_material_request.page.dart';
@@ -35,30 +39,33 @@ import 'package:delightsome_software/pages/salePages/sales_report.page.dart';
 import 'package:delightsome_software/pages/salePages/terminal_daily_sales_record.page.dart';
 import 'package:delightsome_software/pages/salePages/terminal_sales_record.page.dart';
 import 'package:delightsome_software/pages/universalPages/category_list.page.dart';
-import 'package:delightsome_software/pages/universalPages/manage_category.page.dart';
-import 'package:delightsome_software/pages/record_testPage.dart';
-import 'package:delightsome_software/pages/universalPages/print.page.dart';
+import 'package:delightsome_software/pages/salePages/print.page.dart';
 import 'package:delightsome_software/pages/userPages/customer_list.page.dart';
 import 'package:delightsome_software/pages/userPages/staff_list.page.dart';
 import 'package:delightsome_software/utils/appdata.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class LandingPage extends StatefulWidget {
+  const LandingPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<LandingPage> createState() => _LandingPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LandingPageState extends State<LandingPage> {
   List<ProductModel> productList = [];
   List<ProductModel> terminal_productList = [];
+
+  StaffModel? auth_staff;
 
   @override
   Widget build(BuildContext context) {
     bool isDarkTheme =
         Provider.of<AppData>(context).themeMode == ThemeMode.dark;
+
+    auth_staff = Provider.of<AppData>(context).active_staff;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor:
@@ -66,10 +73,23 @@ class _LoginPageState extends State<LoginPage> {
         title: Text('HomePage'),
         actions: [
           IconButton(
-            onPressed: () {
+            onPressed: () async {
               ServerHelpers.get_all_data(context);
             },
             icon: Icon(Icons.refresh),
+          ),
+          IconButton(
+            onPressed: () async {
+              ServerHelpers.disconnect_socket();
+              
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => LoginPage()),
+                (route) => false,
+              );
+              
+            },
+            icon: Icon(Icons.logout),
           ),
         ],
       ),
@@ -81,15 +101,15 @@ class _LoginPageState extends State<LoginPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             // staff
-            activeStaff == null
+            auth_staff == null
                 ? Container()
                 : Row(children: [
                     SizedBox(width: 10),
                     Text('Nickname: '),
-                    Text(activeStaff!.nickName),
+                    Text(auth_staff!.nickName),
                     SizedBox(width: 10),
                     Text('Role: '),
-                    Text(activeStaff!.role),
+                    Text(auth_staff!.role),
                     SizedBox(width: 10),
                   ]),
 
@@ -103,9 +123,7 @@ class _LoginPageState extends State<LoginPage> {
                       );
                     },
                     child: Text('Staff List')),
-
-                    SizedBox(width: 20),
-
+                SizedBox(width: 20),
                 ElevatedButton(
                     onPressed: () async {
                       await showDialog(
@@ -755,32 +773,6 @@ class _LoginPageState extends State<LoginPage> {
                 }
               },
               child: Text(isDarkTheme ? 'Switch to Light' : 'Switch to Dark'),
-            ),
-
-            //
-            SizedBox(height: 30),
-
-            ElevatedButton(
-              onPressed: () {
-                PrintModel print_model = PrintModel(
-                  date: DateTime.now().toString(),
-                  receipt_id: 'ejwehyruey',
-                  client_id: 'HFC-00213-FT',
-                  client_name: 'Abraham Lincoln F.',
-                  subscription_plan: 'Monthly',
-                  subscription_type: 'Individual',
-                  extras: ['Boxing', 'Standard Personal Training'],
-                  amount: 35000,
-                  amount_in_words: 'Thirty Five thousnad Naira',
-                  expiry_date:
-                      DateTime.now().add(Duration(days: 30)).toString(),
-                );
-
-                showDialog(
-                    context: context,
-                    builder: (context) => PrintPage(print: print_model));
-              },
-              child: Text('Test Print'),
             ),
 
             SizedBox(height: 30),

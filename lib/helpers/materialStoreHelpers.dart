@@ -7,9 +7,12 @@ import 'package:delightsome_software/dataModels/materialStoreModels/restockProdu
 import 'package:delightsome_software/dataModels/materialStoreModels/restockRawMaterial.model.dart';
 import 'package:delightsome_software/globalvariables.dart';
 import 'package:delightsome_software/helpers/universalHelpers.dart';
+import 'package:delightsome_software/utils/appdata.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+
+import 'package:provider/provider.dart';
 
 class MaterialStoreHelpers {
   // ! CONSTANTS
@@ -18,7 +21,9 @@ class MaterialStoreHelpers {
   // Post Data to server
   static Future<bool> sendDataToServer(context,
       {required String route, required Map data}) async {
-    if (activeStaff == null) {
+       var auth_staff = Provider.of<AppData>(context, listen: false).active_staff;
+
+    if (auth_staff == null) {
       UniversalHelpers.showToast(
         context: context,
         color: Colors.red,
@@ -29,7 +34,7 @@ class MaterialStoreHelpers {
     }
 
     // add current user to data
-    data.addAll({'user': activeStaff!.key!});
+    data.addAll({'user': auth_staff.key!});
     // Json encode data
     var body = jsonEncode(data);
 
@@ -75,7 +80,9 @@ class MaterialStoreHelpers {
   // Post fetch Data to server
   static Future<dynamic> send_get_dataToServer(context,
       {required String route, required Map data}) async {
-    if (activeStaff == null) {
+        var auth_staff = Provider.of<AppData>(context, listen: false).active_staff;
+
+    if (auth_staff == null) {
       UniversalHelpers.showToast(
         context: context,
         color: Colors.red,
@@ -86,7 +93,7 @@ class MaterialStoreHelpers {
     }
 
     // add current user to data
-    data.addAll({'user': activeStaff!.key!});
+    data.addAll({'user': auth_staff.key!});
     // Json encode data
     var body = jsonEncode(data);
 
@@ -126,7 +133,9 @@ class MaterialStoreHelpers {
   // Delete Data from sever
   static Future<bool> deleteFromServer(context,
       {required String route, required String id}) async {
-    if (activeStaff == null) {
+        var auth_staff = Provider.of<AppData>(context, listen: false).active_staff;
+
+    if (auth_staff == null) {
       UniversalHelpers.showToast(
         context: context,
         color: Colors.red,
@@ -137,7 +146,7 @@ class MaterialStoreHelpers {
     }
 
     // add current user to data
-    Map data = {'user': activeStaff!.key!};
+    Map data = {'user': auth_staff.key!};
     // Json encode data
     var body = jsonEncode(data);
 

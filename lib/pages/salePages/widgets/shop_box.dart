@@ -1,16 +1,18 @@
 import 'package:delightsome_software/appColors.dart';
+import 'package:delightsome_software/dataModels/productStoreModels/product.model.dart';
 import 'package:delightsome_software/dataModels/productStoreModels/productItem.model.dart';
 import 'package:delightsome_software/dataModels/saleModels/paymentMethod.model.dart';
 import 'package:delightsome_software/dataModels/saleModels/sales.model.dart';
 import 'package:delightsome_software/dataModels/saleModels/shop.model.dart';
-import 'package:delightsome_software/globalvariables.dart';
 import 'package:delightsome_software/helpers/saleHelpers.dart';
 import 'package:delightsome_software/helpers/universalHelpers.dart';
+import 'package:delightsome_software/pages/salePages/print.page.dart';
 import 'package:delightsome_software/pages/salePages/widgets/complete_sale_dialog.dart';
 import 'package:delightsome_software/pages/userPages/customer_list.page.dart';
 import 'package:delightsome_software/utils/appdata.dart';
 import 'package:delightsome_software/widgets/enter_qty_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class ShopBox extends StatefulWidget {
@@ -474,7 +476,21 @@ class _ShopBoxState extends State<ShopBox> {
 
                     // print
                     InkWell(
-                      onTap: () {},
+                      onTap: () async {
+                        if (shop.printModel == null) {
+                          return UniversalHelpers.showToast(
+                            context: context,
+                            color: Colors.red,
+                            toastText: 'Receipt not found',
+                            icon: Icons.error,
+                          );
+                        }
+
+                        return showDialog(
+                            context: context,
+                            builder: (context) =>
+                                PrintPage(print: shop.printModel!));
+                      },
                       child: Container(
                         height: 37,
                         width: 180,
@@ -1009,6 +1025,12 @@ class _ShopBoxState extends State<ShopBox> {
                       return;
                     }
 
+                    bool product_chk = await check_products_qty();
+
+                    if (!product_chk) {
+                      return;
+                    }
+
                     var response = await showDialog(
                       context: context,
                       builder: (context) => CompleteSaleDialog(
@@ -1054,18 +1076,91 @@ class _ShopBoxState extends State<ShopBox> {
                             : DateTime.now(),
                       );
 
-                      Map data = sale.toJson(soldBy: activeStaff?.key ?? '');
+                      var auth_staff =
+                          Provider.of<AppData>(context, listen: false)
+                              .active_staff;
+
+                      if (auth_staff == null) {
+                        return UniversalHelpers.showToast(
+                          context: context,
+                          color: Colors.red,
+                          toastText: 'Invalid Authentication',
+                          icon: Icons.error,
+                        );
+                      }
+
+                      Map data = sale.toJson(soldBy: auth_staff.key ?? '');
 
                       if (widget.outlet_shop) {
-                        shop.done =
+                        var shop_data =
                             await SaleHelpers.enter_new_sale(context, data);
+                        shop.done = shop_data[0];
+                        shop.orderId = shop_data[1];
+                      } else {
+                        var shop_data =
+                            await SaleHelpers.enter_new_terminal_sale(
+                                context, data);
 
+                        shop.done = shop_data[0];
+                        shop.orderId = shop_data[1];
+                      }
+
+                      if (shop.done) {
+                        bool is_discounted = (sale.discountPrice != null &&
+                            sale.discountPrice != sale.orderPrice);
+
+                        List<PrintItemModel> items = final_products
+                            .map((e) => PrintItemModel(
+                                name: e.product.name,
+                                qty: e.quantity,
+                                price: e.price,
+                                total_price: (e.price * e.quantity)))
+                            .toList();
+
+                        List<PaymentMethodModel> pmts =
+                            (sale.splitPaymentMethod != null &&
+                                    sale.splitPaymentMethod!.isNotEmpty)
+                                ? sale.splitPaymentMethod ?? []
+                                : [
+                                    PaymentMethodModel(
+                                      paymentMethod: sale.paymentMethod,
+                                      amount: (is_discounted
+                                          ? sale.discountPrice ?? 0
+                                          : sale.orderPrice),
+                                    ),
+                                  ];
+
+                        shop.printModel = PrintModel(
+                          date: DateFormat('dd/MM/yyyy')
+                              .format(sale.recordDate ?? DateTime.now()),
+                          time: DateFormat.jm()
+                              .format(sale.recordDate ?? DateTime.now()),
+                          receipt_id: shop.orderId ?? 'null',
+                          store: (widget.outlet_shop)
+                              ? shop.is_online
+                                  ? 'Online'
+                                  : 'Outlet'
+                              : 'Terminal',
+                          seller: auth_staff.nickName,
+                          customer: shop.customer?.nickName ?? 'Walk-in',
+                          items: items,
+                          sub_total: sale.orderPrice,
+                          discount: (is_discounted
+                              ? sale.orderPrice - (sale.discountPrice ?? 0)
+                              : 0),
+                          total: (is_discounted
+                              ? sale.discountPrice ?? 0
+                              : sale.orderPrice),
+                          pmts: pmts,
+                        );
+                      } else {
+                        shop.printModel = null;
+                      }
+
+                      if (widget.outlet_shop) {
                         Provider.of<AppData>(context, listen: false)
                             .update_outlet_shop(shop);
                       } else {
-                        shop.done = await SaleHelpers.enter_new_terminal_sale(
-                            context, data);
-
                         Provider.of<AppData>(context, listen: false)
                             .update_terminal_shop(shop);
                       }
@@ -1228,5 +1323,46 @@ class _ShopBoxState extends State<ShopBox> {
     }
   }
 
+  bool check_products_qty() {
+    List<ProductModel> prods = [];
+
+    if (widget.outlet_shop) {
+      prods = Provider.of<AppData>(context, listen: false).product_list;
+    } else {
+      prods =
+          Provider.of<AppData>(context, listen: false).terminal_product_list;
+    }
+
+    for (var i = 0; i < shop.products.length; i++) {
+      ProductItemModel p = shop.products[i];
+
+      var chk = prods.where((prod) => prod.key == p.product.key);
+
+      if (chk.isNotEmpty) {
+        ProductModel a_p = chk.first;
+
+        if (a_p.quantity < p.quantity) {
+          UniversalHelpers.showToast(
+            context: context,
+            color: Colors.red,
+            toastText: 'Insufficient ${p.product.name}',
+            icon: Icons.error,
+          );
+          return false;
+        }
+      } else {
+        UniversalHelpers.showToast(
+          context: context,
+          color: Colors.red,
+          toastText: 'Invalid Products fround',
+          icon: Icons.error,
+        );
+        return false;
+      }
+    }
+
+    return true;
+  }
+  
   //
 }

@@ -1,6 +1,5 @@
 import 'package:delightsome_software/appColors.dart';
 import 'package:delightsome_software/dataModels/userModels/customer.model.dart';
-import 'package:delightsome_software/globalvariables.dart';
 import 'package:delightsome_software/helpers/universalHelpers.dart';
 import 'package:delightsome_software/helpers/userHelpers.dart';
 import 'package:delightsome_software/pages/userPages/manage_customer.page.dart';
@@ -36,17 +35,18 @@ class _CustomerListPageState extends State<CustomerListPage> {
   bool search_open = false;
 
   int index = 0;
+  List pages = ['Store', 'Online', 'Terminal'];
 
   get_list() {
     List<CustomerModel> customers = Provider.of<AppData>(context).customer_list;
 
     store_list =
         customers.where((element) => element.customerType == 'Store').toList();
-    online_list = customers
-        .where((element) => element.customerType == 'Online')
+    online_list =
+        customers.where((element) => element.customerType == 'Online').toList();
+    terminal_list = customers
+        .where((element) => element.customerType == 'Terminal')
         .toList();
-    terminal_list =
-        customers.where((element) => element.customerType == 'Terminal').toList();
   }
 
   @override
@@ -197,6 +197,8 @@ class _CustomerListPageState extends State<CustomerListPage> {
   Widget top_bar() {
     double width = MediaQuery.of(context).size.width;
 
+    var auth_staff = Provider.of<AppData>(context).active_staff;
+
     return Container(
       width: double.infinity,
       height: 40,
@@ -222,7 +224,10 @@ class _CustomerListPageState extends State<CustomerListPage> {
 
               Expanded(child: Container()),
 
-              if (activeStaff!.fullaccess)
+              if (auth_staff!.fullaccess ||
+                  auth_staff.role == 'Sales' ||
+                  auth_staff.role == 'Admin' ||
+                  (auth_staff.role == 'Terminal' && index == 2))
                 Padding(
                   padding: EdgeInsets.only(right: 10),
                   child: add_customer_button(),
@@ -456,6 +461,8 @@ class _CustomerListPageState extends State<CustomerListPage> {
         Provider.of<AppData>(context).themeMode == ThemeMode.dark;
     double width = MediaQuery.of(context).size.width;
 
+    var auth_staff = Provider.of<AppData>(context).active_staff;
+
     return InkWell(
       onTap: () {
         if (widget.selector) {
@@ -495,26 +502,32 @@ class _CustomerListPageState extends State<CustomerListPage> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   // view/edit
-                  InkWell(
-                    onTap: () {
-                      showDialog(
-                        context: context,
-                        barrierDismissible: false,
-                        builder: (context) => ManageCustomerPage(
-                          customer: customer,
+                  if ((auth_staff!.role != 'Terminal' &&
+                          auth_staff.role != 'Production') ||
+                      (auth_staff.role == 'Terminal' && index == 2) ||
+                      auth_staff.role == 'Admin' ||
+                      auth_staff.fullaccess)
+                    InkWell(
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (context) => ManageCustomerPage(
+                            customer: customer,
+                            customer_type: customer.customerType,
+                          ),
+                        );
+                      },
+                      child: Container(
+                        margin: EdgeInsets.symmetric(horizontal: 5),
+                        child: Center(
+                          child: Icon(Icons.info, size: 18),
                         ),
-                      );
-                    },
-                    child: Container(
-                      margin: EdgeInsets.symmetric(horizontal: 5),
-                      child: Center(
-                        child: Icon(Icons.info, size: 18),
                       ),
                     ),
-                  ),
 
                   // delete
-                  if (activeStaff!.fullaccess)
+                  if (auth_staff!.fullaccess)
                     InkWell(
                       onTap: () async {
                         bool? response = await UniversalHelpers.showConfirmBox(
@@ -556,7 +569,9 @@ class _CustomerListPageState extends State<CustomerListPage> {
         showDialog(
           context: context,
           barrierDismissible: false,
-          builder: (context) => ManageCustomerPage(),
+          builder: (context) => ManageCustomerPage(
+            customer_type: pages[index],
+          ),
         );
       },
       child: Icon(

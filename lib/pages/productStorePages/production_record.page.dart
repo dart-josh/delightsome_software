@@ -1,7 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:delightsome_software/appColors.dart';
 import 'package:delightsome_software/dataModels/productStoreModels/productionRecord.model.dart';
-import 'package:delightsome_software/globalvariables.dart';
 import 'package:delightsome_software/helpers/productStoreHelpers.dart';
 import 'package:delightsome_software/helpers/universalHelpers.dart';
 import 'package:delightsome_software/pages/productStorePages/enter_production.page.dart';
@@ -554,16 +553,30 @@ class _ProductionRecordPageState extends State<ProductionRecordPage> {
                       approve_label: 'Verify',
                       staff: record.producer!,
                       recordId: record.recordId ?? 'No ID',
+                      auth_approve_staff: 'Sales',
                     ),
                   );
 
                   if (res != null) {
                     // authorize
                     if (res == 'Verify') {
+                      var auth_staff =
+                          Provider.of<AppData>(context, listen: false)
+                              .active_staff;
+
+                      if (auth_staff == null) {
+                        return UniversalHelpers.showToast(
+                          context: context,
+                          color: Colors.red,
+                          toastText: 'Invalid Authentication',
+                          icon: Icons.error,
+                        );
+                      }
+
                       ProductStoreHelpers.verify_production_record(
                           context,
                           record.verify_toJson(
-                              verifiedBy: activeStaff?.key ?? ''));
+                              verifiedBy: auth_staff.key ?? ''));
                     }
 
                     // edit

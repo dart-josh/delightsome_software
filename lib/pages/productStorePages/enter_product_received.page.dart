@@ -560,12 +560,12 @@ class _EnterProductReceivedPageState extends State<EnterProductReceivedPage> {
               style: TextStyle(
                 fontSize: 16,
                 color: !product.isAvailable
-                      ? isDarkTheme
-                          ? AppColors.dark_dimTextColor
-                          : AppColors.light_dimTextColor
-                      : isDarkTheme
-                    ? AppColors.dark_primaryTextColor
-                    : AppColors.light_primaryTextColor,
+                    ? isDarkTheme
+                        ? AppColors.dark_dimTextColor
+                        : AppColors.light_dimTextColor
+                    : isDarkTheme
+                        ? AppColors.dark_primaryTextColor
+                        : AppColors.light_primaryTextColor,
               ),
             )),
             SizedBox(width: 10),
@@ -575,12 +575,12 @@ class _EnterProductReceivedPageState extends State<EnterProductReceivedPage> {
                 fontSize: 13,
                 fontStyle: FontStyle.italic,
                 color: !product.isAvailable
-                      ? isDarkTheme
-                          ? AppColors.dark_dimTextColor
-                          : AppColors.light_dimTextColor
-                      : isDarkTheme
-                    ? AppColors.dark_primaryTextColor
-                    : AppColors.light_primaryTextColor,
+                    ? isDarkTheme
+                        ? AppColors.dark_dimTextColor
+                        : AppColors.light_dimTextColor
+                    : isDarkTheme
+                        ? AppColors.dark_primaryTextColor
+                        : AppColors.light_primaryTextColor,
               ),
             ),
             if (!(width > 600)) SizedBox(width: 10) else SizedBox(width: 5),
@@ -899,6 +899,7 @@ class _EnterProductReceivedPageState extends State<EnterProductReceivedPage> {
                         additional_label: 'Supplier',
                         additional_value: supplier,
                         date: widget.editModel?.recordDate,
+                        staff_list_type: 'Sales',
                       ),
                     );
 
@@ -927,9 +928,22 @@ class _EnterProductReceivedPageState extends State<EnterProductReceivedPage> {
                         saved_product_received_model = prrm_s;
                       }
 
+                      var auth_staff =
+                          Provider.of<AppData>(context, listen: false)
+                              .active_staff;
+
+                      if (auth_staff == null) {
+                        return UniversalHelpers.showToast(
+                          context: context,
+                          color: Colors.red,
+                          toastText: 'Invalid Authentication',
+                          icon: Icons.error,
+                        );
+                      }
+
                       Map map = prrm.enter_toJson(
                           receiver: staff!.key!,
-                          editedBy: activeStaff?.key ?? '');
+                          editedBy: auth_staff.key ?? '');
 
                       bool done = await ProductStoreHelpers
                           .enter_product_received_record(context, map);

@@ -1,4 +1,5 @@
-import 'package:delightsome_software/globalvariables.dart';
+
+import 'package:delightsome_software/helpers/authHelpers.dart';
 import 'package:delightsome_software/helpers/materialStoreHelpers.dart';
 import 'package:delightsome_software/helpers/productStoreHelpers.dart';
 import 'package:delightsome_software/helpers/saleHelpers.dart';
@@ -172,12 +173,6 @@ class DataGetters {
     var rec = await UserHelpers.get_all_staff();
 
     Provider.of<AppData>(context, listen: false).update_staff_list(rec);
-
-    if (rec.isNotEmpty) {
-      activeStaff = rec[1];
-      activeStaff!.fullaccess = true;
-      // activeStaff!.backDate = true;
-    }
   }
 
   // get customer
@@ -188,9 +183,11 @@ class DataGetters {
   }
 
   // get active staff
-  static get_active_staff() async {
-    // active staff
-    print('Active staff');
+  static get_active_staff(context, String staff_id) async {
+    var staff = await AuthHelpers.get_active_staff(staff_id);
+
+    Provider.of<AppData>(context, listen: false).update_active_staff(staff);
+    return staff;
   }
 
   //

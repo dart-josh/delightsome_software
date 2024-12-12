@@ -1,7 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:delightsome_software/appColors.dart';
 import 'package:delightsome_software/dataModels/productStoreModels/productRequestRecord.model.dart';
-import 'package:delightsome_software/globalvariables.dart';
 import 'package:delightsome_software/helpers/productStoreHelpers.dart';
 import 'package:delightsome_software/helpers/universalHelpers.dart';
 import 'package:delightsome_software/pages/productStorePages/enter_product_request.page.dart';
@@ -16,7 +15,8 @@ class ProductRequestRecordPage extends StatefulWidget {
   const ProductRequestRecordPage({super.key});
 
   @override
-  State<ProductRequestRecordPage> createState() => _ProductRequestRecordPageState();
+  State<ProductRequestRecordPage> createState() =>
+      _ProductRequestRecordPageState();
 }
 
 class _ProductRequestRecordPageState extends State<ProductRequestRecordPage> {
@@ -554,16 +554,30 @@ class _ProductRequestRecordPageState extends State<ProductRequestRecordPage> {
                       approve_label: 'Authorize',
                       staff: record.requestedBy!,
                       recordId: record.recordId ?? 'No ID',
+                      auth_approve_staff: 'Admin',
                     ),
                   );
 
                   if (res != null) {
                     // authorize
                     if (res == 'Authorize') {
+                      var auth_staff =
+                          Provider.of<AppData>(context, listen: false)
+                              .active_staff;
+
+                      if (auth_staff == null) {
+                        return UniversalHelpers.showToast(
+                          context: context,
+                          color: Colors.red,
+                          toastText: 'Invalid Authentication',
+                          icon: Icons.error,
+                        );
+                      }
+
                       ProductStoreHelpers.verify_product_request_record(
                           context,
                           record.verify_toJson(
-                              verifiedBy: activeStaff?.key ?? ''));
+                              verifiedBy: auth_staff.key ?? ''));
                     }
 
                     // edit

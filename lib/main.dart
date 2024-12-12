@@ -1,6 +1,7 @@
 import 'package:delightsome_software/appColors.dart';
-import 'package:delightsome_software/pages/homePage.dart';
-import 'package:delightsome_software/pages/loginPage.dart';
+// import 'package:delightsome_software/pages/homePage.dart';
+import 'package:delightsome_software/pages/login.page.dart';
+import 'package:delightsome_software/pages/universalPages/notification_cover.dart';
 import 'package:delightsome_software/utils/appdata.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -28,8 +29,8 @@ class MyApp extends StatelessWidget {
 
   // This widget is the root of your application.
   @override
-  Widget build(BuildContext context) {
-    ThemeMode theme = Provider.of<AppData>(context).themeMode;
+  Widget build(BuildContext _context) {
+    ThemeMode theme = Provider.of<AppData>(_context).themeMode;
     bool isDark = theme == ThemeMode.dark;
 
     return MaterialApp(
@@ -65,13 +66,15 @@ class MyApp extends StatelessWidget {
         brightness: Brightness.dark,
       ),
       themeMode: theme,
-      home: HomePage(),
+      home: LoginPage(),
       builder: ((context, child) {
         return Stack(
           children: [
             child!,
 
-            // notification
+            // Positioned.fill(child: NotificationCover(rootContext: _context)),
+
+            // theme switch
             Positioned(
               right: 10,
               bottom: 20,

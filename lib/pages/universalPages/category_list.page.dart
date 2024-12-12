@@ -175,6 +175,7 @@ class _CategoryListPageState extends State<CategoryListPage> {
   // top bar
   Widget top_bar() {
     double width = MediaQuery.of(context).size.width;
+    var auth_staff = Provider.of<AppData>(context).active_staff;
 
     return Container(
       width: double.infinity,
@@ -201,7 +202,7 @@ class _CategoryListPageState extends State<CategoryListPage> {
 
               Expanded(child: Container()),
 
-              if (activeStaff!.fullaccess)
+              if (auth_staff!.fullaccess || auth_staff.role == 'Admin')
                 Padding(
                   padding: EdgeInsets.only(right: 10),
                   child: add_item_button(),
@@ -434,6 +435,7 @@ class _CategoryListPageState extends State<CategoryListPage> {
   // item tile
   Widget item_tile(CategoryModel category) {
     double width = MediaQuery.of(context).size.width;
+    var auth_staff = Provider.of<AppData>(context).active_staff;
 
     return Container(
       decoration: BoxDecoration(),
@@ -490,7 +492,7 @@ class _CategoryListPageState extends State<CategoryListPage> {
                 ),
 
                 // delete
-                if (activeStaff!.fullaccess)
+                if (auth_staff!.fullaccess)
                   InkWell(
                     onTap: () async {
                       bool? response = await UniversalHelpers.showConfirmBox(
