@@ -29,6 +29,7 @@ class AppData extends ChangeNotifier {
 
   // theme
   ThemeMode themeMode = ThemeMode.system;
+  bool drawer_expanded = false;
 
   // variables
   List<ShopModel> outlet_shops = [];
@@ -80,6 +81,16 @@ class AppData extends ChangeNotifier {
   // ! APP DEFAULTS
   void update_themeMode(ThemeMode value) {
     themeMode = value;
+    notifyListeners();
+  }
+
+  void set_drawer_expanded(bool value) {
+    drawer_expanded = value;
+    notifyListeners();
+  }
+
+  void toggle_drawer_expanded() {
+    drawer_expanded = !drawer_expanded;
     notifyListeners();
   }
 

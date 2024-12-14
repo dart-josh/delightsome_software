@@ -527,7 +527,7 @@ class _CustomerListPageState extends State<CustomerListPage> {
                     ),
 
                   // delete
-                  if (auth_staff!.fullaccess)
+                  if (auth_staff.fullaccess)
                     InkWell(
                       onTap: () async {
                         bool? response = await UniversalHelpers.showConfirmBox(

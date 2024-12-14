@@ -16,6 +16,9 @@ abstract class AppColors extends BuildContext {
   static const Color dark_secondaryTextColor = Colors.white54;
   static const Color light_secondaryTextColor = Colors.black54;
 
+  static const Color dark_borderColor = Colors.white24;
+  static const Color light_borderColor = Colors.black26;
+
   static const Color dark_dimTextColor = Colors.white12;
   static const Color light_dimTextColor = Colors.black12;
 

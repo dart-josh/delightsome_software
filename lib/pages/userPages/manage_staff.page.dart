@@ -264,7 +264,7 @@ class _ManageStaffPageState extends State<ManageStaffPage> {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text('Role', style: labelStyle),
-              Text(widget.staff!.fullname, style: mainStyle),
+              Text(widget.staff!.role, style: mainStyle),
             ],
           ),
         ],

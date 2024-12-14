@@ -1,18 +1,705 @@
+import 'package:delightsome_software/appColors.dart';
+import 'package:delightsome_software/helpers/serverHelpers.dart';
+import 'package:delightsome_software/helpers/universalHelpers.dart';
+import 'package:delightsome_software/pages/login.page.dart';
+import 'package:delightsome_software/pages/materialStorePages/product_material_request_record.page.dart';
+import 'package:delightsome_software/pages/materialStorePages/raw_material_request_record.page.dart';
+import 'package:delightsome_software/pages/materialStorePages/restock_product_material_record.page.dart';
+import 'package:delightsome_software/pages/materialStorePages/restock_raw_material_record.page.dart';
+import 'package:delightsome_software/pages/productStorePages/bad_product_record.page.dart';
+import 'package:delightsome_software/pages/productStorePages/product_received_record.page.dart';
+import 'package:delightsome_software/pages/productStorePages/product_request_record.page.dart';
+import 'package:delightsome_software/pages/productStorePages/production_record.page.dart';
+import 'package:delightsome_software/pages/productStorePages/terminal_collection_record.page.dart';
+import 'package:delightsome_software/utils/appdata.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
 
 class SideBar extends StatefulWidget {
-  const SideBar({super.key});
+  final bool show_header;
+  const SideBar({super.key, this.show_header = true});
 
   @override
   State<SideBar> createState() => _SideBarState();
 }
 
 class _SideBarState extends State<SideBar> {
+  int production_rec = 0;
+  int productReceived_rec = 0;
+  int productRequest_rec = 0;
+  int terminalCollection_rec = 0;
+  int badProduct_rec = 0;
+
+  int restockProductMaterial_rec = 0;
+  int restockRawMaterial_rec = 0;
+  int productMaterialRequest_rec = 0;
+  int rawMaterialRequest_rec = 0;
+
+  List<SidebarItemModel> product_store_items = [];
+
+  List<SidebarItemModel> material_store_items = [];
+
+  assign_records() {
+    product_store_items.clear();
+    material_store_items.clear();
+
+    // production record
+    product_store_items.add(
+      SidebarItemModel(
+        title: 'Production Record',
+        icon: FontAwesomeIcons.blender,
+        key: 0,
+      ),
+    );
+
+    // product received
+    product_store_items.add(
+      SidebarItemModel(
+        title: 'Product Received',
+        icon: FontAwesomeIcons.appleWhole,
+        key: 1,
+      ),
+    );
+
+    // product request
+    product_store_items.add(
+      SidebarItemModel(
+        title: 'Product Request',
+        icon: FontAwesomeIcons.basketShopping,
+        key: 2,
+      ),
+    );
+
+    // terminal collection
+    product_store_items.add(
+      SidebarItemModel(
+        title: 'Terminal Collection',
+        icon: FontAwesomeIcons.store,
+        key: 3,
+      ),
+    );
+
+    // bad product
+    product_store_items.add(
+      SidebarItemModel(
+        title: 'Bad Product Record',
+        icon: FontAwesomeIcons.trashArrowUp,
+        key: 4,
+      ),
+    );
+
+    //?
+
+    // restock product material
+    material_store_items.add(
+      SidebarItemModel(
+        title: 'Restock Product Material',
+        icon: FontAwesomeIcons.codeCompare,
+        key: 5,
+      ),
+    );
+
+    // restock raw material
+    material_store_items.add(
+      SidebarItemModel(
+        title: 'Restock Raw Material',
+        icon: FontAwesomeIcons.repeat,
+        key: 6,
+      ),
+    );
+
+    // product material request
+    material_store_items.add(
+      SidebarItemModel(
+        title: 'Product Material Request',
+        icon: FontAwesomeIcons.toolbox,
+        key: 7,
+      ),
+    );
+
+    // raw material request
+    material_store_items.add(
+      SidebarItemModel(
+        title: 'Raw Material Request',
+        icon: FontAwesomeIcons.leaf,
+        key: 8,
+      ),
+    );
+
+    fecth_pending_records();
+  }
+
+  fecth_pending_records() {
+    production_rec = Provider.of<AppData>(context)
+        .production_record
+        .where((rec) => !rec.verified!)
+        .length;
+
+    productReceived_rec = Provider.of<AppData>(context)
+        .product_received_record
+        .where((rec) => !rec.verified!)
+        .length;
+
+    productRequest_rec = Provider.of<AppData>(context)
+        .product_request_record
+        .where((rec) => !rec.verified!)
+        .length;
+
+    terminalCollection_rec = Provider.of<AppData>(context)
+        .terminal_collection_record
+        .where((rec) => !rec.verified!)
+        .length;
+
+    badProduct_rec = Provider.of<AppData>(context)
+        .bad_product_record
+        .where((rec) => !rec.verified!)
+        .length;
+
+    //?
+
+    restockProductMaterial_rec = Provider.of<AppData>(context)
+        .restock_product_material_record
+        .where((rec) => !rec.verified!)
+        .length;
+
+    restockRawMaterial_rec = Provider.of<AppData>(context)
+        .restock_raw_material_record
+        .where((rec) => !rec.verified!)
+        .length;
+
+    productMaterialRequest_rec = Provider.of<AppData>(context)
+        .product_material_request_record
+        .where((rec) => !rec.authorized!)
+        .length;
+
+    rawMaterialRequest_rec = Provider.of<AppData>(context)
+        .raw_material_request_record
+        .where((rec) => !rec.authorized!)
+        .length;
+  }
+
+  int get_not_byIndex(int index) {
+    switch (index) {
+      case 0:
+        return production_rec;
+      case 1:
+        return productReceived_rec;
+      case 2:
+        return productRequest_rec;
+      case 3:
+        return terminalCollection_rec;
+      case 4:
+        return badProduct_rec;
+      case 5:
+        return restockProductMaterial_rec;
+      case 6:
+        return restockRawMaterial_rec;
+      case 7:
+        return productMaterialRequest_rec;
+      case 8:
+        return rawMaterialRequest_rec;
+      default:
+        return 0;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+
+    bool isCollapsed = !Provider.of<AppData>(context).drawer_expanded;
+
+    assign_records();
+
     return Container(
-      width: 400,
-      child: Drawer(),
+      width: isCollapsed
+          ? 60
+          : width > 800
+              ? 300
+              : 280,
+      // padding: EdgeInsets.only(top: 60),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.blue,
+        ),
+        child: Column(
+          children: [
+            // header
+            if (widget.show_header) buildHeader(isCollapsed),
+
+            Expanded(
+              child: sidebar_content(),
+            ),
+          ],
+        ),
+      ),
     );
   }
+
+  // WIDGETS
+
+  // sidebar content
+  Widget sidebar_content() {
+    bool isCollapsed = !Provider.of<AppData>(context).drawer_expanded;
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          stops: [0.0, 0.3, 0.7, 1.0],
+          colors: [
+            Color.fromRGBO(23, 93, 151, 1),
+            Color.fromRGBO(237, 110, 55, .8),
+            Color.fromRGBO(43, 123, 60, .8),
+            Color.fromRGBO(23, 93, 151, 1),
+          ],
+        ),
+      ),
+      child: Column(
+        children: [
+          const SizedBox(height: 10),
+
+          Expanded(
+            child:
+                buildList(items: product_store_items, isCollapsed: isCollapsed),
+          ),
+
+          const SizedBox(height: 10),
+          Divider(color: Colors.white70),
+          const SizedBox(height: 10),
+
+          Expanded(
+            child: buildList(
+              indexOffset: product_store_items.length,
+              items: material_store_items,
+              isCollapsed: isCollapsed,
+            ),
+          ),
+
+          SizedBox(height: 10),
+
+          if (!isCollapsed) bottom_bar(),
+
+          // bottom
+          if (isCollapsed)
+            buildCollapseIcon(context, isCollapsed: isCollapsed)
+          else
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // change theme
+                buildThemeButton(),
+
+                // toggle button
+                buildCollapseIcon(context, isCollapsed: isCollapsed),
+              ],
+            ),
+        ],
+      ),
+    );
+  }
+
+  // list
+  Widget buildList({
+    required bool isCollapsed,
+    required List<SidebarItemModel> items,
+    int indexOffset = 0,
+  }) {
+    return ListView.separated(
+      padding: EdgeInsets.zero,
+      shrinkWrap: true,
+      primary: false,
+      itemCount: items.length,
+      separatorBuilder: (context, index) => SizedBox(height: 8),
+      itemBuilder: (context, index) {
+        final item = items[index];
+
+        return buildMenuItem(
+          isCollapsed: isCollapsed,
+          text: item.title,
+          icon: item.icon,
+          onClicked: () => selectItem(context, indexOffset + index),
+          not_count: get_not_byIndex(item.key),
+        );
+      },
+    );
+  }
+
+  // tile
+  Widget buildMenuItem({
+    required bool isCollapsed,
+    required IconData icon,
+    required String text,
+    required VoidCallback? onClicked,
+    required int not_count,
+  }) {
+    Widget not = not_count == 0
+        ? Container(
+            height: 17,
+            width: 17,
+          )
+        : Container(
+            decoration: BoxDecoration(
+              color: Colors.red,
+              shape: BoxShape.circle,
+            ),
+            height: 17,
+            width: 17,
+            child: Center(
+              child: Text(
+                not_count.toString(),
+                style: TextStyle(
+                  color: Colors.white70,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w300,
+                ),
+              ),
+            ),
+          );
+
+    return Material(
+      color: Colors.transparent,
+      child: isCollapsed
+          ? Stack(
+              children: [
+                ListTile(
+                  leading: null,
+                  title: Container(
+                    padding: EdgeInsets.only(right: 7, top: 4),
+                    child: FaIcon(icon, size: 20, color: Colors.white),
+                  ),
+                  onTap: onClicked,
+                ),
+                Positioned(
+                  right: 10,
+                  top: 5,
+                  child: not,
+                ),
+              ],
+            )
+          : ListTile(
+              leading: Stack(
+                children: [
+                  Container(
+                    padding: EdgeInsets.only(right: 13, top: 8),
+                    child: FaIcon(icon,  size: 20, color: Colors.white),
+                  ),
+                  Positioned(
+                    right: 0,
+                    top: 0,
+                    child: not,
+                  ),
+                ],
+              ),
+              title: Text(
+                text,
+                style: TextStyle(color: Colors.white, fontSize: 16),
+              ),
+              onTap: onClicked,
+            ),
+    );
+  }
+
+  // collapse icon
+  Widget buildCollapseIcon(
+    BuildContext context, {
+    required bool isCollapsed,
+  }) {
+    final double size = 52;
+    final icon = isCollapsed ? Icons.arrow_forward_ios : Icons.arrow_back_ios;
+    final alignment = isCollapsed ? Alignment.center : Alignment.centerRight;
+    final margin = isCollapsed ? null : EdgeInsets.only(right: 16);
+    final width = isCollapsed ? double.infinity : size;
+
+    return Container(
+      alignment: alignment,
+      margin: margin,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          child: Container(
+            width: width,
+            height: size,
+            child: Icon(icon, size: 22, color: Colors.white),
+          ),
+          onTap: () {
+            Provider.of<AppData>(context, listen: false)
+                .toggle_drawer_expanded();
+          },
+        ),
+      ),
+    );
+  }
+
+  // theme button
+  Widget buildThemeButton() {
+    bool isDarkTheme =
+        Provider.of<AppData>(context).themeMode == ThemeMode.dark;
+    return Padding(
+      padding: EdgeInsets.only(left: 10),
+      child: IconButton(
+        onPressed: () {
+          if (isDarkTheme) {
+            Provider.of<AppData>(context, listen: false)
+                .update_themeMode(ThemeMode.light);
+          } else {
+            Provider.of<AppData>(context, listen: false)
+                .update_themeMode(ThemeMode.dark);
+          }
+        },
+        icon: Icon(isDarkTheme ? Icons.light_mode : Icons.dark_mode, size: 25),
+      ),
+    );
+  }
+
+  // header
+  Widget buildHeader(bool isCollapsed) {
+    var auth_staff = Provider.of<AppData>(context).active_staff;
+
+    return Container(
+      height: 90,
+      width: double.infinity,
+      child: Stack(
+        children: [
+          if (!isCollapsed) Image.asset('assets/drawer-header-1-540x160.jpg'),
+
+          Positioned.fill(
+              child: Container(
+            color: Colors.black38,
+          )),
+
+          // content
+          Positioned.fill(
+              child: Container(
+            child: isCollapsed
+                ? Center(
+                    child: GestureDetector(
+                      onTap: () {
+                        Provider.of<AppData>(context, listen: false)
+                            .toggle_drawer_expanded();
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white38,
+                          shape: BoxShape.circle,
+                        ),
+                        width: 40,
+                        height: 40,
+                        child: Center(
+                          child: Icon(
+                            Icons.person_2_rounded,
+                            size: 30,
+                            color: Colors.white70,
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
+                : Stack(
+                    children: [
+                      Container(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // user icon
+                            Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white38,
+                                shape: BoxShape.circle,
+                              ),
+                              width: 55,
+                              height: 55,
+                              child: Center(
+                                child: Icon(
+                                  Icons.person_2_rounded,
+                                  size: 40,
+                                  color: Colors.white70,
+                                ),
+                              ),
+                            ),
+
+                            const SizedBox(width: 10),
+
+                            // details
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // full name
+                                Text(
+                                  auth_staff!.fullname,
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.white),
+                                ),
+
+                                // role
+                                Text(
+                                  auth_staff.role.toUpperCase(),
+                                  style: TextStyle(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w300,
+                                      color: Colors.white),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      // staff id
+                      Positioned(
+                        top: 5,
+                        right: 8,
+                        child: Text(
+                          auth_staff.staffId,
+                          style: TextStyle(
+                              letterSpacing: .8,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.white),
+                        ),
+                      ),
+                    ],
+                  ),
+          )),
+        ],
+      ),
+    );
+  }
+
+  // bottom bar
+  Widget bottom_bar() {
+    bool isDarkTheme =
+        Provider.of<AppData>(context).themeMode == ThemeMode.dark;
+
+    return Container(
+      decoration: BoxDecoration(
+        color: isDarkTheme
+            ? AppColors.dark_primaryBackgroundColor
+            : AppColors.light_dialogBackground_3,
+      ),
+      width: double.infinity,
+      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      // margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          // logout
+          Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: () async {
+                bool? conf = await UniversalHelpers.showConfirmBox(
+                  context,
+                  title: 'Log out',
+                  subtitle:
+                      'You are about to logout of this device.Would you like to proceed',
+                );
+
+                if (conf != null && conf) {
+                  ServerHelpers.disconnect_socket();
+
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginPage()),
+                    (route) => false,
+                  );
+                }
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  color: AppColors.orange_1,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+                margin: EdgeInsets.all(5),
+                width: 110,
+                height: 30,
+                child: Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.logout,
+                        size: 17,
+                        color: Colors.white,
+                      ),
+                      SizedBox(width: 4),
+                      Text(
+                        'Logout',
+                        style: TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.w600),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+
+          // refresh
+          IconButton(
+            onPressed: () async {
+              ServerHelpers.get_all_data(context);
+            },
+            icon: Icon(Icons.refresh),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // FUNCTIONS
+  void selectItem(BuildContext context, int index) {
+    final navigateTo = (page) => Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => page,
+        ));
+
+    switch (index) {
+      case 0:
+        navigateTo(ProductionRecordPage());
+        break;
+      case 1:
+        navigateTo(ProductReceivedRecordPage());
+        break;
+      case 2:
+        navigateTo(ProductRequestRecordPage());
+        break;
+      case 3:
+        navigateTo(TerminalCollectionRecordPage());
+        break;
+      case 4:
+        navigateTo(BadProductRecordPage());
+        break;
+      case 5:
+        navigateTo(RestockProductMaterialRecordPage());
+        break;
+      case 6:
+        navigateTo(RestockRawMaterialRecordPage());
+        break;
+      case 7:
+        navigateTo(ProductMaterialRequestRecordPage());
+        break;
+      case 8:
+        navigateTo(RawMaterialRequestRecordPage());
+        break;
+    }
+  }
+
+  //
+}
+
+class SidebarItemModel {
+  String title;
+  IconData icon;
+  int key;
+
+  SidebarItemModel({
+    required this.title,
+    required this.icon,
+    required this.key,
+  });
 }

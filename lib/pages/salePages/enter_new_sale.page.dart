@@ -58,7 +58,7 @@ class _SalesPageState extends State<SalesPage> {
       active_shop = shops[0];
 
     return Scaffold(
-      floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: (width < 800) ? null : add_button(),
       backgroundColor: isDarkTheme
           ? AppColors.dark_primaryBackgroundColor
@@ -67,17 +67,17 @@ class _SalesPageState extends State<SalesPage> {
         children: [
           // top bar
           top_bar(),
-
+      
           // product selector
           selection(),
-
+      
           // content
           Expanded(
             child: Stack(
               children: [
                 // shop
                 shop_area(),
-
+      
                 // search list
                 if (search_on)
                   Positioned.fill(
@@ -96,7 +96,7 @@ class _SalesPageState extends State<SalesPage> {
                             ),
                           ),
                         ),
-
+      
                         // list
                         Positioned(
                           top: 0,
@@ -127,7 +127,7 @@ class _SalesPageState extends State<SalesPage> {
                                   ),
                           ),
                         ),
-
+      
                         //
                       ],
                     ),

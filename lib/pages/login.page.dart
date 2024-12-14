@@ -1,10 +1,8 @@
 import 'package:delightsome_software/appColors.dart';
-import 'package:delightsome_software/dataModels/saleModels/paymentMethod.model.dart';
 import 'package:delightsome_software/helpers/authHelpers.dart';
 import 'package:delightsome_software/helpers/dataGetters.dart';
 import 'package:delightsome_software/helpers/universalHelpers.dart';
 import 'package:delightsome_software/pages/homePage.dart';
-import 'package:delightsome_software/pages/salePages/print.page.dart';
 import 'package:delightsome_software/utils/appdata.dart';
 import 'package:delightsome_software/widgets/text_field.dart';
 import 'package:flutter/material.dart';
@@ -29,6 +27,8 @@ class _LoginPageState extends State<LoginPage> {
     password_controller.dispose();
     super.dispose();
   }
+
+  
 
   @override
   Widget build(BuildContext context) {
@@ -129,7 +129,6 @@ class _LoginPageState extends State<LoginPage> {
   Widget submit_button() {
     return InkWell(
       onTap: () async {
-
         if (staff_id_controller.text == 'xx') {
           Navigator.push(
               context, MaterialPageRoute(builder: (context) => HomePage()));

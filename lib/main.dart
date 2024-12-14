@@ -1,7 +1,5 @@
 import 'package:delightsome_software/appColors.dart';
-// import 'package:delightsome_software/pages/homePage.dart';
 import 'package:delightsome_software/pages/login.page.dart';
-import 'package:delightsome_software/pages/universalPages/notification_cover.dart';
 import 'package:delightsome_software/utils/appdata.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -74,24 +72,6 @@ class MyApp extends StatelessWidget {
 
             // Positioned.fill(child: NotificationCover(rootContext: _context)),
 
-            // theme switch
-            Positioned(
-              right: 10,
-              bottom: 20,
-              child: Center(
-                child: IconButton(
-                    onPressed: () {
-                      if (isDark) {
-                        Provider.of<AppData>(context, listen: false)
-                            .update_themeMode(ThemeMode.light);
-                      } else {
-                        Provider.of<AppData>(context, listen: false)
-                            .update_themeMode(ThemeMode.dark);
-                      }
-                    },
-                    icon: Icon(Icons.refresh)),
-              ),
-            ),
           ],
         );
       }),
