@@ -6,6 +6,7 @@ class StaffModel {
   String role;
   bool fullaccess;
   bool backDate;
+  bool active;
 
   StaffModel({
     this.key,
@@ -15,6 +16,7 @@ class StaffModel {
     required this.role,
     required this.fullaccess,
     required this.backDate,
+    required this.active,
   });
 
   // get model from json
@@ -27,6 +29,7 @@ class StaffModel {
       role: json['role'] ?? '',
       fullaccess: json['fullaccess'] ?? false,
       backDate: json['backDate'] ?? false,
+      active: json['active'] ?? true,
     );
   }
 
@@ -39,5 +42,6 @@ class StaffModel {
         'role': role,
         'fullaccess': fullaccess,
         'backDate': backDate,
+        'active': active,
       };
 }

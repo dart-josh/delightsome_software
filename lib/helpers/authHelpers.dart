@@ -54,12 +54,75 @@ class AuthHelpers {
     }
   }
 
+  static Future<dynamic> sendDataToServer_2(context,
+      {required String route, required Map data, bool showLoading = false, bool showToast = true}) async {
+    // Json encode data
+    var body = jsonEncode(data);
+
+    if (showLoading) UniversalHelpers.showLoadingScreen(context: context);
+    try {
+      var response = await http.post(Uri.parse('${authUrl}/${route}'),
+          headers: {"Content-Type": "application/json"}, body: body);
+
+      var jsonResponse = jsonDecode(response.body);
+
+      // throw error message
+      if (response.statusCode != 200) {
+        throw jsonResponse['message'];
+      }
+
+      if (showLoading) Navigator.pop(context);
+
+      return jsonResponse;
+    } catch (e) {
+      if (showLoading) Navigator.pop(context);
+      if (showToast) UniversalHelpers.showToast(
+        context: context,
+        color: Colors.red,
+        toastText: (e.toString().toLowerCase().contains('formatexception') ||
+                e.toString().toLowerCase().contains('clientexception') ||
+                e.toString().toLowerCase().contains('socketexception') ||
+                e.toString().toLowerCase().contains('connection'))
+            ? 'Connection Error. Try again later'
+            : e.toString(),
+        icon: Icons.check,
+      );
+
+      return null;
+    }
+  }
+
+
   // ! SENDERS
 
   // login
   static Future<bool> login(BuildContext context, Map data) async {
     // { staffId, password }
     return await sendDataToServer(context, route: 'login', data: data);
+  }
+
+  // check_staff_id
+  static Future<dynamic> check_staff_id(BuildContext context, Map data, {bool showLoading = false}) async {
+    // { staffId, password }
+    return await sendDataToServer_2(context, route: 'check_staff_id', data: data, showLoading: showLoading,);
+  }
+
+  // check_password
+  static Future<dynamic> check_password(BuildContext context, Map data, {bool showLoading = false}) async {
+    // { staffId, password }
+    return await sendDataToServer_2(context, route: 'check_password', data: data, showLoading: showLoading);
+  }
+
+  // create_password
+  static Future<dynamic> create_password(BuildContext context, Map data, {bool showLoading = false}) async {
+    // { staffId, password }
+    return await sendDataToServer_2(context, route: 'create_password', data: data, showLoading: showLoading);
+  }
+
+  // create_pin
+  static Future<dynamic> create_pin(BuildContext context, Map data, {bool showLoading = false}) async {
+    // { staffId, pin }
+    return await sendDataToServer_2(context, route: 'create_pin', data: data, showLoading: showLoading);
   }
 
   // reset password

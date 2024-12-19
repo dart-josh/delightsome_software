@@ -20,6 +20,7 @@ class EditedByModel {
               role: '',
               fullaccess: false,
               backDate: false,
+              active: false,
             ),
       time: DateTime.parse(json['time']),
     );

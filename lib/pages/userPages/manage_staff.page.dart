@@ -33,6 +33,7 @@ class _ManageStaffPageState extends State<ManageStaffPage> {
   String role = '';
   bool fullaccess = false;
   bool backdate = false;
+  bool active = true;
 
   bool edit = false;
   bool new_cat = true;
@@ -48,6 +49,7 @@ class _ManageStaffPageState extends State<ManageStaffPage> {
       role = widget.staff!.role;
       fullaccess = widget.staff!.fullaccess;
       backdate = widget.staff!.backDate;
+      active = widget.staff!.active;
 
       new_cat = false;
       edit = false;
@@ -340,6 +342,24 @@ class _ManageStaffPageState extends State<ManageStaffPage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  // active
+                  Column(
+                    children: [
+                      // label
+                      Text('Active', style: labelStyle),
+
+                      Switch(
+                        value: active,
+                        onChanged: (value) {
+                          if (edit)
+                            setState(() {
+                              active = value;
+                            });
+                        },
+                      ),
+                    ],
+                  ),
+
                   // full access
                   Column(
                     children: [
@@ -442,6 +462,7 @@ class _ManageStaffPageState extends State<ManageStaffPage> {
             role: role,
             fullaccess: fullaccess,
             backDate: backdate,
+            active: active,
           ).toJson();
 
           bool? res = await UniversalHelpers.showConfirmBox(

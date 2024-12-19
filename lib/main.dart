@@ -72,6 +72,16 @@ class MyApp extends StatelessWidget {
 
             // Positioned.fill(child: NotificationCover(rootContext: _context)),
 
+            Positioned(child: IconButton(onPressed: () {
+              if (isDark) {
+            Provider.of<AppData>(context, listen: false)
+                .update_themeMode(ThemeMode.light);
+          } else {
+            Provider.of<AppData>(context, listen: false)
+                .update_themeMode(ThemeMode.dark);
+          }
+            }, icon: Icon(Icons.refresh),))
+
           ],
         );
       }),

@@ -23,12 +23,13 @@ ProductionRecordModel? saved_production_model;
 TerminalCollectionRecordModel? saved_terminal_collected_model;
 TerminalCollectionRecordModel? saved_terminal_returned_model;
 
-
 // category type
 List<String> category_type_list = [
-    'Product Material Store',
-    'Raw Material Store',
-    'Product Store'
-  ];
+  'Product Material Store',
+  'Raw Material Store',
+  'Product Store'
+];
+
+String? auth_pin;
 
 // String current_version = '1.6.6';

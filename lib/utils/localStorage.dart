@@ -1,32 +1,59 @@
+import 'dart:convert';
+
+import 'package:delightsome_software/dataModels/userModels/auth.model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class Utils {
-  static String saved_user_id_key = 'USER_ID';
-  static String saved_user_pass_key = 'USER_PASS';
+class Localstorage {
+  static String saved_accounts_key = 'ACCOUNTS';
+  static String saved_active_account_key = 'ACTIVE_ACCOUNT';
 
-  static Future<bool> save_user_id(String user_id) async {
+  static Future<bool> save_accounts(List<AuthModel> accounts) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    return await preferences.setString(saved_user_id_key, user_id);
+
+    List<String> jsonStringList =
+        accounts.map((account) => jsonEncode(account.toJson())).toList();
+    return await preferences.setStringList(saved_accounts_key, jsonStringList);
   }
 
-  static Future<bool> save_user_pass(String password) async {
+  static Future<bool> save_active_account(AuthModel account) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    return await preferences.setString(saved_user_pass_key, password);
+    return await preferences.setString(
+        saved_active_account_key, jsonEncode(account.toJson()));
   }
 
-  static Future<String?> get_user_id() async {
+  static Future<List<AuthModel>> get_accounts() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    return await preferences.getString(saved_user_id_key);
+
+    List<String>? jsonStringList =
+        preferences.getStringList(saved_accounts_key);
+
+    if (jsonStringList != null) {
+      return jsonStringList
+          .map((jsonString) => AuthModel.fromJson(jsonDecode(jsonString)))
+          .toList();
+    }
+
+    return [];
   }
 
-  static Future<String?> get_user_pass() async {
+  static Future<AuthModel?> get_active_account() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    return await preferences.getString(saved_user_pass_key);
+    String? jsonString = preferences.getString(saved_active_account_key);
+
+    if (jsonString != null) {
+      return AuthModel.fromJson(jsonDecode(jsonString));
+    }
+
+    return null;
   }
 
-  static Future<bool?> remove_user() async {
+  static Future<bool?> remove_accounts() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    await preferences.remove(saved_user_pass_key);
-    return await preferences.remove(saved_user_id_key);
+    return await preferences.remove(saved_accounts_key);
+  }
+
+  static Future<bool?> remove_active_account() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    return await preferences.remove(saved_active_account_key);
   }
 }
