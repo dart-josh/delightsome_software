@@ -1,5 +1,4 @@
 import 'package:delightsome_software/appColors.dart';
-import 'package:delightsome_software/dataModels/productStoreModels/product.model.dart';
 import 'package:delightsome_software/dataModels/userModels/staff.model.dart';
 import 'package:delightsome_software/globalvariables.dart';
 import 'package:delightsome_software/pages/materialStorePages/enter_product_material_request.page.dart';
@@ -39,9 +38,6 @@ class LandingPage extends StatefulWidget {
 }
 
 class _LandingPageState extends State<LandingPage> {
-  List<ProductModel> productList = [];
-  List<ProductModel> terminal_productList = [];
-
   StaffModel? auth_staff;
 
   bool inventories_expanded = true;
@@ -80,7 +76,10 @@ class _LandingPageState extends State<LandingPage> {
       body: SafeArea(
         child: Row(
           children: [
+            // side bar
             SideBar(),
+
+            // main page
             Expanded(
               child: Column(
                 children: [
@@ -150,7 +149,7 @@ class _LandingPageState extends State<LandingPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  auth_staff!.nickName,
+                  auth_staff?.nickName ?? '',
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w600,

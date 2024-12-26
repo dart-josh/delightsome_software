@@ -403,6 +403,11 @@ class _ManageStaffPageState extends State<ManageStaffPage> {
 
           if (auth_staff.fullaccess && !new_cat && widget.staff != null)
             reset_password_button(widget.staff!.staffId),
+
+            SizedBox(height: 10),
+
+            if (auth_staff.fullaccess && !new_cat && widget.staff != null)
+            reset_pin_button(widget.staff!.staffId),
         ],
       ),
     );
@@ -509,7 +514,7 @@ class _ManageStaffPageState extends State<ManageStaffPage> {
     );
   }
 
-  // reset button
+  // reset password button
   Widget reset_password_button(String staff_id) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 10),
@@ -539,12 +544,62 @@ class _ManageStaffPageState extends State<ManageStaffPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(
-                  Icons.check,
+                  Icons.password,
                   color: AppColors.secondaryWhiteIconColor,
                 ),
                 SizedBox(width: 8),
                 Text(
                   'Reset Password',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 16,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // reset pin button
+  Widget reset_pin_button(String staff_id) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 10),
+      child: InkWell(
+        onTap: () async {
+          bool? res = await UniversalHelpers.showConfirmBox(
+            context,
+            title: 'Reset Pin',
+            subtitle:
+                'You are about to reset the pin for this User!\Would you like to proceed?',
+          );
+
+          if (res != null && res) {
+            bool done = await AuthHelpers.reset_pin(context, staff_id);
+
+            if (done) Navigator.pop(context);
+          }
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.red.shade400,
+            borderRadius: BorderRadius.circular(6),
+          ),
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 6),
+          child: Center(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.pin,
+                  color: AppColors.secondaryWhiteIconColor,
+                ),
+                SizedBox(width: 8),
+                Text(
+                  'Reset Pin',
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w500,

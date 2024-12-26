@@ -383,7 +383,7 @@ class _SideBarState extends State<SideBar> {
                 children: [
                   Container(
                     padding: EdgeInsets.only(right: 13, top: 8),
-                    child: FaIcon(icon,  size: 20, color: Colors.white),
+                    child: FaIcon(icon, size: 20, color: Colors.white),
                   ),
                   Positioned(
                     right: 0,
@@ -583,62 +583,65 @@ class _SideBarState extends State<SideBar> {
             : AppColors.light_dialogBackground_3,
       ),
       width: double.infinity,
-      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       // margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
+          // sign out menu
+          sign_out_menu(),
+
           // logout
-          Material(
-            color: Colors.transparent,
-            child: InkWell(
-              onTap: () async {
-                bool? conf = await UniversalHelpers.showConfirmBox(
-                  context,
-                  title: 'Log out',
-                  subtitle:
-                      'You are about to logout of this device.Would you like to proceed',
-                );
+          // Material(
+          //   color: Colors.transparent,
+          //   child: InkWell(
+          //     onTap: () async {
+          //       bool? conf = await UniversalHelpers.showConfirmBox(
+          //         context,
+          //         title: 'Log out',
+          //         subtitle:
+          //             'You are about to logout of this device.Would you like to proceed',
+          //       );
 
-                if (conf != null && conf) {
-                  ServerHelpers.disconnect_socket();
+          //       if (conf != null && conf) {
+          //         ServerHelpers.disconnect_socket();
 
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(builder: (context) => LoginPage()),
-                    (route) => false,
-                  );
-                }
-              },
-              child: Container(
-                decoration: BoxDecoration(
-                  color: AppColors.orange_1,
-                  borderRadius: BorderRadius.circular(2),
-                ),
-                margin: EdgeInsets.all(5),
-                width: 110,
-                height: 30,
-                child: Center(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.logout,
-                        size: 17,
-                        color: Colors.white,
-                      ),
-                      SizedBox(width: 4),
-                      Text(
-                        'Logout',
-                        style: TextStyle(
-                            color: Colors.white, fontWeight: FontWeight.w600),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
+          //         Navigator.pushAndRemoveUntil(
+          //           context,
+          //           MaterialPageRoute(builder: (context) => LoginPage()),
+          //           (route) => false,
+          //         );
+          //       }
+          //     },
+          //     child: Container(
+          //       decoration: BoxDecoration(
+          //         color: AppColors.orange_1,
+          //         borderRadius: BorderRadius.circular(2),
+          //       ),
+          //       margin: EdgeInsets.all(5),
+          //       width: 110,
+          //       height: 30,
+          //       child: Center(
+          //         child: Row(
+          //           mainAxisAlignment: MainAxisAlignment.center,
+          //           children: [
+          //             Icon(
+          //               Icons.logout,
+          //               size: 17,
+          //               color: Colors.white,
+          //             ),
+          //             SizedBox(width: 4),
+          //             Text(
+          //               'Logout',
+          //               style: TextStyle(
+          //                   color: Colors.white, fontWeight: FontWeight.w600),
+          //             ),
+          //           ],
+          //         ),
+          //       ),
+          //     ),
+          //   ),
+          // ),
 
           // refresh
           IconButton(
@@ -648,6 +651,121 @@ class _SideBarState extends State<SideBar> {
             icon: Icon(Icons.refresh),
           ),
         ],
+      ),
+    );
+  }
+
+  List<String> sign_out_options = [
+    'Lock',
+    'Switch account',
+    'Sign out',
+  ];
+
+  // sign out options
+  Widget sign_out_menu() {
+    bool isDarkTheme =
+        Provider.of<AppData>(context).themeMode == ThemeMode.dark;
+
+    return Container(
+      child: PopupMenuButton(
+        offset: Offset(40, 40),
+        onSelected: (value) async {
+          // lock
+          if (value == 0) {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => LoginPage(
+                        initial_page: 3,
+                      )),
+              (route) => false,
+            );
+          }
+
+          // switch
+          if (value == 1) {
+            bool? conf = await UniversalHelpers.showConfirmBox(
+              context,
+              title: 'Switch account',
+              subtitle:
+                  'You are about to logout of this account. Would you like to proceed',
+            );
+
+            if (conf != null && conf) {
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => LoginPage(
+                          initial_page: 2,
+                        )),
+                (route) => false,
+              );
+            }
+          }
+
+          // sign out
+          if (value == 2) {
+            bool? conf = await UniversalHelpers.showConfirmBox(
+              context,
+              title: 'Log out',
+              subtitle:
+                  'You are about to logout of this device. Would you like to proceed',
+            );
+
+            if (conf != null && conf) {
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => LoginPage(
+                          initial_page: 0,
+                        )),
+                (route) => false,
+              );
+            }
+          }
+        },
+        itemBuilder: (context) {
+          return sign_out_options.map((e) {
+            String title = e;
+            int value = sign_out_options.indexOf(e);
+            return PopupMenuItem(
+                child: Container(
+                    child: Row(
+                  children: [
+                    Icon(
+                      value == 0
+                          ? Icons.lock
+                          : value == 1
+                              ? Icons.switch_account
+                              : Icons.logout,
+                      size: 20,
+                    ),
+                    SizedBox(width: 8),
+                    Expanded(
+                        child: Text(
+                      title,
+                      style: TextStyle(fontSize: 14),
+                    )),
+                  ],
+                )),
+                value: value);
+          }).toList();
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            color: isDarkTheme ? Colors.white38 : Colors.black38,
+            shape: BoxShape.circle,
+          ),
+          width: 30,
+          height: 30,
+          child: Center(
+            child: Icon(
+              Icons.person_2_rounded,
+              size: 18,
+              color: isDarkTheme ? Colors.white70 : Colors.black54,
+            ),
+          ),
+        ),
       ),
     );
   }

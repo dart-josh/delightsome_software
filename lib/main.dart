@@ -72,7 +72,7 @@ class MyApp extends StatelessWidget {
 
             // Positioned.fill(child: NotificationCover(rootContext: _context)),
 
-            Positioned(child: IconButton(onPressed: () {
+            Positioned(right: 0, child: IconButton(onPressed: () {
               if (isDark) {
             Provider.of<AppData>(context, listen: false)
                 .update_themeMode(ThemeMode.light);

@@ -13,7 +13,8 @@ import 'package:provider/provider.dart';
 import 'package:pinput/pinput.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+  final int? initial_page;
+  const LoginPage({super.key, this.initial_page});
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -32,6 +33,7 @@ class _LoginPageState extends State<LoginPage> {
   bool isLoading = false;
 
   List<AuthModel> saved_accounts = [];
+  AuthModel? saved_active_account;
 
   int pin_1_confirmation = 0;
   String? pin_1;
@@ -52,26 +54,44 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
-  int page_index = 0;
+  int prev_page = 0;
+  int page_index = 5;
   // 0-login 1-password 2-select_account 3-pin 4-create_password
 
   // login
   validate_login() async {
     saved_accounts = await Localstorage.get_accounts();
-    AuthModel? saved_active_account = await Localstorage.get_active_account();
+    saved_active_account = await Localstorage.get_active_account();
 
-    // active
-    if (saved_active_account != null) {
-      validate_account(saved_active_account);
-    } else if (saved_accounts.isNotEmpty) {
-      // GOTO ACCOUNTS
-      setState(() {
-        page_index = 2;
-      });
+    if (widget.initial_page == null) {
+      // active
+      if (saved_active_account != null) {
+        prev_page = 2;
+        validate_account(saved_active_account!, prev: 0);
+      } else if (saved_accounts.isNotEmpty) {
+        // GOTO ACCOUNTS
+        setState(() {
+          page_index = 2;
+        });
+      } else {
+        // GOTO LOGIN
+        setState(() {
+          page_index = 0;
+        });
+      }
     } else {
-      // GOTO LOGIN
+      //
+      if (widget.initial_page == 2 || widget.initial_page == 0) {
+        AuthHelpers.logout(context);
+      } else {
+        if (saved_active_account != null) {
+          staff_id_controller.text = saved_active_account?.staff_id ?? '';
+          password_controller.text = saved_active_account?.password ?? '';
+        }
+      }
+
       setState(() {
-        page_index = 0;
+        page_index = widget.initial_page!;
       });
     }
   }
@@ -91,11 +111,13 @@ class _LoginPageState extends State<LoginPage> {
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  page_index == 2
-                      ? accounts_page()
-                      : page_index == 3
-                          ? pin_page(auth_pin)
-                          : login_page(page_index),
+                  page_index == 5
+                      ? landing_page()
+                      : page_index == 2
+                          ? accounts_page()
+                          : page_index == 3
+                              ? pin_page(auth_pin)
+                              : login_page(page_index),
                 ],
               )
             else
@@ -168,7 +190,7 @@ class _LoginPageState extends State<LoginPage> {
               password_controller.clear();
               password_2_controller.clear();
               setState(() {
-                page_index = 0;
+                page_index = prev_page;
               });
             },
           ),
@@ -276,6 +298,8 @@ class _LoginPageState extends State<LoginPage> {
                             staff_id_controller.clear();
                             password_controller.clear();
                             password_2_controller.clear();
+                            pin_controller.clear();
+                            saved_active_account = null;
                             saved_accounts.clear();
                             page_index = 0;
                           });
@@ -314,7 +338,7 @@ class _LoginPageState extends State<LoginPage> {
                     )
                   : saved_account_tile(null),
 
-              // login page
+              // login button
               TextButton(
                 onPressed: () {
                   setState(() {
@@ -370,24 +394,26 @@ class _LoginPageState extends State<LoginPage> {
           buildPinPut(),
           Container(
             width: 300,
+            margin: EdgeInsets.only(top: 10),
             alignment: Alignment.bottomRight,
             child: TextButton(
               onPressed: () {
+                pin_controller.clear();
                 if (pin == null && pin_1_confirmation == 1) {
-                  pin_controller.clear();
                   pin_1_confirmation = 0;
                   pin_1 = null;
-                  setState(() {});
                 } else {
                   // logout
-                  setState(() {
-                    page_index = 0;
-                  });
+                  page_index = prev_page;
+                  password_controller.clear();
+                  password_2_controller.clear();
                 }
+
+                setState(() {});
               },
               child: Text((pin == null && pin_1_confirmation == 1)
                   ? 'Go back'
-                  : 'Logout'),
+                  : 'Switch account'),
             ),
           ),
         ],
@@ -434,28 +460,28 @@ class _LoginPageState extends State<LoginPage> {
     );
 
     return Pinput(
-      controller: pin_controller,
-      focusNode: pin_node,
-      defaultPinTheme: defaultPinTheme,
-      focusedPinTheme: focusedPinTheme,
-      errorPinTheme: errorPinTheme,
-      submittedPinTheme: submittedPinTheme,
-      validator: (s) {
-        if (auth_pin == null) {
-          if (pin_1_confirmation == 1) {
-            if (s != null && s.isNotEmpty && pin_1 != s) {
-              return 'Pin do not match';
+        controller: pin_controller,
+        focusNode: pin_node,
+        defaultPinTheme: defaultPinTheme,
+        focusedPinTheme: focusedPinTheme,
+        errorPinTheme: errorPinTheme,
+        submittedPinTheme: submittedPinTheme,
+        obscureText: true,
+        validator: (s) {
+          if (auth_pin == null) {
+            if (pin_1_confirmation == 1) {
+              if (s != null && s.isNotEmpty && pin_1 != s) {
+                return 'Pin do not match';
+              }
             }
+            return null;
           }
-          return null;
-        }
 
-        return s == auth_pin ? null : 'Pin is incorrect';
-      },
-      pinputAutovalidateMode: PinputAutovalidateMode.onSubmit,
-      showCursor: true,
-      onCompleted: check_pin,
-    );
+          return s == auth_pin ? null : 'Pin is incorrect';
+        },
+        pinputAutovalidateMode: PinputAutovalidateMode.onSubmit,
+        showCursor: true,
+        onCompleted: check_pin);
   }
 
   //? WIDGETS
@@ -582,7 +608,7 @@ class _LoginPageState extends State<LoginPage> {
     return Text_field(
       controller: password_2_controller,
       label: 'Confirm Password',
-      hintText: '*************',
+      hintText: '••••••••••••••••',
       prefix: Icon(
         Icons.password_outlined,
         color: isDarkTheme
@@ -673,7 +699,30 @@ class _LoginPageState extends State<LoginPage> {
       color: Colors.transparent,
       child: InkWell(
         onTap: () {
-          validate_account(staff);
+          prev_page = 2;
+          validate_account(staff, prev: 2);
+        },
+        onLongPress: () async {
+          var conf = await UniversalHelpers.showConfirmBox(
+            context,
+            title: 'Remove Account',
+            subtitle:
+                'Would you like to remove this account from this device? This cannot be undone.',
+          );
+
+          if (conf != null && conf) {
+            int staff_index = saved_accounts.indexOf(staff);
+            saved_accounts.removeAt(staff_index);
+            await Localstorage.save_accounts(saved_accounts);
+
+            if (saved_active_account != null &&
+                (saved_active_account!.staff_id == staff.staff_id)) {
+              await Localstorage.remove_active_account();
+              saved_active_account = null;
+            }
+
+            setState(() {});
+          }
         },
         child: Container(
           margin: EdgeInsets.symmetric(horizontal: 6, vertical: 3),
@@ -752,6 +801,8 @@ class _LoginPageState extends State<LoginPage> {
       onTap: () async {
         String role = '';
 
+        prev_page = 0;
+
         // check staff id
         if (page == 0) {
           if (staff_id_controller.text.trim().isEmpty) {
@@ -779,6 +830,17 @@ class _LoginPageState extends State<LoginPage> {
 
           role = await check_password(
               staff_id_controller.text.trim(), password_controller.text);
+
+          if (role.isNotEmpty) {
+            setState(() {
+              saved_active_account = AuthModel(
+                staff_id: staff_id_controller.text.trim(),
+                password: password_controller.text,
+                role: role,
+              );
+              page_index = 3;
+            });
+          }
         }
 
         // create password
@@ -804,11 +866,26 @@ class _LoginPageState extends State<LoginPage> {
 
           role = await create_password(
               staff_id_controller.text.trim(), password_controller.text);
+
+          if (role.isNotEmpty) {
+            setState(() {
+              saved_active_account = AuthModel(
+                staff_id: staff_id_controller.text.trim(),
+                password: password_controller.text,
+                role: role,
+              );
+              page_index = 3;
+            });
+          }
         }
 
-        // save login
-        await save_login(
-            staff_id_controller.text.trim(), password_controller.text, role);
+        if (page == 0) return;
+
+        if (role.isNotEmpty) {
+          // save login
+          await save_login(
+              staff_id_controller.text.trim(), password_controller.text, role);
+        }
 
         //
       },
@@ -914,8 +991,11 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   // check password
-  Future<String> check_password(String staff_id, String password,
-      {bool check = false}) async {
+  Future<String> check_password(
+    String staff_id,
+    String password, {
+    bool check = false,
+  }) async {
     String role = '';
     var response = await AuthHelpers.check_password(
       context,
@@ -943,7 +1023,6 @@ class _LoginPageState extends State<LoginPage> {
         return 'true';
       } else {
         role = response['role'];
-        login();
         return role;
       }
     }
@@ -979,7 +1058,6 @@ class _LoginPageState extends State<LoginPage> {
     else if (response['mode'] == 0) {
       auth_pin = null;
       role = response['role'];
-      login();
     }
 
     // invalid
@@ -1058,9 +1136,11 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   // validate account
-  validate_account(AuthModel staff) async {
+  validate_account(AuthModel staff, {required int prev}) async {
     isLoading = true;
     setState(() {});
+
+    staff_id_controller.text = staff.staff_id;
 
     bool? staff_id_cr = await check_staff_id(staff.staff_id, check: true);
 
@@ -1069,8 +1149,6 @@ class _LoginPageState extends State<LoginPage> {
       setState(() {});
       return;
     }
-
-    staff_id_controller.text = staff.staff_id;
 
     if (staff.password.isEmpty) {
       setState(() {
@@ -1092,6 +1170,7 @@ class _LoginPageState extends State<LoginPage> {
 
     setState(() {
       isLoading = false;
+      saved_active_account = staff;
       page_index = 3;
     });
   }
@@ -1099,10 +1178,13 @@ class _LoginPageState extends State<LoginPage> {
   // login
   login() async {
     isLoading = true;
+    page_index = 5;
     setState(() {});
 
     await DataGetters.get_active_staff(
         context, staff_id_controller.text.trim());
+
+    await Localstorage.save_active_account(saved_active_account);
 
     isLoading = false;
 

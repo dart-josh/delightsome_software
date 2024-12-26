@@ -15,7 +15,8 @@ class Localstorage {
     return await preferences.setStringList(saved_accounts_key, jsonStringList);
   }
 
-  static Future<bool> save_active_account(AuthModel account) async {
+  static Future<bool> save_active_account(AuthModel? account) async {
+    if (account == null) return false;
     SharedPreferences preferences = await SharedPreferences.getInstance();
     return await preferences.setString(
         saved_active_account_key, jsonEncode(account.toJson()));

@@ -51,7 +51,7 @@ class Text_field extends StatelessWidget {
       fontSize: 16,
     );
     TextStyle hintStyle = TextStyle(
-      color: isDarkTheme ? Color(0xFFc3c3c3) : Color.fromARGB(255, 61, 61, 61),
+      color: isDarkTheme ? Color.fromARGB(150, 195, 195, 195) : Color.fromARGB(150, 61, 61, 61),
       fontSize: 12,
       letterSpacing: 0.6,
       fontStyle: FontStyle.italic,
