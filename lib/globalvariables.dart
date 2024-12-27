@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 
 String server_url = 'http://localhost:5000';
 
+//? APP RESTART
 final ValueNotifier<UniqueKey> appRestartNotifier = ValueNotifier(UniqueKey());
 
 //? SAVED RECORDS
