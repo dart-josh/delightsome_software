@@ -3,6 +3,7 @@ import 'package:delightsome_software/globalvariables.dart';
 import 'package:delightsome_software/helpers/serverHelpers.dart';
 import 'package:delightsome_software/helpers/universalHelpers.dart';
 import 'package:delightsome_software/utils/appdata.dart';
+import 'package:delightsome_software/utils/localStorage.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -230,6 +231,7 @@ class AuthHelpers {
 
     Provider.of<AppData>(context, listen: false).active_staff = null;
     ServerHelpers.disconnect_socket();
+    Localstorage.remove_active_account();
   }
 
   //

@@ -63,11 +63,12 @@ class _LoginPageState extends State<LoginPage> {
     saved_accounts = await Localstorage.get_accounts();
     saved_active_account = await Localstorage.get_active_account();
 
+    // direct login
     if (widget.initial_page == null) {
       // active
       if (saved_active_account != null) {
         prev_page = 2;
-        validate_account(saved_active_account!, prev: 0);
+        validate_account(saved_active_account!, prev: 0, from_active: true);
       } else if (saved_accounts.isNotEmpty) {
         // GOTO ACCOUNTS
         setState(() {
@@ -79,14 +80,20 @@ class _LoginPageState extends State<LoginPage> {
           page_index = 0;
         });
       }
-    } else {
-      //
+    } 
+    
+    // from logout
+    else {
+      // switch account & logout
       if (widget.initial_page == 2 || widget.initial_page == 0) {
-        AuthHelpers.logout(context);
-      } else {
+      } 
+
+      // lock
+      else {
         if (saved_active_account != null) {
           staff_id_controller.text = saved_active_account?.staff_id ?? '';
           password_controller.text = saved_active_account?.password ?? '';
+          prev_page = 2;
         }
       }
 
@@ -98,9 +105,13 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    // double width = MediaQuery.of(context).size.width;
+    bool isDarkTheme =
+        Provider.of<AppData>(context).themeMode == ThemeMode.dark;
 
     return Scaffold(
+      backgroundColor: isDarkTheme
+          ? AppColors.dark_primaryBackgroundColor
+          : AppColors.light_dialogBackground_3,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -121,7 +132,7 @@ class _LoginPageState extends State<LoginPage> {
                 ],
               )
             else
-              Center(child: CircularProgressIndicator()),
+              Center(child: CircularProgressIndicator(color: AppColors.orange_1,)),
           ],
         ),
       ),
@@ -137,9 +148,7 @@ class _LoginPageState extends State<LoginPage> {
 
   // logo
   Widget logo_area() {
-    // double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
-    return Image.asset('assets/logo_app.jpg', width: height > 550 ? 100 : 70);
+    return Image.asset('assets/logo_app.png', width: 120);
   }
 
   // login page
@@ -404,6 +413,8 @@ class _LoginPageState extends State<LoginPage> {
                   pin_1 = null;
                 } else {
                   // logout
+                  AuthHelpers.logout(context);
+
                   page_index = prev_page;
                   password_controller.clear();
                   password_2_controller.clear();
@@ -1136,7 +1147,8 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   // validate account
-  validate_account(AuthModel staff, {required int prev}) async {
+  validate_account(AuthModel staff,
+      {required int prev, bool from_active = false}) async {
     isLoading = true;
     setState(() {});
 
@@ -1146,6 +1158,9 @@ class _LoginPageState extends State<LoginPage> {
 
     if (staff_id_cr == null || !staff_id_cr) {
       isLoading = false;
+      if (from_active) {
+        page_index = 2;
+      }
       setState(() {});
       return;
     }

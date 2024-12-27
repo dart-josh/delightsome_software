@@ -1,4 +1,5 @@
 import 'package:delightsome_software/appColors.dart';
+import 'package:delightsome_software/helpers/authHelpers.dart';
 import 'package:delightsome_software/helpers/serverHelpers.dart';
 import 'package:delightsome_software/helpers/universalHelpers.dart';
 import 'package:delightsome_software/pages/login.page.dart';
@@ -571,7 +572,7 @@ class _SideBarState extends State<SideBar> {
     );
   }
 
-  // bottom bar
+  // todo bottom bar
   Widget bottom_bar() {
     bool isDarkTheme =
         Provider.of<AppData>(context).themeMode == ThemeMode.dark;
@@ -591,64 +592,12 @@ class _SideBarState extends State<SideBar> {
           // sign out menu
           sign_out_menu(),
 
-          // logout
-          // Material(
-          //   color: Colors.transparent,
-          //   child: InkWell(
-          //     onTap: () async {
-          //       bool? conf = await UniversalHelpers.showConfirmBox(
-          //         context,
-          //         title: 'Log out',
-          //         subtitle:
-          //             'You are about to logout of this device.Would you like to proceed',
-          //       );
-
-          //       if (conf != null && conf) {
-          //         ServerHelpers.disconnect_socket();
-
-          //         Navigator.pushAndRemoveUntil(
-          //           context,
-          //           MaterialPageRoute(builder: (context) => LoginPage()),
-          //           (route) => false,
-          //         );
-          //       }
-          //     },
-          //     child: Container(
-          //       decoration: BoxDecoration(
-          //         color: AppColors.orange_1,
-          //         borderRadius: BorderRadius.circular(2),
-          //       ),
-          //       margin: EdgeInsets.all(5),
-          //       width: 110,
-          //       height: 30,
-          //       child: Center(
-          //         child: Row(
-          //           mainAxisAlignment: MainAxisAlignment.center,
-          //           children: [
-          //             Icon(
-          //               Icons.logout,
-          //               size: 17,
-          //               color: Colors.white,
-          //             ),
-          //             SizedBox(width: 4),
-          //             Text(
-          //               'Logout',
-          //               style: TextStyle(
-          //                   color: Colors.white, fontWeight: FontWeight.w600),
-          //             ),
-          //           ],
-          //         ),
-          //       ),
-          //     ),
-          //   ),
-          // ),
-
-          // refresh
+          // todo - settings (refresh)
           IconButton(
             onPressed: () async {
               ServerHelpers.get_all_data(context);
             },
-            icon: Icon(Icons.refresh),
+            icon: Icon(Icons.settings),
           ),
         ],
       ),
@@ -692,6 +641,7 @@ class _SideBarState extends State<SideBar> {
             );
 
             if (conf != null && conf) {
+              AuthHelpers.logout(context);
               Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
@@ -713,6 +663,7 @@ class _SideBarState extends State<SideBar> {
             );
 
             if (conf != null && conf) {
+              AuthHelpers.logout(context);
               Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(

@@ -1,4 +1,5 @@
 import 'package:delightsome_software/appColors.dart';
+import 'package:delightsome_software/globalvariables.dart';
 import 'package:delightsome_software/pages/login.page.dart';
 import 'package:delightsome_software/utils/appdata.dart';
 import 'package:flutter/material.dart';
@@ -12,11 +13,20 @@ void main() {
 
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
 
+  
+
   runApp(
     ChangeNotifierProvider(
       create: (context) => AppData(),
       builder: (context, snapshot) {
-        return const MyApp();
+        return ValueListenableBuilder(
+          // Resart the app if the appRestartNotifier changes
+          valueListenable: appRestartNotifier,
+          builder: (context, key, _) {
+          
+           return MyApp(key : key);
+          },
+        );
       },
     ),
   );
@@ -71,17 +81,6 @@ class MyApp extends StatelessWidget {
             child!,
 
             // Positioned.fill(child: NotificationCover(rootContext: _context)),
-
-            Positioned(right: 0, child: IconButton(onPressed: () {
-              if (isDark) {
-            Provider.of<AppData>(context, listen: false)
-                .update_themeMode(ThemeMode.light);
-          } else {
-            Provider.of<AppData>(context, listen: false)
-                .update_themeMode(ThemeMode.dark);
-          }
-            }, icon: Icon(Icons.refresh),))
-
           ],
         );
       }),

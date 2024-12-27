@@ -7,8 +7,11 @@ import 'package:delightsome_software/dataModels/productStoreModels/productReceiv
 import 'package:delightsome_software/dataModels/productStoreModels/productRequestRecord.model.dart';
 import 'package:delightsome_software/dataModels/productStoreModels/productionRecord.model.dart';
 import 'package:delightsome_software/dataModels/productStoreModels/terminalCollectionRecord.model.dart';
+import 'package:flutter/material.dart';
 
 String server_url = 'http://localhost:5000';
+
+final ValueNotifier<UniqueKey> appRestartNotifier = ValueNotifier(UniqueKey());
 
 //? SAVED RECORDS
 ProductMaterialsRequestModel? saved_product_material_request_model;

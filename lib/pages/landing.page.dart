@@ -304,6 +304,7 @@ class _LandingPageState extends State<LandingPage> {
                     icon: FontAwesomeIcons.shop,
                     title: 'Outlet Store',
                     color: outlet_color,
+                    show_not: Provider.of<AppData>(context).outlet_shops.isNotEmpty,
                     onClicked: () {
                       goto_page(dialog: false, page: SalesPage());
                     },
@@ -324,6 +325,7 @@ class _LandingPageState extends State<LandingPage> {
                     icon: FontAwesomeIcons.store,
                     title: 'Terminal Store',
                     color: terminal_color,
+                    show_not: Provider.of<AppData>(context).terminal_shops.isNotEmpty,
                     onClicked: () {
                       goto_page(dialog: false, page: TerminalSalesPage());
                     },

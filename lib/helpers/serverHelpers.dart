@@ -10,7 +10,7 @@ class ServerHelpers {
 
   static IO.Socket? socket;
 
-  // start socket & listen
+  // start socket & listen 
   static void start_socket_listerners(context) {
     var auth_staff = Provider.of<AppData>(context, listen: false).active_staff;
 
@@ -201,9 +201,11 @@ class ServerHelpers {
 
   // disconnect socket
   static void disconnect_socket() {
-    socket!.close();
-    socket!.destroy();
-    socket!.dispose();
+    if (socket != null) {
+      socket!.close();
+      socket!.destroy();
+      socket!.dispose();
+    }
 
     socket = null;
     is_socket_connected = false;
