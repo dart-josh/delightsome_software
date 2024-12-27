@@ -1,16 +1,7 @@
-# delightsome_software
+# Delightsome Software
 
-A new Flutter project.
+E-commerce Software
 
-## Getting Started
+## Summary
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Delightsome Software is a custom-built solution designed for a juice and smoothie production company. Featuring a local server and database, it optimizes workflows by managing inventory, recording production and sales, and providing sales analysis, making operations efficient and organized.
