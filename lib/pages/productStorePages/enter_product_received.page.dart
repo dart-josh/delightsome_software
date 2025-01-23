@@ -44,7 +44,14 @@ class _EnterProductReceivedPageState extends State<EnterProductReceivedPage> {
   String? supplier;
 
   get_products() {
-    products = Provider.of<AppData>(context).product_list;
+    products = Provider.of<AppData>(context)
+        .product_list
+        .where((e) =>
+            e.category != 'Juice' &&
+            e.category != 'Smoothies' &&
+            e.category != 'Tiger Nut' &&
+            e.category != 'Yoghurt')
+        .toList();
   }
 
   void get_edit_values() {

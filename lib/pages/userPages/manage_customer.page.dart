@@ -1,5 +1,6 @@
 import 'package:delightsome_software/appColors.dart';
 import 'package:delightsome_software/dataModels/userModels/customer.model.dart';
+import 'package:delightsome_software/dataModels/userModels/staff.model.dart';
 import 'package:delightsome_software/helpers/universalHelpers.dart';
 import 'package:delightsome_software/helpers/userHelpers.dart';
 import 'package:delightsome_software/utils/appdata.dart';
@@ -13,7 +14,11 @@ import 'package:provider/provider.dart';
 class ManageCustomerPage extends StatefulWidget {
   final CustomerModel? customer;
   final String customer_type;
-  const ManageCustomerPage({super.key, this.customer, required this.customer_type,});
+  const ManageCustomerPage({
+    super.key,
+    this.customer,
+    required this.customer_type,
+  });
 
   @override
   State<ManageCustomerPage> createState() => _ManageCustomerPageState();
@@ -26,7 +31,9 @@ class _ManageCustomerPageState extends State<ManageCustomerPage> {
   final TextEditingController address_controller = TextEditingController();
   final TextEditingController birthday_controller = TextEditingController();
 
-  List<String> customer_type_list = ['Store', 'Online', 'Terminal'];
+  List<String> customer_type_list = [];
+
+  StaffModel? auth_staff;
 
   String gender = '';
   String customer_type = '';
@@ -73,6 +80,15 @@ class _ManageCustomerPageState extends State<ManageCustomerPage> {
   Widget build(BuildContext context) {
     bool isDarkTheme =
         Provider.of<AppData>(context).themeMode == ThemeMode.dark;
+
+    auth_staff = Provider.of<AppData>(context).active_staff;
+
+    customer_type_list = auth_staff!.role == 'Terminal'
+        ? ['Terminal']
+        : auth_staff!.role == 'Sales'
+            ? ['Store', 'Online']
+            : ['Store', 'Online', 'Terminal'];
+
     return Dialog(
       surfaceTintColor: Colors.transparent,
       backgroundColor: Colors.transparent,

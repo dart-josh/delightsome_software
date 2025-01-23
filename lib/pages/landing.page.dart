@@ -40,13 +40,6 @@ class LandingPage extends StatefulWidget {
 class _LandingPageState extends State<LandingPage> {
   StaffModel? auth_staff;
 
-  bool inventories_expanded = true;
-  bool shops_expanded = true;
-  bool product_store_forms_expanded = true;
-  bool material_store_expanded = true;
-  bool summaries_expanded = true;
-  bool utilities_expanded = true;
-
   bool default_set = false;
 
   set_default_values() {
@@ -209,6 +202,7 @@ class _LandingPageState extends State<LandingPage> {
                 scrollDirection: Axis.horizontal,
                 children: [
                   // product list
+                  if (auth_staff!.role != 'Terminal')
                   menu_tile(
                     icon: FontAwesomeIcons.productHunt,
                     title: 'Products',
@@ -224,6 +218,7 @@ class _LandingPageState extends State<LandingPage> {
                   ),
 
                   // terminal product list
+                  if (auth_staff!.role != 'Production')
                   menu_tile(
                     icon: FontAwesomeIcons.productHunt,
                     title: 'Terminal Products',
@@ -239,6 +234,7 @@ class _LandingPageState extends State<LandingPage> {
                   ),
 
                   // product material list
+                  if (auth_staff!.role != 'Terminal')
                   menu_tile(
                     icon: FontAwesomeIcons.toolbox,
                     title: 'Product Materials',
@@ -249,6 +245,7 @@ class _LandingPageState extends State<LandingPage> {
                   ),
 
                   // raw material list
+                  if (auth_staff!.role != 'Terminal')
                   menu_tile(
                     icon: FontAwesomeIcons.leaf,
                     title: 'Raw Materials',
@@ -272,6 +269,8 @@ class _LandingPageState extends State<LandingPage> {
   Widget shops() {
     Color outlet_color = Color.fromARGB(57, 217, 151, 227);
     Color terminal_color = Color.fromARGB(57, 151, 186, 227);
+
+    if (auth_staff!.role == 'Production') return Container();
 
     return Container(
       margin: EdgeInsets.only(bottom: 10),
@@ -300,6 +299,7 @@ class _LandingPageState extends State<LandingPage> {
                 scrollDirection: Axis.horizontal,
                 children: [
                   // outlet shop
+                  if (auth_staff!.role != 'Production' && auth_staff!.role != 'Terminal')
                   menu_tile(
                     icon: FontAwesomeIcons.shop,
                     title: 'Outlet Store',
@@ -311,6 +311,7 @@ class _LandingPageState extends State<LandingPage> {
                   ),
 
                   // outlet sales record
+                  if (auth_staff!.role != 'Production' && auth_staff!.role != 'Terminal')
                   menu_tile(
                     icon: FontAwesomeIcons.solidRectangleList,
                     title: 'Outlet Store Record',
@@ -321,6 +322,7 @@ class _LandingPageState extends State<LandingPage> {
                   ),
 
                   // terminal shop
+                  if (auth_staff!.role != 'Production' && auth_staff!.role != 'Sales')
                   menu_tile(
                     icon: FontAwesomeIcons.store,
                     title: 'Terminal Store',
@@ -332,6 +334,7 @@ class _LandingPageState extends State<LandingPage> {
                   ),
 
                   // terminal sales record
+                  if (auth_staff!.role != 'Production' && auth_staff!.role != 'Sales')
                   menu_tile(
                     icon: FontAwesomeIcons.rectangleList,
                     title: 'Terminal Store Record',
@@ -381,6 +384,7 @@ class _LandingPageState extends State<LandingPage> {
                 scrollDirection: Axis.horizontal,
                 children: [
                   // production form
+                  if (auth_staff!.role != 'Terminal')
                   menu_tile(
                     icon: FontAwesomeIcons.blender,
                     title: 'Enter Production',
@@ -397,6 +401,7 @@ class _LandingPageState extends State<LandingPage> {
                   ),
 
                   // product received form
+                  if (auth_staff!.role != 'Terminal' && auth_staff!.role != 'Production')
                   menu_tile(
                     icon: FontAwesomeIcons.appleWhole,
                     title: 'Enter Product Received',
@@ -413,6 +418,7 @@ class _LandingPageState extends State<LandingPage> {
                   ),
 
                   // product request form
+                  if (auth_staff!.role != 'Terminal')
                   menu_tile(
                     icon: FontAwesomeIcons.basketShopping,
                     title: 'Enter Product Request',
@@ -429,6 +435,7 @@ class _LandingPageState extends State<LandingPage> {
                   ),
 
                   // terminal collection form
+                  if (auth_staff!.role != 'Production')
                   menu_tile(
                     icon: FontAwesomeIcons.store,
                     title: 'Enter Terminal Collection',
@@ -479,6 +486,7 @@ class _LandingPageState extends State<LandingPage> {
                   ),
 
                   // bad product form
+                  if (auth_staff!.role != 'Terminal')
                   menu_tile(
                     icon: FontAwesomeIcons.trashArrowUp,
                     title: 'Enter Bad Product',
@@ -505,6 +513,8 @@ class _LandingPageState extends State<LandingPage> {
   Widget material_store_forms() {
     Color p_material_store_color = Color.fromARGB(57, 227, 222, 151);
     Color r_material_store_color = Color.fromARGB(57, 148, 126, 69);
+
+    if (auth_staff!.role == 'Terminal') return Container();
 
     return Container(
       margin: EdgeInsets.only(bottom: 10),
@@ -533,6 +543,7 @@ class _LandingPageState extends State<LandingPage> {
                 scrollDirection: Axis.horizontal,
                 children: [
                   // restock product material
+                  if (auth_staff!.role != 'Sales' && auth_staff!.role != 'Terminal')
                   menu_tile(
                     icon: FontAwesomeIcons.codeCompare,
                     title: 'Restock Product Material',
@@ -549,6 +560,7 @@ class _LandingPageState extends State<LandingPage> {
                   ),
 
                   // restock raw material
+                  if (auth_staff!.role != 'Sales' && auth_staff!.role != 'Terminal')
                   menu_tile(
                     icon: FontAwesomeIcons.repeat,
                     title: 'Restock Raw Material',
@@ -565,6 +577,7 @@ class _LandingPageState extends State<LandingPage> {
                   ),
 
                   // product material request
+                  if (auth_staff!.role != 'Terminal')
                   menu_tile(
                     icon: FontAwesomeIcons.toolbox,
                     title: 'Product Material Request',
@@ -581,6 +594,7 @@ class _LandingPageState extends State<LandingPage> {
                   ),
 
                   // raw material request
+                  if (auth_staff!.role != 'Terminal')
                   menu_tile(
                     icon: FontAwesomeIcons.leaf,
                     title: 'Raw Material Request',
@@ -609,6 +623,8 @@ class _LandingPageState extends State<LandingPage> {
     Color product_store_color = Color.fromARGB(57, 151, 227, 157);
     Color terminal_color = Color.fromARGB(57, 151, 186, 227);
 
+    if (auth_staff!.role == 'Production') return Container();
+
     return Container(
       margin: EdgeInsets.only(bottom: 10),
       child: Column(
@@ -636,6 +652,7 @@ class _LandingPageState extends State<LandingPage> {
                 scrollDirection: Axis.horizontal,
                 children: [
                   // sales report
+                  if (auth_staff!.role != 'Production' && auth_staff!.role != 'Terminal')
                   menu_tile(
                     icon: FontAwesomeIcons.cashRegister,
                     title: 'Sales Report',
@@ -649,6 +666,7 @@ class _LandingPageState extends State<LandingPage> {
                   ),
 
                   // production summary
+                  if (auth_staff!.role != 'Production' && auth_staff!.role != 'Terminal')
                   menu_tile(
                     icon: FontAwesomeIcons.microchip,
                     title: 'Production Report',
@@ -662,6 +680,7 @@ class _LandingPageState extends State<LandingPage> {
                   ),
 
                   // outlet product record
+                  if (auth_staff!.role != 'Production' && auth_staff!.role != 'Terminal')
                   menu_tile(
                     icon: FontAwesomeIcons.book,
                     title: 'Outlet Daily Record',
@@ -672,6 +691,7 @@ class _LandingPageState extends State<LandingPage> {
                   ),
 
                   // terminal product record
+                  if (auth_staff!.role != 'Production' && auth_staff!.role != 'Sales')
                   menu_tile(
                     icon: FontAwesomeIcons.book,
                     title: 'Terminal Daily Record',
@@ -696,6 +716,8 @@ class _LandingPageState extends State<LandingPage> {
     Color staff_color = Color.fromARGB(57, 151, 184, 227);
     Color customer_color = Color.fromARGB(57, 151, 227, 222);
     Color category_color = Color.fromARGB(57, 145, 188, 223);
+
+    if (auth_staff!.role == 'Production') return Container();
 
     return Container(
       margin: EdgeInsets.only(bottom: 10),
@@ -724,6 +746,7 @@ class _LandingPageState extends State<LandingPage> {
                 scrollDirection: Axis.horizontal,
                 children: [
                   // staff list
+                  if (auth_staff!.role != 'Production' && auth_staff!.role != 'Sales' && auth_staff!.role != 'Terminal')
                   menu_tile(
                     icon: FontAwesomeIcons.userTie,
                     title: 'Staffs',
@@ -737,6 +760,7 @@ class _LandingPageState extends State<LandingPage> {
                   ),
 
                   // customer list
+                  if (auth_staff!.role != 'Production')
                   menu_tile(
                     icon: FontAwesomeIcons.usersLine,
                     title: 'Customers',
@@ -750,6 +774,7 @@ class _LandingPageState extends State<LandingPage> {
                   ),
 
                   // categories
+                  if (auth_staff!.role != 'Production' && auth_staff!.role != 'Sales' && auth_staff!.role != 'Terminal')
                   menu_tile(
                     icon: FontAwesomeIcons.layerGroup,
                     title: 'Store Categories',
@@ -800,10 +825,13 @@ class _LandingPageState extends State<LandingPage> {
         children: [
           // title
           if (!hide_title)
-            Text(
-              title,
-              style: TextStyle(
-                  fontWeight: FontWeight.w500, fontSize: 16, letterSpacing: .7),
+            InkWell(
+              onTap: onClicked,
+              child: Text(
+                title,
+                style: TextStyle(
+                    fontWeight: FontWeight.w500, fontSize: 16, letterSpacing: .7),
+              ),
             ),
 
           // expand icon

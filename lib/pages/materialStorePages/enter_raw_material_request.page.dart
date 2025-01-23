@@ -22,8 +22,7 @@ class EnterRawMaterialRequest extends StatefulWidget {
       _EnterRawMaterialRequestState();
 }
 
-class _EnterRawMaterialRequestState
-    extends State<EnterRawMaterialRequest> {
+class _EnterRawMaterialRequestState extends State<EnterRawMaterialRequest> {
   TextEditingController search_controller = TextEditingController();
   FocusNode searchNode = FocusNode();
 
@@ -398,8 +397,8 @@ class _EnterRawMaterialRequestState
               onTap: () async {
                 RawMaterialsModel? item = await showDialog(
                   context: context,
-                  builder: (context) => RawMaterialSelector(
-                      raw_materials: raw_materials),
+                  builder: (context) =>
+                      RawMaterialSelector(raw_materials: raw_materials),
                 );
 
                 if (item != null) {
@@ -778,7 +777,7 @@ class _EnterRawMaterialRequestState
                     builder: (context) =>
                         SearchQtyDialog(name: item.item.itemName),
                   );
-                  
+
                   if (res != null) {
                     int qty = raw_materials
                         .where((element) => element.key == item.item.key)

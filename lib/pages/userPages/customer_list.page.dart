@@ -1,5 +1,6 @@
 import 'package:delightsome_software/appColors.dart';
 import 'package:delightsome_software/dataModels/userModels/customer.model.dart';
+import 'package:delightsome_software/dataModels/userModels/staff.model.dart';
 import 'package:delightsome_software/helpers/universalHelpers.dart';
 import 'package:delightsome_software/helpers/userHelpers.dart';
 import 'package:delightsome_software/pages/userPages/manage_customer.page.dart';
@@ -24,6 +25,8 @@ class _CustomerListPageState extends State<CustomerListPage> {
   final TextEditingController search_controller = TextEditingController();
   FocusNode search_node = FocusNode();
 
+  StaffModel? auth_staff;
+
   List<CustomerModel> store_list = [];
   List<CustomerModel> online_list = [];
   List<CustomerModel> terminal_list = [];
@@ -35,7 +38,7 @@ class _CustomerListPageState extends State<CustomerListPage> {
   bool search_open = false;
 
   int index = 0;
-  List pages = ['Store', 'Online', 'Terminal'];
+  List pages = [];
 
   get_list() {
     List<CustomerModel> customers = Provider.of<AppData>(context).customer_list;
@@ -47,6 +50,10 @@ class _CustomerListPageState extends State<CustomerListPage> {
     terminal_list = customers
         .where((element) => element.customerType == 'Terminal')
         .toList();
+
+    store_list.sort((a, b) => a.nickName.compareTo(b.nickName));
+    online_list.sort((a, b) => a.nickName.compareTo(b.nickName));
+    terminal_list.sort((a, b) => a.nickName.compareTo(b.nickName));
   }
 
   @override
@@ -64,10 +71,21 @@ class _CustomerListPageState extends State<CustomerListPage> {
 
   @override
   Widget build(BuildContext context) {
+    auth_staff = Provider.of<AppData>(context).active_staff;
+
+    int tabs_length = auth_staff!.role == 'Terminal'
+        ? 1
+        : auth_staff!.role == 'Sales'
+            ? 2
+            : 3;
+
+    pages = auth_staff!.role == 'Terminal'
+        ? ['Terminal']
+        : auth_staff!.role == 'Sales'
+            ? ['Store', 'Online']
+            : ['Store', 'Online', 'Terminal'];
+
     get_list();
-    store_list.sort((a, b) => a.nickName.compareTo(b.nickName));
-    online_list.sort((a, b) => a.nickName.compareTo(b.nickName));
-    terminal_list.sort((a, b) => a.nickName.compareTo(b.nickName));
 
     bool isDarkTheme =
         Provider.of<AppData>(context).themeMode == ThemeMode.dark;
@@ -82,7 +100,7 @@ class _CustomerListPageState extends State<CustomerListPage> {
           width: 600,
           height: 520,
           child: DefaultTabController(
-            length: 3,
+            length: tabs_length,
             initialIndex: index,
             child: Column(
               children: [
@@ -116,11 +134,20 @@ class _CustomerListPageState extends State<CustomerListPage> {
                           // list
                           Expanded(
                             child: TabBarView(
-                              children: [
-                                customer_list_area(store_list),
-                                customer_list_area(online_list),
-                                customer_list_area(terminal_list),
-                              ],
+                              children: auth_staff!.role == 'Terminal'
+                                  ? [
+                                      customer_list_area(terminal_list),
+                                    ]
+                                  : auth_staff!.role == 'Sales'
+                                      ? [
+                                          customer_list_area(store_list),
+                                          customer_list_area(online_list),
+                                        ]
+                                      : [
+                                          customer_list_area(store_list),
+                                          customer_list_area(online_list),
+                                          customer_list_area(terminal_list),
+                                        ],
                             ),
                           ),
                         ],
@@ -137,7 +164,7 @@ class _CustomerListPageState extends State<CustomerListPage> {
 
     // scaffold
     return DefaultTabController(
-      length: 3,
+      length: tabs_length,
       initialIndex: index,
       child: Scaffold(
         backgroundColor: isDarkTheme
@@ -173,11 +200,20 @@ class _CustomerListPageState extends State<CustomerListPage> {
                       // list
                       Expanded(
                         child: TabBarView(
-                          children: [
-                            customer_list_area(store_list),
-                            customer_list_area(online_list),
-                            customer_list_area(terminal_list),
-                          ],
+                          children: auth_staff!.role == 'Terminal'
+                              ? [
+                                  customer_list_area(terminal_list),
+                                ]
+                              : auth_staff!.role == 'Sales'
+                                  ? [
+                                      customer_list_area(store_list),
+                                      customer_list_area(online_list),
+                                    ]
+                                  : [
+                                      customer_list_area(store_list),
+                                      customer_list_area(online_list),
+                                      customer_list_area(terminal_list),
+                                    ],
                         ),
                       ),
                     ],
@@ -196,8 +232,6 @@ class _CustomerListPageState extends State<CustomerListPage> {
   // top bar
   Widget top_bar() {
     double width = MediaQuery.of(context).size.width;
-
-    var auth_staff = Provider.of<AppData>(context).active_staff;
 
     return Container(
       width: double.infinity,
@@ -224,14 +258,10 @@ class _CustomerListPageState extends State<CustomerListPage> {
 
               Expanded(child: Container()),
 
-              if (auth_staff!.fullaccess ||
-                  auth_staff.role == 'Sales' ||
-                  auth_staff.role == 'Admin' ||
-                  (auth_staff.role == 'Terminal' && index == 2))
-                Padding(
-                  padding: EdgeInsets.only(right: 10),
-                  child: add_customer_button(),
-                ),
+              Padding(
+                padding: EdgeInsets.only(right: 10),
+                child: add_customer_button(),
+              ),
 
               // search button
               if (!(width > 600))
@@ -300,11 +330,20 @@ class _CustomerListPageState extends State<CustomerListPage> {
       unselectedLabelColor: isDarkTheme
           ? AppColors.dark_secondaryTextColor
           : AppColors.light_secondaryTextColor,
-      tabs: [
-        Tab(text: 'Store'),
-        Tab(text: 'Online'),
-        Tab(text: 'Terminal'),
-      ],
+      tabs: auth_staff!.role == 'Terminal'
+          ? [
+              Tab(text: 'Terminal'),
+            ]
+          : auth_staff!.role == 'Sales'
+              ? [
+                  Tab(text: 'Store'),
+                  Tab(text: 'Online'),
+                ]
+              : [
+                  Tab(text: 'Store'),
+                  Tab(text: 'Online'),
+                  Tab(text: 'Terminal'),
+                ],
     );
   }
 
@@ -497,34 +536,33 @@ class _CustomerListPageState extends State<CustomerListPage> {
 
             // actions
             Container(
-              width: (width > 600) ? 150 : 80,
+              width: (auth_staff!.fullaccess)
+                  ? (width > 600)
+                      ? 150
+                      : 80
+                  : 40,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   // view/edit
-                  if ((auth_staff!.role != 'Terminal' &&
-                          auth_staff.role != 'Production') ||
-                      (auth_staff.role == 'Terminal' && index == 2) ||
-                      auth_staff.role == 'Admin' ||
-                      auth_staff.fullaccess)
-                    InkWell(
-                      onTap: () {
-                        showDialog(
-                          context: context,
-                          barrierDismissible: false,
-                          builder: (context) => ManageCustomerPage(
-                            customer: customer,
-                            customer_type: customer.customerType,
-                          ),
-                        );
-                      },
-                      child: Container(
-                        margin: EdgeInsets.symmetric(horizontal: 5),
-                        child: Center(
-                          child: Icon(Icons.info, size: 18),
+                  InkWell(
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (context) => ManageCustomerPage(
+                          customer: customer,
+                          customer_type: customer.customerType,
                         ),
+                      );
+                    },
+                    child: Container(
+                      margin: EdgeInsets.symmetric(horizontal: 5),
+                      child: Center(
+                        child: Icon(Icons.info, size: 18),
                       ),
                     ),
+                  ),
 
                   // delete
                   if (auth_staff.fullaccess)
@@ -591,7 +629,10 @@ class _CustomerListPageState extends State<CustomerListPage> {
           .where((customer) =>
               customer.nickName.toLowerCase().contains(value.toLowerCase()) ||
               customer.fullname.toLowerCase().contains(value.toLowerCase()) ||
-              customer.customerType.toLowerCase().contains(value.toLowerCase()))
+              customer.customerType
+                  .toLowerCase()
+                  .contains(value.toLowerCase()) ||
+              customer.contactPhone.toLowerCase().contains(value.toLowerCase()))
           .toList();
     } else {
       search_on = false;

@@ -1310,7 +1310,7 @@ class _ShopBoxState extends State<ShopBox> {
               ? shop.is_online
                   ? 1
                   : 0
-              : 2),
+              : 0),
     );
 
     if (cus != null) {

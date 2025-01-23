@@ -536,7 +536,7 @@ class _ProductListPageState extends State<ProductListPage> {
           ),
 
           // qunatity
-          Container(
+          if (width > 600) Container(
             width: 70,
             child: Center(
               child: Text(
@@ -553,7 +553,7 @@ class _ProductListPageState extends State<ProductListPage> {
 
           // actions
           Container(
-            width: 60,
+            width: (auth_staff!.fullaccess) ? 60 : 30,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -591,7 +591,7 @@ class _ProductListPageState extends State<ProductListPage> {
 
                 // delete
                 if (!restock_page && (widget.page != 'terminal_product'))
-                  if (auth_staff!.fullaccess)
+                  if (auth_staff.fullaccess)
                     InkWell(
                       onTap: () async {
                         bool? response = await UniversalHelpers.showConfirmBox(

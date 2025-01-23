@@ -480,7 +480,7 @@ class _StaffListPageState extends State<StaffListPage> {
 
             // actions
             Container(
-              width: (width > 600) ? 150 : 80,
+              width: (auth_staff!.fullaccess) ? (width > 600) ? 150 : 80 : 40,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
@@ -504,7 +504,7 @@ class _StaffListPageState extends State<StaffListPage> {
                   ),
 
                   // delete
-                  if (auth_staff!.fullaccess)
+                  if (auth_staff.fullaccess)
                     InkWell(
                       onTap: () async {
                         bool? response = await UniversalHelpers.showConfirmBox(

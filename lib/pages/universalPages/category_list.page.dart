@@ -472,27 +472,28 @@ class _CategoryListPageState extends State<CategoryListPage> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 // view/edit
-                InkWell(
-                  onTap: () {
-                    showDialog(
-                      context: context,
-                      barrierDismissible: false,
-                      builder: (context) => ManageCategory(
-                        category: category,
-                        category_type: category_type_list[index],
+                if (auth_staff!.fullaccess || auth_staff.role == 'Admin')
+                  InkWell(
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (context) => ManageCategory(
+                          category: category,
+                          category_type: category_type_list[index],
+                        ),
+                      );
+                    },
+                    child: Container(
+                      margin: EdgeInsets.symmetric(horizontal: 5),
+                      child: Center(
+                        child: Icon(Icons.info, size: 18),
                       ),
-                    );
-                  },
-                  child: Container(
-                    margin: EdgeInsets.symmetric(horizontal: 5),
-                    child: Center(
-                      child: Icon(Icons.info, size: 18),
                     ),
                   ),
-                ),
 
                 // delete
-                if (auth_staff!.fullaccess)
+                if (auth_staff.fullaccess || auth_staff.role == 'Admin')
                   InkWell(
                     onTap: () async {
                       bool? response = await UniversalHelpers.showConfirmBox(

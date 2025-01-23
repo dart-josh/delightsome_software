@@ -324,7 +324,9 @@ class _RawMaterialListPageState extends State<RawMaterialListPage> {
 
           if (!search_open) SizedBox(width: 10),
 
-          if (!search_open || (width > 600)) Text(UniversalHelpers.format_number(all_raw_materials.length), style: TextStyle(fontSize: 12)),
+          if (!search_open || (width > 600))
+            Text(UniversalHelpers.format_number(all_raw_materials.length),
+                style: TextStyle(fontSize: 12)),
 
           if (width > 600) Expanded(child: Container()),
 
@@ -468,7 +470,11 @@ class _RawMaterialListPageState extends State<RawMaterialListPage> {
       unselectedLabelColor: isDarkTheme
           ? AppColors.dark_secondaryTextColor
           : AppColors.light_secondaryTextColor,
-      tabs: grouped_list.map((e) => Tab(text: '${e.category} - ${UniversalHelpers.format_number(e.rawMaterials.length)}')).toList(),
+      tabs: grouped_list
+          .map((e) => Tab(
+              text:
+                  '${e.category} - ${UniversalHelpers.format_number(e.rawMaterials.length)}'))
+          .toList(),
     );
   }
 
@@ -584,7 +590,7 @@ class _RawMaterialListPageState extends State<RawMaterialListPage> {
 
           // actions
           Container(
-            width: 60,
+            width: (auth_staff!.fullaccess) ? 60 : 30,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -620,7 +626,7 @@ class _RawMaterialListPageState extends State<RawMaterialListPage> {
 
                 // delete
                 if (!restock_page)
-                  if (auth_staff!.fullaccess)
+                  if (auth_staff.fullaccess)
                     InkWell(
                       onTap: () async {
                         bool? response = await UniversalHelpers.showConfirmBox(

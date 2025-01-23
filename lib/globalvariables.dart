@@ -36,4 +36,12 @@ List<String> category_type_list = [
 
 String? auth_pin;
 
+// ? Home Defaults
+bool inventories_expanded = true;
+bool shops_expanded = true;
+bool product_store_forms_expanded = true;
+bool material_store_expanded = true;
+bool summaries_expanded = true;
+bool utilities_expanded = true;
+
 // String current_version = '1.6.6';

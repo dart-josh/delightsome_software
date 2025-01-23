@@ -136,7 +136,7 @@ class _AddUpdateRawMaterialState extends State<AddUpdateRawMaterial> {
                         ),
                       ),
 
-                      if (edit)  SizedBox(height: 10),
+                      if (edit) SizedBox(height: 10),
 
                       // submit
                       if (edit) submit_button(),
@@ -240,8 +240,7 @@ class _AddUpdateRawMaterialState extends State<AddUpdateRawMaterial> {
               Expanded(child: Container()),
 
               // edit button
-              if (!new_item &&
-                  (auth_staff!.fullaccess))
+              if (!new_item && (auth_staff!.fullaccess))
                 InkWell(
                   onTap: () {
                     edit = !edit;

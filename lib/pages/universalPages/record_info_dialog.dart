@@ -124,17 +124,21 @@ class _RecordInfoDialogState extends State<RecordInfoDialog> {
                             child: Row(
                               children: [
                                 Expanded(
-                                    child: Text(
-                                        '${widget.approve_label == 'Authorize' ? 'Authorized' : 'Verified'} : ')),
-                                Text(UniversalHelpers.format_time_to_string(
-                                    widget.approvedDate)),
+                                  child: Text(
+                                      '${widget.approve_label == 'Authorize' ? 'Authorized' : 'Verified'} : '),
+                                ),
+                                Text(
+                                  UniversalHelpers.format_time_to_string(
+                                      widget.approvedDate),
+                                ),
                               ],
                             ),
                           )
 
                         // approve action button
                         else if (auth_staff!.role == 'Admin' ||
-                            auth_staff.fullaccess || auth_staff.role == widget.auth_approve_staff)
+                            auth_staff.fullaccess ||
+                            auth_staff.role == widget.auth_approve_staff)
                           InkWell(
                             onTap: () async {
                               var res = await UniversalHelpers.showConfirmBox(

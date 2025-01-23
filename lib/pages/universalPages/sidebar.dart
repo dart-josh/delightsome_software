@@ -1,4 +1,5 @@
 import 'package:delightsome_software/appColors.dart';
+import 'package:delightsome_software/dataModels/userModels/staff.model.dart';
 import 'package:delightsome_software/helpers/authHelpers.dart';
 import 'package:delightsome_software/helpers/serverHelpers.dart';
 import 'package:delightsome_software/helpers/universalHelpers.dart';
@@ -45,6 +46,9 @@ class _SideBarState extends State<SideBar> {
     product_store_items.clear();
     material_store_items.clear();
 
+    StaffModel? auth_staff = Provider.of<AppData>(context).active_staff;
+
+    if (auth_staff!.role != 'Terminal')
     // production record
     product_store_items.add(
       SidebarItemModel(
@@ -53,7 +57,8 @@ class _SideBarState extends State<SideBar> {
         key: 0,
       ),
     );
-
+    
+    if (auth_staff.role != 'Terminal' && auth_staff.role != 'Production')
     // product received
     product_store_items.add(
       SidebarItemModel(
@@ -63,6 +68,7 @@ class _SideBarState extends State<SideBar> {
       ),
     );
 
+    if (auth_staff.role != 'Terminal')
     // product request
     product_store_items.add(
       SidebarItemModel(
@@ -72,6 +78,7 @@ class _SideBarState extends State<SideBar> {
       ),
     );
 
+    if (auth_staff.role != 'Production')
     // terminal collection
     product_store_items.add(
       SidebarItemModel(
@@ -81,6 +88,7 @@ class _SideBarState extends State<SideBar> {
       ),
     );
 
+    if (auth_staff.role != 'Terminal')
     // bad product
     product_store_items.add(
       SidebarItemModel(
@@ -92,6 +100,7 @@ class _SideBarState extends State<SideBar> {
 
     //?
 
+    if (auth_staff.role != 'Terminal' && auth_staff.role != 'Sales')
     // restock product material
     material_store_items.add(
       SidebarItemModel(
@@ -101,6 +110,7 @@ class _SideBarState extends State<SideBar> {
       ),
     );
 
+    if (auth_staff.role != 'Terminal' && auth_staff.role != 'Sales')
     // restock raw material
     material_store_items.add(
       SidebarItemModel(
@@ -110,6 +120,7 @@ class _SideBarState extends State<SideBar> {
       ),
     );
 
+    if (auth_staff.role != 'Terminal')
     // product material request
     material_store_items.add(
       SidebarItemModel(
@@ -119,6 +130,7 @@ class _SideBarState extends State<SideBar> {
       ),
     );
 
+    if (auth_staff.role != 'Terminal')
     // raw material request
     material_store_items.add(
       SidebarItemModel(
@@ -320,7 +332,7 @@ class _SideBarState extends State<SideBar> {
           isCollapsed: isCollapsed,
           text: item.title,
           icon: item.icon,
-          onClicked: () => selectItem(context, indexOffset + index),
+          onClicked: () => selectItem(context, item.key),
           not_count: get_not_byIndex(item.key),
         );
       },

@@ -229,8 +229,7 @@ class _AddUpdateProductMaterialState extends State<AddUpdateProductMaterial> {
               Expanded(child: Container()),
 
               // edit button
-              if (!new_item &&
-                  (auth_staff!.fullaccess))
+              if (!new_item && (auth_staff!.fullaccess))
                 InkWell(
                   onTap: () {
                     edit = !edit;

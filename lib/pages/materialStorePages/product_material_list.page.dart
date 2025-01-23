@@ -506,7 +506,7 @@ class _ProductMaterialListPageState extends State<ProductMaterialListPage> {
 
           // actions
           Container(
-            width: 60,
+            width: (auth_staff!.fullaccess) ? 60 : 30,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -542,7 +542,7 @@ class _ProductMaterialListPageState extends State<ProductMaterialListPage> {
 
                 // delete
                 if (!restock_page)
-                  if (auth_staff!.fullaccess)
+                  if (auth_staff.fullaccess)
                     InkWell(
                       onTap: () async {
                         bool? response = await UniversalHelpers.showConfirmBox(
