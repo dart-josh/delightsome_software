@@ -1,13 +1,40 @@
 import 'dart:math';
 
+import 'package:delightsome_software/utils/appdata.dart';
 import 'package:delightsome_software/widgets/confirm_dailog.dart';
 import 'package:delightsome_software/widgets/loadingScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class UniversalHelpers {
-  // ROUTES
+  // app defaults
+
+  // update logout
+  static void canLogout(context, {required bool value}) {
+    if (value) {
+      Future.delayed(Duration(seconds: 5), () {
+        Provider.of<AppData>(context, listen: false).update_can_logout(value);
+      });
+    } else
+      Future.delayed(Duration(milliseconds: 400), () {
+        Provider.of<AppData>(context, listen: false).update_can_logout(value);
+      });
+  }
+
+  // update can refresh
+  static void canRefresh(context, {required bool value}) {
+    if (value) {
+      Future.delayed(Duration(seconds: 5), () {
+        Provider.of<AppData>(context, listen: false).update_can_refresh(value);
+      });
+    } else
+      Future.delayed(Duration(milliseconds: 400), () {
+        Provider.of<AppData>(context, listen: false).update_can_refresh(value);
+      });
+  }
+
 // show toast
   static void showToast(
       {required BuildContext context,

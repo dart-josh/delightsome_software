@@ -1,5 +1,6 @@
 import 'package:delightsome_software/globalvariables.dart';
 import 'package:delightsome_software/helpers/dataGetters.dart';
+import 'package:delightsome_software/helpers/universalHelpers.dart';
 import 'package:delightsome_software/utils/appdata.dart';
 import 'package:provider/provider.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
@@ -10,11 +11,10 @@ class ServerHelpers {
 
   static IO.Socket? socket;
 
-  // start socket & listen 
+  // start socket & listen
   static void start_socket_listerners(context) {
     var auth_staff = Provider.of<AppData>(context, listen: false).active_staff;
 
-    print(auth_staff?.staffId ?? '');
     socket = IO.io(server_url, {
       'transports': ['websocket'],
       "query": {'staffId': auth_staff?.staffId}
@@ -26,7 +26,6 @@ class ServerHelpers {
         //     .build()
         );
 
-    print(socket!.query);
     socket!.connect();
 
     //? MATERIALS STORE
@@ -59,6 +58,11 @@ class ServerHelpers {
     // RawMaterialsRequestRecord
     socket!.on('RawMaterialsRequestRecord', (data) {
       DataGetters.get_raw_materials_request_record(context);
+    });
+
+    // ProductMaterialsReturnRecord
+    socket!.on('ProductMaterialsReturnRecord', (data) {
+      DataGetters.get_product_materials_return_record(context);
     });
 
     // ProductMaterialsCategory
@@ -154,8 +158,16 @@ class ServerHelpers {
   }
 
   // get all data
-  static void get_all_data(context) {
+  static void get_all_data(context, {bool refresh = false}) {
     if (!kIsWeb) {
+      if (!refresh) {
+        UniversalHelpers.canLogout(context, value: false);
+        UniversalHelpers.canRefresh(context, value: false);
+      } else {
+        Provider.of<AppData>(context, listen: false).update_can_logout(false);
+        Provider.of<AppData>(context, listen: false).update_can_refresh(false);
+      }
+
       // ? MATERIALS STORE
       DataGetters.get_product_materials(context);
       DataGetters.get_raw_materials(context);
@@ -164,6 +176,7 @@ class ServerHelpers {
       DataGetters.get_restock_raw_materials_record(context);
       DataGetters.get_product_materials_request_record(context);
       DataGetters.get_raw_materials_request_record(context);
+      DataGetters.get_product_materials_return_record(context);
 
       DataGetters.get_product_materials_categories(context);
       DataGetters.get_raw_materials_categories(context);
@@ -196,6 +209,9 @@ class ServerHelpers {
         start_socket_listerners(context);
         is_socket_connected = true;
       }
+
+      UniversalHelpers.canLogout(context, value: true);
+      UniversalHelpers.canRefresh(context, value: true);
     }
   }
 

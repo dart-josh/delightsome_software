@@ -2,6 +2,7 @@ import 'package:delightsome_software/dataModels/category.model.dart';
 
 import 'package:delightsome_software/dataModels/materialStoreModels/productMaterials.model.dart';
 import 'package:delightsome_software/dataModels/materialStoreModels/productMaterialsRequest.model.dart';
+import 'package:delightsome_software/dataModels/materialStoreModels/productMaterialsReturn.model.dart';
 import 'package:delightsome_software/dataModels/materialStoreModels/rawMaterials.model.dart';
 import 'package:delightsome_software/dataModels/materialStoreModels/rawMaterialsRequest.model.dart';
 import 'package:delightsome_software/dataModels/materialStoreModels/restockProductMaterial.model.dart';
@@ -27,6 +28,9 @@ import 'package:flutter/material.dart';
 class AppData extends ChangeNotifier {
   // ! APP DEFAULTS
 
+  bool can_refresh = false;
+  bool can_logout = false;
+
   // theme
   ThemeMode themeMode = ThemeMode.system;
   bool drawer_expanded = false;
@@ -45,6 +49,8 @@ class AppData extends ChangeNotifier {
 
   List<ProductMaterialsRequestModel> product_material_request_record = [];
   List<RawMaterialsRequestModel> raw_material_request_record = [];
+
+  List<ProductMaterialsReturnModel> product_material_return_record = [];
 
   List<CategoryModel> product_material_categories = [];
   List<CategoryModel> raw_material_categories = [];
@@ -79,6 +85,16 @@ class AppData extends ChangeNotifier {
   // SETTERS
 
   // ! APP DEFAULTS
+  void update_can_refresh(bool value) {
+    can_refresh = value;
+    notifyListeners();
+  }
+
+  void update_can_logout(bool value) {
+    can_logout = value;
+    notifyListeners();
+  }
+
   void update_themeMode(ThemeMode value) {
     themeMode = value;
     notifyListeners();
@@ -172,6 +188,13 @@ class AppData extends ChangeNotifier {
   void update_raw_material_request_record(
       List<RawMaterialsRequestModel> value) {
     raw_material_request_record = value;
+    notifyListeners();
+  }
+
+  // product_material_return_record
+  void update_product_material_return_record(
+      List<ProductMaterialsReturnModel> value) {
+    product_material_return_record = value;
     notifyListeners();
   }
 

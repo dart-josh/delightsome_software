@@ -1,4 +1,3 @@
-
 import 'package:delightsome_software/helpers/authHelpers.dart';
 import 'package:delightsome_software/helpers/materialStoreHelpers.dart';
 import 'package:delightsome_software/helpers/productStoreHelpers.dart';
@@ -55,6 +54,14 @@ class DataGetters {
 
     Provider.of<AppData>(context, listen: false)
         .update_raw_material_request_record(rec);
+  }
+
+  // get product materials return record
+  static get_product_materials_return_record(context) async {
+    var rec = await MaterialStoreHelpers.get_product_materials_return_record();
+
+    Provider.of<AppData>(context, listen: false)
+        .update_product_material_return_record(rec);
   }
 
   // get product materials category

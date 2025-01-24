@@ -1,6 +1,7 @@
 import 'package:delightsome_software/dataModels/category.model.dart';
 import 'package:delightsome_software/dataModels/materialStoreModels/productMaterials.model.dart';
 import 'package:delightsome_software/dataModels/materialStoreModels/productMaterialsRequest.model.dart';
+import 'package:delightsome_software/dataModels/materialStoreModels/productMaterialsReturn.model.dart';
 import 'package:delightsome_software/dataModels/materialStoreModels/rawMaterials.model.dart';
 import 'package:delightsome_software/dataModels/materialStoreModels/rawMaterialsRequest.model.dart';
 import 'package:delightsome_software/dataModels/materialStoreModels/restockProductMaterial.model.dart';
@@ -21,7 +22,7 @@ class MaterialStoreHelpers {
   // Post Data to server
   static Future<bool> sendDataToServer(context,
       {required String route, required Map data}) async {
-       var auth_staff = Provider.of<AppData>(context, listen: false).active_staff;
+    var auth_staff = Provider.of<AppData>(context, listen: false).active_staff;
 
     if (auth_staff == null) {
       UniversalHelpers.showToast(
@@ -80,7 +81,7 @@ class MaterialStoreHelpers {
   // Post fetch Data to server
   static Future<dynamic> send_get_dataToServer(context,
       {required String route, required Map data}) async {
-        var auth_staff = Provider.of<AppData>(context, listen: false).active_staff;
+    var auth_staff = Provider.of<AppData>(context, listen: false).active_staff;
 
     if (auth_staff == null) {
       UniversalHelpers.showToast(
@@ -133,7 +134,7 @@ class MaterialStoreHelpers {
   // Delete Data from sever
   static Future<bool> deleteFromServer(context,
       {required String route, required String id}) async {
-        var auth_staff = Provider.of<AppData>(context, listen: false).active_staff;
+    var auth_staff = Provider.of<AppData>(context, listen: false).active_staff;
 
     if (auth_staff == null) {
       UniversalHelpers.showToast(
@@ -220,7 +221,7 @@ class MaterialStoreHelpers {
     }
   }
 
-// Get raw materials
+  // Get raw materials
   static Future<List<RawMaterialsModel>> get_raw_materials() async {
     try {
       var response =
@@ -364,6 +365,35 @@ class MaterialStoreHelpers {
     }
   }
 
+// Get product materials return record
+  static Future<List<ProductMaterialsReturnModel>>
+      get_product_materials_return_record() async {
+    try {
+      var response = await http.get(Uri.parse(
+          '${materialsStoreUrl}/get_product_materials_return_record'));
+
+      var jsonResponse = jsonDecode(response.body);
+
+      if (response.statusCode != 200) {
+        throw jsonResponse['message'];
+      }
+
+      List<ProductMaterialsReturnModel> recordList = [];
+      List record = jsonResponse['record'];
+      for (var item in record) {
+        ProductMaterialsReturnModel recordModel =
+            ProductMaterialsReturnModel.fromJson(item);
+
+        recordList.add(recordModel);
+      }
+
+      return recordList;
+    } catch (e) {
+      print(e);
+      return [];
+    }
+  }
+
 // Get product materials categories
   static Future<List<CategoryModel>> get_product_materials_categories() async {
     try {
@@ -441,7 +471,7 @@ class MaterialStoreHelpers {
     return recordList;
   }
 
-// Get selected product materials request record
+// Get selected raw materials request record
   static Future<List<RawMaterialsRequestModel>>
       get_selected_raw_materials_request_record(
           BuildContext context, Map data) async {
@@ -454,6 +484,27 @@ class MaterialStoreHelpers {
       for (var item in record) {
         RawMaterialsRequestModel recordModel =
             RawMaterialsRequestModel.fromJson(item);
+
+        recordList.add(recordModel);
+      }
+    }
+
+    return recordList;
+  }
+
+// Get selected product materials return record
+  static Future<List<ProductMaterialsReturnModel>>
+      get_selected_product_materials_return_record(
+          BuildContext context, Map data) async {
+    var map = await send_get_dataToServer(context,
+        route: 'get_selected_product_materials_return_record', data: data);
+    List<ProductMaterialsReturnModel> recordList = [];
+
+    if (map != null) {
+      List record = map['record'] ?? [];
+      for (var item in record) {
+        ProductMaterialsReturnModel recordModel =
+            ProductMaterialsReturnModel.fromJson(item);
 
         recordList.add(recordModel);
       }
@@ -576,6 +627,20 @@ class MaterialStoreHelpers {
         route: 'verify_raw_materials_request_record', data: data);
   }
 
+// Enter Return product materials record
+  static Future<bool> enter_product_materials_return_record(
+      BuildContext context, Map data) async {
+    return await sendDataToServer(context,
+        route: 'enter_product_materials_return_record', data: data);
+  }
+
+// Verify Return product materials record
+  static Future<bool> verify_product_materials_return_record(
+      BuildContext context, Map data) async {
+    return await sendDataToServer(context,
+        route: 'verify_product_materials_return_record', data: data);
+  }
+
 // Add/Update product materials categories
   static Future<bool> add_update_product_materials_category(
       BuildContext context, Map data) async {
@@ -632,6 +697,13 @@ class MaterialStoreHelpers {
       BuildContext context, String id) async {
     return await deleteFromServer(context,
         route: 'delete_raw_materials_request_record', id: id);
+  }
+
+// Delete product materials return record
+  static Future<bool> delete_product_materials_return_record(
+      BuildContext context, String id) async {
+    return await deleteFromServer(context,
+        route: 'delete_product_materials_return_record', id: id);
   }
 
 // Delete product materials categories

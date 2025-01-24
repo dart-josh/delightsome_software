@@ -5,6 +5,7 @@ import 'package:delightsome_software/helpers/serverHelpers.dart';
 import 'package:delightsome_software/helpers/universalHelpers.dart';
 import 'package:delightsome_software/pages/login.page.dart';
 import 'package:delightsome_software/pages/materialStorePages/product_material_request_record.page.dart';
+import 'package:delightsome_software/pages/materialStorePages/product_material_return_record.page.dart';
 import 'package:delightsome_software/pages/materialStorePages/raw_material_request_record.page.dart';
 import 'package:delightsome_software/pages/materialStorePages/restock_product_material_record.page.dart';
 import 'package:delightsome_software/pages/materialStorePages/restock_raw_material_record.page.dart';
@@ -37,6 +38,7 @@ class _SideBarState extends State<SideBar> {
   int restockRawMaterial_rec = 0;
   int productMaterialRequest_rec = 0;
   int rawMaterialRequest_rec = 0;
+  int productMaterialReturn_rec = 0;
 
   List<SidebarItemModel> product_store_items = [];
 
@@ -49,96 +51,106 @@ class _SideBarState extends State<SideBar> {
     StaffModel? auth_staff = Provider.of<AppData>(context).active_staff;
 
     if (auth_staff!.role != 'Terminal')
-    // production record
-    product_store_items.add(
-      SidebarItemModel(
-        title: 'Production Record',
-        icon: FontAwesomeIcons.blender,
-        key: 0,
-      ),
-    );
-    
+      // production record
+      product_store_items.add(
+        SidebarItemModel(
+          title: 'Production Record',
+          icon: FontAwesomeIcons.blender,
+          key: 0,
+        ),
+      );
+
     if (auth_staff.role != 'Terminal' && auth_staff.role != 'Production')
-    // product received
-    product_store_items.add(
-      SidebarItemModel(
-        title: 'Product Received',
-        icon: FontAwesomeIcons.appleWhole,
-        key: 1,
-      ),
-    );
+      // product received
+      product_store_items.add(
+        SidebarItemModel(
+          title: 'Product Received',
+          icon: FontAwesomeIcons.appleWhole,
+          key: 1,
+        ),
+      );
 
     if (auth_staff.role != 'Terminal')
-    // product request
-    product_store_items.add(
-      SidebarItemModel(
-        title: 'Product Request',
-        icon: FontAwesomeIcons.basketShopping,
-        key: 2,
-      ),
-    );
+      // product request
+      product_store_items.add(
+        SidebarItemModel(
+          title: 'Product Request',
+          icon: FontAwesomeIcons.basketShopping,
+          key: 2,
+        ),
+      );
 
     if (auth_staff.role != 'Production')
-    // terminal collection
-    product_store_items.add(
-      SidebarItemModel(
-        title: 'Terminal Collection',
-        icon: FontAwesomeIcons.store,
-        key: 3,
-      ),
-    );
+      // terminal collection
+      product_store_items.add(
+        SidebarItemModel(
+          title: 'Terminal Collection',
+          icon: FontAwesomeIcons.store,
+          key: 3,
+        ),
+      );
 
     if (auth_staff.role != 'Terminal')
-    // bad product
-    product_store_items.add(
-      SidebarItemModel(
-        title: 'Bad Product Record',
-        icon: FontAwesomeIcons.trashArrowUp,
-        key: 4,
-      ),
-    );
+      // bad product
+      product_store_items.add(
+        SidebarItemModel(
+          title: 'Bad Product Record',
+          icon: FontAwesomeIcons.trashArrowUp,
+          key: 4,
+        ),
+      );
 
     //?
 
     if (auth_staff.role != 'Terminal' && auth_staff.role != 'Sales')
-    // restock product material
-    material_store_items.add(
-      SidebarItemModel(
-        title: 'Restock Product Material',
-        icon: FontAwesomeIcons.codeCompare,
-        key: 5,
-      ),
-    );
+      // restock product material
+      material_store_items.add(
+        SidebarItemModel(
+          title: 'Restock Product Material',
+          icon: FontAwesomeIcons.codeCompare,
+          key: 5,
+        ),
+      );
 
     if (auth_staff.role != 'Terminal' && auth_staff.role != 'Sales')
-    // restock raw material
-    material_store_items.add(
-      SidebarItemModel(
-        title: 'Restock Raw Material',
-        icon: FontAwesomeIcons.repeat,
-        key: 6,
-      ),
-    );
+      // restock raw material
+      material_store_items.add(
+        SidebarItemModel(
+          title: 'Restock Raw Material',
+          icon: FontAwesomeIcons.repeat,
+          key: 6,
+        ),
+      );
 
     if (auth_staff.role != 'Terminal')
-    // product material request
-    material_store_items.add(
-      SidebarItemModel(
-        title: 'Product Material Request',
-        icon: FontAwesomeIcons.toolbox,
-        key: 7,
-      ),
-    );
+      // product material request
+      material_store_items.add(
+        SidebarItemModel(
+          title: 'Product Material Request',
+          icon: FontAwesomeIcons.toolbox,
+          key: 7,
+        ),
+      );
 
     if (auth_staff.role != 'Terminal')
-    // raw material request
-    material_store_items.add(
-      SidebarItemModel(
-        title: 'Raw Material Request',
-        icon: FontAwesomeIcons.leaf,
-        key: 8,
-      ),
-    );
+      // raw material request
+      material_store_items.add(
+        SidebarItemModel(
+          title: 'Raw Material Request',
+          icon: FontAwesomeIcons.leaf,
+          key: 8,
+        ),
+      );
+
+    if (auth_staff.role != 'Terminal')
+      // product material return
+      material_store_items.add(
+        SidebarItemModel(
+          title: 'Product Material Return',
+          icon: FontAwesomeIcons.toolbox,
+          key: 9,
+        ),
+      );
 
     fecth_pending_records();
   }
@@ -190,6 +202,11 @@ class _SideBarState extends State<SideBar> {
         .raw_material_request_record
         .where((rec) => !rec.authorized!)
         .length;
+
+    productMaterialReturn_rec = Provider.of<AppData>(context)
+        .product_material_return_record
+        .where((rec) => !rec.authorized!)
+        .length;
   }
 
   int get_not_byIndex(int index) {
@@ -212,6 +229,8 @@ class _SideBarState extends State<SideBar> {
         return productMaterialRequest_rec;
       case 8:
         return rawMaterialRequest_rec;
+      case 9:
+        return productMaterialReturn_rec;
       default:
         return 0;
     }
@@ -589,6 +608,9 @@ class _SideBarState extends State<SideBar> {
     bool isDarkTheme =
         Provider.of<AppData>(context).themeMode == ThemeMode.dark;
 
+    bool canLogout = Provider.of<AppData>(context).can_logout;
+    bool canRefresh = Provider.of<AppData>(context).can_refresh;
+
     return Container(
       decoration: BoxDecoration(
         color: isDarkTheme
@@ -596,22 +618,40 @@ class _SideBarState extends State<SideBar> {
             : AppColors.light_dialogBackground_3,
       ),
       width: double.infinity,
+      height: 50,
       padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       // margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          // sign out menu
-          sign_out_menu(),
+      child: Center(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            // sign out menu
+            if (canLogout) sign_out_menu() else Container(width: 100),
 
-          // todo - settings (refresh)
-          IconButton(
-            onPressed: () async {
-              ServerHelpers.get_all_data(context);
-            },
-            icon: Icon(Icons.settings),
-          ),
-        ],
+            // todo - settings (refresh)
+            if (canRefresh)
+              IconButton(
+                onPressed: () async {
+                  ServerHelpers.get_all_data(context, refresh: true);
+                },
+                icon: Icon(
+                  Icons.settings,
+                  color: isDarkTheme
+                      ? AppColors.dark_primaryBackgroundColor
+                      : AppColors.light_dialogBackground_3,
+                ),
+              )
+            else
+              Container(
+                width: 25,
+                height: 25,
+                child: CircularProgressIndicator(
+                  color: AppColors.orange_1,
+                  strokeWidth: 3,
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }
@@ -766,6 +806,9 @@ class _SideBarState extends State<SideBar> {
         break;
       case 8:
         navigateTo(RawMaterialRequestRecordPage());
+        break;
+      case 9:
+        navigateTo(ProductMaterialReturnRecordPage());
         break;
     }
   }

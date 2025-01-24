@@ -1,4 +1,5 @@
 import 'package:delightsome_software/dataModels/materialStoreModels/productMaterialsRequest.model.dart';
+import 'package:delightsome_software/dataModels/materialStoreModels/productMaterialsReturn.model.dart';
 import 'package:delightsome_software/dataModels/materialStoreModels/rawMaterialsRequest.model.dart';
 import 'package:delightsome_software/dataModels/materialStoreModels/restockProductMaterial.model.dart';
 import 'package:delightsome_software/dataModels/materialStoreModels/restockRawMaterial.model.dart';
@@ -17,6 +18,7 @@ final ValueNotifier<UniqueKey> appRestartNotifier = ValueNotifier(UniqueKey());
 //? SAVED RECORDS
 ProductMaterialsRequestModel? saved_product_material_request_model;
 RawMaterialsRequestModel? saved_raw_material_request_model;
+ProductMaterialsReturnModel? saved_product_material_return_model;
 RestockProductMaterialModel? saved_restock_product_material_model;
 RestockRawMaterialModel? saved_restock_raw_material_model;
 

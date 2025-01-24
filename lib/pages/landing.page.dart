@@ -2,6 +2,7 @@ import 'package:delightsome_software/appColors.dart';
 import 'package:delightsome_software/dataModels/userModels/staff.model.dart';
 import 'package:delightsome_software/globalvariables.dart';
 import 'package:delightsome_software/pages/materialStorePages/enter_product_material_request.page.dart';
+import 'package:delightsome_software/pages/materialStorePages/enter_product_material_return.page.dart';
 import 'package:delightsome_software/pages/materialStorePages/enter_raw_material_request.page.dart';
 import 'package:delightsome_software/pages/materialStorePages/enter_restock_product_material.page.dart';
 import 'package:delightsome_software/pages/materialStorePages/enter_restock_raw_material.page.dart';
@@ -61,6 +62,13 @@ class _LandingPageState extends State<LandingPage> {
         Provider.of<AppData>(context).themeMode == ThemeMode.dark;
 
     auth_staff = Provider.of<AppData>(context).active_staff;
+
+    if (auth_staff == null)
+      return Scaffold(
+        backgroundColor: isDarkTheme
+            ? AppColors.dark_primaryBackgroundColor
+            : AppColors.light_dialogBackground_3,
+      );
 
     return Scaffold(
       backgroundColor: isDarkTheme
@@ -203,60 +211,61 @@ class _LandingPageState extends State<LandingPage> {
                 children: [
                   // product list
                   if (auth_staff!.role != 'Terminal')
-                  menu_tile(
-                    icon: FontAwesomeIcons.productHunt,
-                    title: 'Products',
-                    color: product_store_color,
-                    onClicked: () {
-                      goto_page(
-                        dialog: null,
-                        page: ProductListPage(
-                          page: 'product',
-                        ),
-                      );
-                    },
-                  ),
+                    menu_tile(
+                      icon: FontAwesomeIcons.productHunt,
+                      title: 'Products',
+                      color: product_store_color,
+                      onClicked: () {
+                        goto_page(
+                          dialog: null,
+                          page: ProductListPage(
+                            page: 'product',
+                          ),
+                        );
+                      },
+                    ),
 
                   // terminal product list
                   if (auth_staff!.role != 'Production')
-                  menu_tile(
-                    icon: FontAwesomeIcons.productHunt,
-                    title: 'Terminal Products',
-                    color: terminal_color,
-                    onClicked: () {
-                      goto_page(
-                        dialog: null,
-                        page: ProductListPage(
-                          page: 'terminal_product',
-                        ),
-                      );
-                    },
-                  ),
+                    menu_tile(
+                      icon: FontAwesomeIcons.productHunt,
+                      title: 'Terminal Products',
+                      color: terminal_color,
+                      onClicked: () {
+                        goto_page(
+                          dialog: null,
+                          page: ProductListPage(
+                            page: 'terminal_product',
+                          ),
+                        );
+                      },
+                    ),
 
                   // product material list
                   if (auth_staff!.role != 'Terminal')
-                  menu_tile(
-                    icon: FontAwesomeIcons.toolbox,
-                    title: 'Product Materials',
-                    color: p_material_store_color,
-                    onClicked: () {
-                      goto_page(dialog: null, page: ProductMaterialListPage());
-                    },
-                  ),
+                    menu_tile(
+                      icon: FontAwesomeIcons.toolbox,
+                      title: 'Product Materials',
+                      color: p_material_store_color,
+                      onClicked: () {
+                        goto_page(
+                            dialog: null, page: ProductMaterialListPage());
+                      },
+                    ),
 
                   // raw material list
                   if (auth_staff!.role != 'Terminal')
-                  menu_tile(
-                    icon: FontAwesomeIcons.leaf,
-                    title: 'Raw Materials',
-                    color: r_material_store_color,
-                    onClicked: () {
-                      goto_page(
-                        dialog: null,
-                        page: RawMaterialListPage(),
-                      );
-                    },
-                  ),
+                    menu_tile(
+                      icon: FontAwesomeIcons.leaf,
+                      title: 'Raw Materials',
+                      color: r_material_store_color,
+                      onClicked: () {
+                        goto_page(
+                          dialog: null,
+                          page: RawMaterialListPage(),
+                        );
+                      },
+                    ),
                 ],
               ),
             ),
@@ -299,50 +308,58 @@ class _LandingPageState extends State<LandingPage> {
                 scrollDirection: Axis.horizontal,
                 children: [
                   // outlet shop
-                  if (auth_staff!.role != 'Production' && auth_staff!.role != 'Terminal')
-                  menu_tile(
-                    icon: FontAwesomeIcons.shop,
-                    title: 'Outlet Store',
-                    color: outlet_color,
-                    show_not: Provider.of<AppData>(context).outlet_shops.isNotEmpty,
-                    onClicked: () {
-                      goto_page(dialog: false, page: SalesPage());
-                    },
-                  ),
+                  if (auth_staff!.role != 'Production' &&
+                      auth_staff!.role != 'Terminal')
+                    menu_tile(
+                      icon: FontAwesomeIcons.shop,
+                      title: 'Outlet Store',
+                      color: outlet_color,
+                      show_not:
+                          Provider.of<AppData>(context).outlet_shops.isNotEmpty,
+                      onClicked: () {
+                        goto_page(dialog: false, page: SalesPage());
+                      },
+                    ),
 
                   // outlet sales record
-                  if (auth_staff!.role != 'Production' && auth_staff!.role != 'Terminal')
-                  menu_tile(
-                    icon: FontAwesomeIcons.solidRectangleList,
-                    title: 'Outlet Store Record',
-                    color: outlet_color,
-                    onClicked: () {
-                      goto_page(dialog: false, page: SalesRecordPage());
-                    },
-                  ),
+                  if (auth_staff!.role != 'Production' &&
+                      auth_staff!.role != 'Terminal')
+                    menu_tile(
+                      icon: FontAwesomeIcons.solidRectangleList,
+                      title: 'Outlet Store Record',
+                      color: outlet_color,
+                      onClicked: () {
+                        goto_page(dialog: false, page: SalesRecordPage());
+                      },
+                    ),
 
                   // terminal shop
-                  if (auth_staff!.role != 'Production' && auth_staff!.role != 'Sales')
-                  menu_tile(
-                    icon: FontAwesomeIcons.store,
-                    title: 'Terminal Store',
-                    color: terminal_color,
-                    show_not: Provider.of<AppData>(context).terminal_shops.isNotEmpty,
-                    onClicked: () {
-                      goto_page(dialog: false, page: TerminalSalesPage());
-                    },
-                  ),
+                  if (auth_staff!.role != 'Production' &&
+                      auth_staff!.role != 'Sales')
+                    menu_tile(
+                      icon: FontAwesomeIcons.store,
+                      title: 'Terminal Store',
+                      color: terminal_color,
+                      show_not: Provider.of<AppData>(context)
+                          .terminal_shops
+                          .isNotEmpty,
+                      onClicked: () {
+                        goto_page(dialog: false, page: TerminalSalesPage());
+                      },
+                    ),
 
                   // terminal sales record
-                  if (auth_staff!.role != 'Production' && auth_staff!.role != 'Sales')
-                  menu_tile(
-                    icon: FontAwesomeIcons.rectangleList,
-                    title: 'Terminal Store Record',
-                    color: terminal_color,
-                    onClicked: () {
-                      goto_page(dialog: false, page: TerminalSalesRecordPage());
-                    },
-                  ),
+                  if (auth_staff!.role != 'Production' &&
+                      auth_staff!.role != 'Sales')
+                    menu_tile(
+                      icon: FontAwesomeIcons.rectangleList,
+                      title: 'Terminal Store Record',
+                      color: terminal_color,
+                      onClicked: () {
+                        goto_page(
+                            dialog: false, page: TerminalSalesRecordPage());
+                      },
+                    ),
                 ],
               ),
             ),
@@ -385,122 +402,123 @@ class _LandingPageState extends State<LandingPage> {
                 children: [
                   // production form
                   if (auth_staff!.role != 'Terminal')
-                  menu_tile(
-                    icon: FontAwesomeIcons.blender,
-                    title: 'Enter Production',
-                    color: product_store_color,
-                    show_not: saved_production_model != null,
-                    onClicked: () {
-                      goto_page(
-                        dialog: null,
-                        page: EnterProductionPage(
-                          editModel: saved_production_model,
-                        ),
-                      );
-                    },
-                  ),
+                    menu_tile(
+                      icon: FontAwesomeIcons.blender,
+                      title: 'Enter Production',
+                      color: product_store_color,
+                      show_not: saved_production_model != null,
+                      onClicked: () {
+                        goto_page(
+                          dialog: null,
+                          page: EnterProductionPage(
+                            editModel: saved_production_model,
+                          ),
+                        );
+                      },
+                    ),
 
                   // product received form
-                  if (auth_staff!.role != 'Terminal' && auth_staff!.role != 'Production')
-                  menu_tile(
-                    icon: FontAwesomeIcons.appleWhole,
-                    title: 'Enter Product Received',
-                    color: product_store_color,
-                    show_not: saved_product_received_model != null,
-                    onClicked: () {
-                      goto_page(
-                        dialog: null,
-                        page: EnterProductReceivedPage(
-                          editModel: saved_product_received_model,
-                        ),
-                      );
-                    },
-                  ),
+                  if (auth_staff!.role != 'Terminal' &&
+                      auth_staff!.role != 'Production')
+                    menu_tile(
+                      icon: FontAwesomeIcons.appleWhole,
+                      title: 'Enter Product Received',
+                      color: product_store_color,
+                      show_not: saved_product_received_model != null,
+                      onClicked: () {
+                        goto_page(
+                          dialog: null,
+                          page: EnterProductReceivedPage(
+                            editModel: saved_product_received_model,
+                          ),
+                        );
+                      },
+                    ),
 
                   // product request form
                   if (auth_staff!.role != 'Terminal')
-                  menu_tile(
-                    icon: FontAwesomeIcons.basketShopping,
-                    title: 'Enter Product Request',
-                    color: product_store_color,
-                    show_not: saved_product_request_model != null,
-                    onClicked: () {
-                      goto_page(
-                        dialog: null,
-                        page: EnterProductRequestPage(
-                          editModel: saved_product_request_model,
-                        ),
-                      );
-                    },
-                  ),
+                    menu_tile(
+                      icon: FontAwesomeIcons.basketShopping,
+                      title: 'Enter Product Request',
+                      color: product_store_color,
+                      show_not: saved_product_request_model != null,
+                      onClicked: () {
+                        goto_page(
+                          dialog: null,
+                          page: EnterProductRequestPage(
+                            editModel: saved_product_request_model,
+                          ),
+                        );
+                      },
+                    ),
 
                   // terminal collection form
                   if (auth_staff!.role != 'Production')
-                  menu_tile(
-                    icon: FontAwesomeIcons.store,
-                    title: 'Enter Terminal Collection',
-                    color: terminal_color,
-                    show_not: (saved_terminal_collected_model != null ||
-                        saved_terminal_returned_model != null),
-                    onClicked: () async {
-                      var collectionType = await showDialog(
-                        context: context,
-                        builder: (context) => Dialog(
-                          child: Container(
-                            width: 300,
-                            padding: EdgeInsets.all(20),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text('Select Collection Type'),
-                                SizedBox(height: 20),
-                                Row(
-                                  children: ['Collected', 'Returned']
-                                      .map(
-                                        (e) => TextButton(
-                                            onPressed: () {
-                                              Navigator.pop(context, e);
-                                            },
-                                            child: Text(e)),
-                                      )
-                                      .toList(),
-                                ),
-                              ],
+                    menu_tile(
+                      icon: FontAwesomeIcons.store,
+                      title: 'Enter Terminal Collection',
+                      color: terminal_color,
+                      show_not: (saved_terminal_collected_model != null ||
+                          saved_terminal_returned_model != null),
+                      onClicked: () async {
+                        var collectionType = await showDialog(
+                          context: context,
+                          builder: (context) => Dialog(
+                            child: Container(
+                              width: 300,
+                              padding: EdgeInsets.all(20),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text('Select Collection Type'),
+                                  SizedBox(height: 20),
+                                  Row(
+                                    children: ['Collected', 'Returned']
+                                        .map(
+                                          (e) => TextButton(
+                                              onPressed: () {
+                                                Navigator.pop(context, e);
+                                              },
+                                              child: Text(e)),
+                                        )
+                                        .toList(),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      );
-
-                      if (collectionType != null) {
-                        goto_page(
-                          dialog: null,
-                          page: EnterTerminalcollectionPage(
-                            editModel: (collectionType == 'Collected')
-                                ? saved_terminal_collected_model
-                                : saved_terminal_returned_model,
-                            collectionType: collectionType,
-                          ),
                         );
-                      }
-                    },
-                  ),
+
+                        if (collectionType != null) {
+                          goto_page(
+                            dialog: null,
+                            page: EnterTerminalcollectionPage(
+                              editModel: (collectionType == 'Collected')
+                                  ? saved_terminal_collected_model
+                                  : saved_terminal_returned_model,
+                              collectionType: collectionType,
+                            ),
+                          );
+                        }
+                      },
+                    ),
 
                   // bad product form
                   if (auth_staff!.role != 'Terminal')
-                  menu_tile(
-                    icon: FontAwesomeIcons.trashArrowUp,
-                    title: 'Enter Bad Product',
-                    color: bad_product_color,
-                    show_not: saved_bad_product_model != null,
-                    onClicked: () {
-                      goto_page(
-                        dialog: null,
-                        page: EnterBadProductPage(
-                          editModel: saved_bad_product_model,
-                        ),
-                      );
-                    },
-                  ),
+                    menu_tile(
+                      icon: FontAwesomeIcons.trashArrowUp,
+                      title: 'Enter Bad Product',
+                      color: bad_product_color,
+                      show_not: saved_bad_product_model != null,
+                      onClicked: () {
+                        goto_page(
+                          dialog: null,
+                          page: EnterBadProductPage(
+                            editModel: saved_bad_product_model,
+                          ),
+                        );
+                      },
+                    ),
                 ],
               ),
             ),
@@ -543,72 +561,91 @@ class _LandingPageState extends State<LandingPage> {
                 scrollDirection: Axis.horizontal,
                 children: [
                   // restock product material
-                  if (auth_staff!.role != 'Sales' && auth_staff!.role != 'Terminal')
-                  menu_tile(
-                    icon: FontAwesomeIcons.codeCompare,
-                    title: 'Restock Product Material',
-                    color: p_material_store_color,
-                    show_not: saved_restock_product_material_model != null,
-                    onClicked: () {
-                      goto_page(
-                        dialog: null,
-                        page: EnterRestockProductMaterial(
-                          editModel: saved_restock_product_material_model,
-                        ),
-                      );
-                    },
-                  ),
+                  if (auth_staff!.role != 'Sales' &&
+                      auth_staff!.role != 'Terminal')
+                    menu_tile(
+                      icon: FontAwesomeIcons.codeCompare,
+                      title: 'Restock Product Material',
+                      color: p_material_store_color,
+                      show_not: saved_restock_product_material_model != null,
+                      onClicked: () {
+                        goto_page(
+                          dialog: null,
+                          page: EnterRestockProductMaterial(
+                            editModel: saved_restock_product_material_model,
+                          ),
+                        );
+                      },
+                    ),
 
                   // restock raw material
-                  if (auth_staff!.role != 'Sales' && auth_staff!.role != 'Terminal')
-                  menu_tile(
-                    icon: FontAwesomeIcons.repeat,
-                    title: 'Restock Raw Material',
-                    color: r_material_store_color,
-                    show_not: saved_restock_raw_material_model != null,
-                    onClicked: () {
-                      goto_page(
-                        dialog: null,
-                        page: EnterRestockRawMaterial(
-                          editModel: saved_restock_raw_material_model,
-                        ),
-                      );
-                    },
-                  ),
+                  if (auth_staff!.role != 'Sales' &&
+                      auth_staff!.role != 'Terminal')
+                    menu_tile(
+                      icon: FontAwesomeIcons.repeat,
+                      title: 'Restock Raw Material',
+                      color: r_material_store_color,
+                      show_not: saved_restock_raw_material_model != null,
+                      onClicked: () {
+                        goto_page(
+                          dialog: null,
+                          page: EnterRestockRawMaterial(
+                            editModel: saved_restock_raw_material_model,
+                          ),
+                        );
+                      },
+                    ),
 
                   // product material request
                   if (auth_staff!.role != 'Terminal')
-                  menu_tile(
-                    icon: FontAwesomeIcons.toolbox,
-                    title: 'Product Material Request',
-                    color: p_material_store_color,
-                    show_not: saved_product_material_request_model != null,
-                    onClicked: () {
-                      goto_page(
-                        dialog: null,
-                        page: EnterProductMaterialRequest(
-                          editModel: saved_product_material_request_model,
-                        ),
-                      );
-                    },
-                  ),
+                    menu_tile(
+                      icon: FontAwesomeIcons.toolbox,
+                      title: 'Product Material Request',
+                      color: p_material_store_color,
+                      show_not: saved_product_material_request_model != null,
+                      onClicked: () {
+                        goto_page(
+                          dialog: null,
+                          page: EnterProductMaterialRequest(
+                            editModel: saved_product_material_request_model,
+                          ),
+                        );
+                      },
+                    ),
 
                   // raw material request
                   if (auth_staff!.role != 'Terminal')
-                  menu_tile(
-                    icon: FontAwesomeIcons.leaf,
-                    title: 'Raw Material Request',
-                    color: r_material_store_color,
-                    show_not: saved_raw_material_request_model != null,
-                    onClicked: () {
-                      goto_page(
-                        dialog: null,
-                        page: EnterRawMaterialRequest(
-                          editModel: saved_raw_material_request_model,
-                        ),
-                      );
-                    },
-                  ),
+                    menu_tile(
+                      icon: FontAwesomeIcons.leaf,
+                      title: 'Raw Material Request',
+                      color: r_material_store_color,
+                      show_not: saved_raw_material_request_model != null,
+                      onClicked: () {
+                        goto_page(
+                          dialog: null,
+                          page: EnterRawMaterialRequest(
+                            editModel: saved_raw_material_request_model,
+                          ),
+                        );
+                      },
+                    ),
+
+                  // product material return
+                  if (auth_staff!.role != 'Terminal')
+                    menu_tile(
+                      icon: FontAwesomeIcons.toolbox,
+                      title: 'Product Material Return',
+                      color: p_material_store_color,
+                      show_not: saved_product_material_return_model != null,
+                      onClicked: () {
+                        goto_page(
+                          dialog: null,
+                          page: EnterProductMaterialReturn(
+                            editModel: saved_product_material_return_model,
+                          ),
+                        );
+                      },
+                    ),
                 ],
               ),
             ),
@@ -652,57 +689,61 @@ class _LandingPageState extends State<LandingPage> {
                 scrollDirection: Axis.horizontal,
                 children: [
                   // sales report
-                  if (auth_staff!.role != 'Production' && auth_staff!.role != 'Terminal')
-                  menu_tile(
-                    icon: FontAwesomeIcons.cashRegister,
-                    title: 'Sales Report',
-                    color: outlet_color,
-                    onClicked: () {
-                      goto_page(
-                        dialog: false,
-                        page: SalesReportPage(),
-                      );
-                    },
-                  ),
+                  if (auth_staff!.role != 'Production' &&
+                      auth_staff!.role != 'Terminal')
+                    menu_tile(
+                      icon: FontAwesomeIcons.cashRegister,
+                      title: 'Sales Report',
+                      color: outlet_color,
+                      onClicked: () {
+                        goto_page(
+                          dialog: false,
+                          page: SalesReportPage(),
+                        );
+                      },
+                    ),
 
                   // production summary
-                  if (auth_staff!.role != 'Production' && auth_staff!.role != 'Terminal')
-                  menu_tile(
-                    icon: FontAwesomeIcons.microchip,
-                    title: 'Production Report',
-                    color: product_store_color,
-                    onClicked: () {
-                      goto_page(
-                        dialog: null,
-                        page: ProductionSummaryPage(),
-                      );
-                    },
-                  ),
+                  if (auth_staff!.role != 'Production' &&
+                      auth_staff!.role != 'Terminal')
+                    menu_tile(
+                      icon: FontAwesomeIcons.microchip,
+                      title: 'Production Report',
+                      color: product_store_color,
+                      onClicked: () {
+                        goto_page(
+                          dialog: null,
+                          page: ProductionSummaryPage(),
+                        );
+                      },
+                    ),
 
                   // outlet product record
-                  if (auth_staff!.role != 'Production' && auth_staff!.role != 'Terminal')
-                  menu_tile(
-                    icon: FontAwesomeIcons.book,
-                    title: 'Outlet Daily Record',
-                    color: outlet_color,
-                    onClicked: () {
-                      goto_page(dialog: false, page: DailySalesRecordPage());
-                    },
-                  ),
+                  if (auth_staff!.role != 'Production' &&
+                      auth_staff!.role != 'Terminal')
+                    menu_tile(
+                      icon: FontAwesomeIcons.book,
+                      title: 'Outlet Daily Record',
+                      color: outlet_color,
+                      onClicked: () {
+                        goto_page(dialog: false, page: DailySalesRecordPage());
+                      },
+                    ),
 
                   // terminal product record
-                  if (auth_staff!.role != 'Production' && auth_staff!.role != 'Sales')
-                  menu_tile(
-                    icon: FontAwesomeIcons.book,
-                    title: 'Terminal Daily Record',
-                    color: terminal_color,
-                    onClicked: () {
-                      goto_page(
-                        dialog: false,
-                        page: TerminalDailySalesRecordPage(),
-                      );
-                    },
-                  ),
+                  if (auth_staff!.role != 'Production' &&
+                      auth_staff!.role != 'Sales')
+                    menu_tile(
+                      icon: FontAwesomeIcons.book,
+                      title: 'Terminal Daily Record',
+                      color: terminal_color,
+                      onClicked: () {
+                        goto_page(
+                          dialog: false,
+                          page: TerminalDailySalesRecordPage(),
+                        );
+                      },
+                    ),
                 ],
               ),
             ),
@@ -746,43 +787,47 @@ class _LandingPageState extends State<LandingPage> {
                 scrollDirection: Axis.horizontal,
                 children: [
                   // staff list
-                  if (auth_staff!.role != 'Production' && auth_staff!.role != 'Sales' && auth_staff!.role != 'Terminal')
-                  menu_tile(
-                    icon: FontAwesomeIcons.userTie,
-                    title: 'Staffs',
-                    color: staff_color,
-                    onClicked: () {
-                      goto_page(
-                        dialog: true,
-                        page: StaffListPage(),
-                      );
-                    },
-                  ),
+                  if (auth_staff!.role != 'Production' &&
+                      auth_staff!.role != 'Sales' &&
+                      auth_staff!.role != 'Terminal')
+                    menu_tile(
+                      icon: FontAwesomeIcons.userTie,
+                      title: 'Staffs',
+                      color: staff_color,
+                      onClicked: () {
+                        goto_page(
+                          dialog: true,
+                          page: StaffListPage(),
+                        );
+                      },
+                    ),
 
                   // customer list
                   if (auth_staff!.role != 'Production')
-                  menu_tile(
-                    icon: FontAwesomeIcons.usersLine,
-                    title: 'Customers',
-                    color: customer_color,
-                    onClicked: () {
-                      goto_page(
-                        dialog: true,
-                        page: CustomerListPage(),
-                      );
-                    },
-                  ),
+                    menu_tile(
+                      icon: FontAwesomeIcons.usersLine,
+                      title: 'Customers',
+                      color: customer_color,
+                      onClicked: () {
+                        goto_page(
+                          dialog: true,
+                          page: CustomerListPage(),
+                        );
+                      },
+                    ),
 
                   // categories
-                  if (auth_staff!.role != 'Production' && auth_staff!.role != 'Sales' && auth_staff!.role != 'Terminal')
-                  menu_tile(
-                    icon: FontAwesomeIcons.layerGroup,
-                    title: 'Store Categories',
-                    color: category_color,
-                    onClicked: () {
-                      goto_page(dialog: true, page: CategoryListPage());
-                    },
-                  ),
+                  if (auth_staff!.role != 'Production' &&
+                      auth_staff!.role != 'Sales' &&
+                      auth_staff!.role != 'Terminal')
+                    menu_tile(
+                      icon: FontAwesomeIcons.layerGroup,
+                      title: 'Store Categories',
+                      color: category_color,
+                      onClicked: () {
+                        goto_page(dialog: true, page: CategoryListPage());
+                      },
+                    ),
                 ],
               ),
             ),
@@ -830,7 +875,9 @@ class _LandingPageState extends State<LandingPage> {
               child: Text(
                 title,
                 style: TextStyle(
-                    fontWeight: FontWeight.w500, fontSize: 16, letterSpacing: .7),
+                    fontWeight: FontWeight.w500,
+                    fontSize: 16,
+                    letterSpacing: .7),
               ),
             ),
 
