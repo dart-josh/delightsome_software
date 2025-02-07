@@ -16,8 +16,8 @@ class UserHelpers {
   // Post Data to server
   static Future<bool> sendDataToServer(context,
       {required String route, required Map data}) async {
-        var auth_staff = Provider.of<AppData>(context, listen: false).active_staff;
-        
+    var auth_staff = Provider.of<AppData>(context, listen: false).active_staff;
+
     if (auth_staff == null) {
       UniversalHelpers.showToast(
         context: context,
@@ -75,7 +75,7 @@ class UserHelpers {
   // Delete Data from sever
   static Future<bool> deleteFromServer(context,
       {required String route, required String id}) async {
-        var auth_staff = Provider.of<AppData>(context, listen: false).active_staff;
+    var auth_staff = Provider.of<AppData>(context, listen: false).active_staff;
 
     if (auth_staff == null) {
       UniversalHelpers.showToast(
@@ -130,12 +130,24 @@ class UserHelpers {
     }
   }
 
+  // post getters
+  static Future<http.Response> post_getters(context, String url_suffix) async {
+    var auth_staff = Provider.of<AppData>(context, listen: false).active_staff;
+
+    // add current user to data
+    Map data = {"user": auth_staff?.key};
+    // Json encode data
+    var body = jsonEncode(data);
+    return await http.post(Uri.parse('${usersUrl}/${url_suffix}'),
+        headers: {"Content-Type": "application/json"}, body: body);
+  }
+
   // ! GETTERS
 
   // get all staff
-  static Future<List<StaffModel>> get_all_staff() async {
+  static Future<List<StaffModel>> get_all_staff(context) async {
     try {
-      var response = await http.get(Uri.parse('${usersUrl}/get_all_staff'));
+      var response = await post_getters(context, 'get_all_staff');
 
       var jsonResponse = jsonDecode(response.body);
 
@@ -159,9 +171,9 @@ class UserHelpers {
   }
 
   // get all customer
-  static Future<List<CustomerModel>> get_all_customer() async {
+  static Future<List<CustomerModel>> get_all_customer(context) async {
     try {
-      var response = await http.get(Uri.parse('${usersUrl}/get_all_customer'));
+      var response = await post_getters(context, 'get_all_customer');
 
       var jsonResponse = jsonDecode(response.body);
 

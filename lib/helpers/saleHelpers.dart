@@ -243,12 +243,24 @@ class SaleHelpers {
     }
   }
 
+  // post getters
+  static Future<http.Response> post_getters(context, String url_suffix) async {
+    var auth_staff = Provider.of<AppData>(context, listen: false).active_staff;
+
+    // add current user to data
+    Map data = {"user": auth_staff?.key};
+    // Json encode data
+    var body = jsonEncode(data);
+    return await http.post(Uri.parse('${salesUrl}/${url_suffix}'),
+        headers: {"Content-Type": "application/json"}, body: body);
+  }
+
   // ! GETTERS
 
   // Get sales record
-  static Future<List<SalesModel>> get_sales_record() async {
+  static Future<List<SalesModel>> get_sales_record(context) async {
     try {
-      var response = await http.get(Uri.parse('${salesUrl}/get_sales_record'));
+      var response = await post_getters(context, 'get_sales_record');
 
       var jsonResponse = jsonDecode(response.body);
 
@@ -272,10 +284,9 @@ class SaleHelpers {
   }
 
   // Get Terminal sales record
-  static Future<List<SalesModel>> get_terminal_sales_record() async {
+  static Future<List<SalesModel>> get_terminal_sales_record(context) async {
     try {
-      var response =
-          await http.get(Uri.parse('${salesUrl}/get_terminal_sales_record'));
+      var response = await post_getters(context, 'get_terminal_sales_record');
 
       var jsonResponse = jsonDecode(response.body);
 
@@ -337,10 +348,9 @@ class SaleHelpers {
   }
 
   // Get daily sales record
-  static Future<List<DailySalesModel>> get_daily_sales_record() async {
+  static Future<List<DailySalesModel>> get_daily_sales_record(context) async {
     try {
-      var response =
-          await http.get(Uri.parse('${salesUrl}/get_daily_sales_record'));
+      var response = await post_getters(context, 'get_daily_sales_record');
 
       var jsonResponse = jsonDecode(response.body);
 
@@ -365,10 +375,9 @@ class SaleHelpers {
 
   // Get terminal daily sales record
   static Future<List<TerminalDailySalesModel>>
-      get_terminal_daily_sales_record() async {
+      get_terminal_daily_sales_record(context) async {
     try {
-      var response = await http
-          .get(Uri.parse('${salesUrl}/get_terminal_daily_sales_record'));
+      var response = await post_getters(context, 'get_terminal_daily_sales_record');
 
       var jsonResponse = jsonDecode(response.body);
 

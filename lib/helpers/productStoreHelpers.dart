@@ -20,8 +20,8 @@ class ProductStoreHelpers {
   // Post Data to server
   static Future<bool> sendDataToServer(context,
       {required String route, required Map data}) async {
-        var auth_staff = Provider.of<AppData>(context, listen: false).active_staff;
-        
+    var auth_staff = Provider.of<AppData>(context, listen: false).active_staff;
+
     if (auth_staff == null) {
       UniversalHelpers.showToast(
         context: context,
@@ -79,7 +79,7 @@ class ProductStoreHelpers {
   // Post fetch Data to server
   static Future<dynamic> send_get_dataToServer(context,
       {required String route, required Map data}) async {
-        var auth_staff = Provider.of<AppData>(context, listen: false).active_staff;
+    var auth_staff = Provider.of<AppData>(context, listen: false).active_staff;
 
     if (auth_staff == null) {
       UniversalHelpers.showToast(
@@ -132,7 +132,7 @@ class ProductStoreHelpers {
   // Delete Data from sever
   static Future<bool> deleteFromServer(context,
       {required String route, required String id}) async {
-        var auth_staff = Provider.of<AppData>(context, listen: false).active_staff;
+    var auth_staff = Provider.of<AppData>(context, listen: false).active_staff;
 
     if (auth_staff == null) {
       UniversalHelpers.showToast(
@@ -189,13 +189,24 @@ class ProductStoreHelpers {
     }
   }
 
+  // post getters
+  static Future<http.Response> post_getters(context, String url_suffix) async {
+    var auth_staff = Provider.of<AppData>(context, listen: false).active_staff;
+
+    // add current user to data
+    Map data = {"user": auth_staff?.key};
+    // Json encode data
+    var body = jsonEncode(data);
+    return await http.post(Uri.parse('${productStoreUrl}/${url_suffix}'),
+        headers: {"Content-Type": "application/json"}, body: body);
+  }
+
   // ! GETTERS
 
   // Get all products
-  static Future<List<ProductModel>> get_products() async {
+  static Future<List<ProductModel>> get_products(context) async {
     try {
-      var response =
-          await http.get(Uri.parse('${productStoreUrl}/get_products'));
+      var response = await post_getters(context, 'get_products');
 
       var jsonResponse = jsonDecode(response.body);
 
@@ -219,10 +230,9 @@ class ProductStoreHelpers {
   }
 
   // get terminal products
-  static Future<List<ProductModel>> get_terminal_products() async {
+  static Future<List<ProductModel>> get_terminal_products(context) async {
     try {
-      var response =
-          await http.get(Uri.parse('${productStoreUrl}/get_terminal_products'));
+      var response = await post_getters(context, 'get_terminal_products');
 
       var jsonResponse = jsonDecode(response.body);
 
@@ -246,10 +256,9 @@ class ProductStoreHelpers {
   }
 
   // get production record
-  static Future<List<ProductionRecordModel>> get_production_record() async {
+  static Future<List<ProductionRecordModel>> get_production_record(context) async {
     try {
-      var response =
-          await http.get(Uri.parse('${productStoreUrl}/get_production_record'));
+      var response = await post_getters(context, 'get_production_record');
 
       var jsonResponse = jsonDecode(response.body);
 
@@ -275,10 +284,9 @@ class ProductStoreHelpers {
 
   // Get product received record
   static Future<List<ProductReceivedRecordModel>>
-      get_product_received_record() async {
+      get_product_received_record(context) async {
     try {
-      var response = await http
-          .get(Uri.parse('${productStoreUrl}/get_product_received_record'));
+      var response = await post_getters(context, 'get_product_received_record');
 
       var jsonResponse = jsonDecode(response.body);
 
@@ -304,10 +312,9 @@ class ProductStoreHelpers {
 
   // Get product request record
   static Future<List<ProductRequestRecordModel>>
-      get_product_request_record() async {
+      get_product_request_record(context) async {
     try {
-      var response = await http
-          .get(Uri.parse('${productStoreUrl}/get_product_request_record'));
+      var response = await post_getters(context, 'get_product_request_record');
 
       var jsonResponse = jsonDecode(response.body);
 
@@ -332,10 +339,9 @@ class ProductStoreHelpers {
   }
 
   // Get bad product record
-  static Future<List<BadProductRecordModel>> get_bad_product_record() async {
+  static Future<List<BadProductRecordModel>> get_bad_product_record(context) async {
     try {
-      var response = await http
-          .get(Uri.parse('${productStoreUrl}/get_bad_product_record'));
+      var response = await post_getters(context, 'get_bad_product_record');
 
       var jsonResponse = jsonDecode(response.body);
 
@@ -361,10 +367,9 @@ class ProductStoreHelpers {
 
   // Get Terminal collection record
   static Future<List<TerminalCollectionRecordModel>>
-      get_terminalCollection_record() async {
+      get_terminalCollection_record(context) async {
     try {
-      var response = await http
-          .get(Uri.parse('${productStoreUrl}/get_terminalCollection_record'));
+      var response = await post_getters(context, 'get_terminalCollection_record');
 
       var jsonResponse = jsonDecode(response.body);
 
@@ -389,10 +394,9 @@ class ProductStoreHelpers {
   }
 
   // get product categories
-  static Future<List<CategoryModel>> get_product_categories() async {
+  static Future<List<CategoryModel>> get_product_categories(context) async {
     try {
-      var response = await http
-          .get(Uri.parse('${productStoreUrl}/get_product_categories'));
+      var response = await post_getters(context, 'get_product_categories');
 
       var jsonResponse = jsonDecode(response.body);
 
@@ -418,9 +422,8 @@ class ProductStoreHelpers {
   // ! SELECTED GETTERS
 
 // Get selected production record
-  static Future<List<ProductionRecordModel>>
-      get_selected_production_record(
-          BuildContext context, Map data) async {
+  static Future<List<ProductionRecordModel>> get_selected_production_record(
+      BuildContext context, Map data) async {
     var map = await send_get_dataToServer(context,
         route: 'get_selected_production_record', data: data);
     List<ProductionRecordModel> recordList = [];
@@ -481,9 +484,8 @@ class ProductStoreHelpers {
   }
 
   // Get selected bad product record
-  static Future<List<BadProductRecordModel>>
-      get_selected_bad_product_record(
-          BuildContext context, Map data) async {
+  static Future<List<BadProductRecordModel>> get_selected_bad_product_record(
+      BuildContext context, Map data) async {
     var map = await send_get_dataToServer(context,
         route: 'get_selected_bad_product_record', data: data);
     List<BadProductRecordModel> recordList = [];

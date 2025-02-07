@@ -4,7 +4,6 @@ import 'package:delightsome_software/helpers/universalHelpers.dart';
 import 'package:delightsome_software/utils/appdata.dart';
 import 'package:provider/provider.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
-import 'package:flutter/foundation.dart';
 
 class ServerHelpers {
   static bool is_socket_connected = false;
@@ -159,7 +158,6 @@ class ServerHelpers {
 
   // get all data
   static void get_all_data(context, {bool refresh = false}) {
-    if (!kIsWeb) {
       if (!refresh) {
         UniversalHelpers.canLogout(context, value: false);
         UniversalHelpers.canRefresh(context, value: false);
@@ -212,7 +210,7 @@ class ServerHelpers {
 
       UniversalHelpers.canLogout(context, value: true);
       UniversalHelpers.canRefresh(context, value: true);
-    }
+    
   }
 
   // disconnect socket

@@ -191,13 +191,25 @@ class MaterialStoreHelpers {
     }
   }
 
+  // post getters
+  static Future<http.Response> post_getters(context, String url_suffix) async {
+    var auth_staff = Provider.of<AppData>(context, listen: false).active_staff;
+
+    // add current user to data
+    Map data = {"user": auth_staff?.key};
+    // Json encode data
+    var body = jsonEncode(data);
+    return await http.post(Uri.parse('${materialsStoreUrl}/${url_suffix}'),
+        headers: {"Content-Type": "application/json"}, body: body);
+  }
+
   // ! GETTERS
 
 // Get product materials
-  static Future<List<ProductMaterialsModel>> get_product_materials() async {
+  static Future<List<ProductMaterialsModel>> get_product_materials(
+      context) async {
     try {
-      var response = await http
-          .get(Uri.parse('${materialsStoreUrl}/get_product_materials'));
+      var response = await post_getters(context, 'get_product_materials');
 
       var jsonResponse = jsonDecode(response.body);
 
@@ -222,10 +234,9 @@ class MaterialStoreHelpers {
   }
 
   // Get raw materials
-  static Future<List<RawMaterialsModel>> get_raw_materials() async {
+  static Future<List<RawMaterialsModel>> get_raw_materials(context) async {
     try {
-      var response =
-          await http.get(Uri.parse('${materialsStoreUrl}/get_raw_materials'));
+      var response = await post_getters(context, 'get_raw_materials');
 
       var jsonResponse = jsonDecode(response.body);
 
@@ -250,10 +261,10 @@ class MaterialStoreHelpers {
 
 // Get Product materials restock record
   static Future<List<RestockProductMaterialModel>>
-      get_restock_product_materials_record() async {
+      get_restock_product_materials_record(context) async {
     try {
-      var response = await http.get(Uri.parse(
-          '${materialsStoreUrl}/get_restock_product_materials_record'));
+      var response =
+          await post_getters(context, 'get_restock_product_materials_record');
 
       var jsonResponse = jsonDecode(response.body);
 
@@ -279,11 +290,11 @@ class MaterialStoreHelpers {
   }
 
 // Get raw materials restock record
-  static Future<List<RestockRawMaterialModel>>
-      get_restock_raw_materials_record() async {
+  static Future<List<RestockRawMaterialModel>> get_restock_raw_materials_record(
+      context) async {
     try {
-      var response = await http.get(
-          Uri.parse('${materialsStoreUrl}/get_restock_raw_materials_record'));
+      var response =
+          await post_getters(context, 'get_restock_raw_materials_record');
 
       var jsonResponse = jsonDecode(response.body);
 
@@ -309,10 +320,10 @@ class MaterialStoreHelpers {
 
 // Get product materials request record
   static Future<List<ProductMaterialsRequestModel>>
-      get_product_materials_request_record() async {
+      get_product_materials_request_record(context) async {
     try {
-      var response = await http.get(Uri.parse(
-          '${materialsStoreUrl}/get_product_materials_request_record'));
+      var response =
+          await post_getters(context, 'get_product_materials_request_record');
 
       var jsonResponse = jsonDecode(response.body);
 
@@ -338,10 +349,10 @@ class MaterialStoreHelpers {
 
 // Get raw materials request record
   static Future<List<RawMaterialsRequestModel>>
-      get_raw_materials_request_record() async {
+      get_raw_materials_request_record(context) async {
     try {
-      var response = await http.get(
-          Uri.parse('${materialsStoreUrl}/get_raw_materials_request_record'));
+      var response =
+          await post_getters(context, 'get_raw_materials_request_record');
 
       var jsonResponse = jsonDecode(response.body);
 
@@ -367,10 +378,10 @@ class MaterialStoreHelpers {
 
 // Get product materials return record
   static Future<List<ProductMaterialsReturnModel>>
-      get_product_materials_return_record() async {
+      get_product_materials_return_record(context) async {
     try {
-      var response = await http.get(Uri.parse(
-          '${materialsStoreUrl}/get_product_materials_return_record'));
+      var response =
+          await post_getters(context, 'get_product_materials_return_record');
 
       var jsonResponse = jsonDecode(response.body);
 
@@ -395,10 +406,11 @@ class MaterialStoreHelpers {
   }
 
 // Get product materials categories
-  static Future<List<CategoryModel>> get_product_materials_categories() async {
+  static Future<List<CategoryModel>> get_product_materials_categories(
+      context) async {
     try {
-      var response = await http.get(
-          Uri.parse('${materialsStoreUrl}/get_product_materials_categories'));
+      var response =
+          await post_getters(context, 'get_product_materials_categories');
 
       var jsonResponse = jsonDecode(response.body);
 
@@ -422,10 +434,11 @@ class MaterialStoreHelpers {
   }
 
 // Get raw materials categories
-  static Future<List<CategoryModel>> get_raw_materials_categories() async {
+  static Future<List<CategoryModel>> get_raw_materials_categories(
+      context) async {
     try {
-      var response = await http
-          .get(Uri.parse('${materialsStoreUrl}/get_raw_materials_categories'));
+      var response =
+          await post_getters(context, 'get_raw_materials_categories');
 
       var jsonResponse = jsonDecode(response.body);
 

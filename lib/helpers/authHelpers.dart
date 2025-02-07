@@ -129,6 +129,14 @@ class AuthHelpers {
         route: 'check_password', data: data, showLoading: showLoading);
   }
 
+  // check_pin
+  static Future<dynamic> check_pin(BuildContext context, Map data,
+      {bool showLoading = false}) async {
+    // { staffId, pin }
+    return await sendDataToServer_2(context,
+        route: 'check_pin', data: data, showLoading: showLoading);
+  }
+
   // create_password
   static Future<dynamic> create_password(BuildContext context, Map data,
       {bool showLoading = false}) async {
@@ -158,12 +166,24 @@ class AuthHelpers {
         route: 'reset_pin/${staff_id}', data: {});
   }
 
+  // post getters
+  static Future<http.Response> post_getters(context, String url_suffix) async {
+    var auth_staff = Provider.of<AppData>(context, listen: false).active_staff;
+
+    // add current user to data
+    Map data = {"user": auth_staff?.key};
+    // Json encode data
+    var body = jsonEncode(data);
+    return await http.post(Uri.parse('${authUrl}/${url_suffix}'),
+        headers: {"Content-Type": "application/json"}, body: body);
+  }
+
   // ! GETTERS
 
   // get all staff
-  static Future<List<StaffModel>> get_online_users() async {
+  static Future<List<StaffModel>> get_online_users(context) async {
     try {
-      var response = await http.get(Uri.parse('${authUrl}/get_online_users'));
+      var response = await post_getters(context, 'get_online_users');
 
       var jsonResponse = jsonDecode(response.body);
 
@@ -223,8 +243,6 @@ class AuthHelpers {
     saved_production_model = null;
     saved_terminal_collected_model = null;
     saved_terminal_returned_model = null;
-
-    auth_pin = null;
 
     Provider.of<AppData>(context, listen: false).outlet_shops.clear();
     Provider.of<AppData>(context, listen: false).terminal_shops.clear();

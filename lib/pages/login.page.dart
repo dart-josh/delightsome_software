@@ -1,6 +1,5 @@
 import 'package:delightsome_software/appColors.dart';
 import 'package:delightsome_software/dataModels/userModels/auth.model.dart';
-import 'package:delightsome_software/globalvariables.dart';
 import 'package:delightsome_software/helpers/authHelpers.dart';
 import 'package:delightsome_software/helpers/dataGetters.dart';
 import 'package:delightsome_software/helpers/universalHelpers.dart';
@@ -55,8 +54,8 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   int prev_page = 0;
-  int page_index = 5;
-  // 0-login 1-password 2-select_account 3-pin 4-create_password
+  int page_index = 6;
+  // 0-login 1-password 2-select_account 3-pin 4-create_password 5-create-pin
 
   // login
   validate_login() async {
@@ -80,13 +79,13 @@ class _LoginPageState extends State<LoginPage> {
           page_index = 0;
         });
       }
-    } 
-    
+    }
+
     // from logout
     else {
       // switch account & logout
       if (widget.initial_page == 2 || widget.initial_page == 0) {
-      } 
+      }
 
       // lock
       else {
@@ -122,17 +121,20 @@ class _LoginPageState extends State<LoginPage> {
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  page_index == 5
+                  page_index == 6
                       ? landing_page()
                       : page_index == 2
                           ? accounts_page()
-                          : page_index == 3
-                              ? pin_page(auth_pin)
+                          : page_index == 3 || page_index == 5
+                              ? pin_page(page_index)
                               : login_page(page_index),
                 ],
               )
             else
-              Center(child: CircularProgressIndicator(color: AppColors.orange_1,)),
+              Center(
+                  child: CircularProgressIndicator(
+                color: AppColors.orange_1,
+              )),
           ],
         ),
       ),
@@ -380,7 +382,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   // pin page
-  Widget pin_page(String? pin) {
+  Widget pin_page(int page_index) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       child: Column(
@@ -388,7 +390,7 @@ class _LoginPageState extends State<LoginPage> {
           user_tile(staff_id_controller.text),
           SizedBox(height: 1),
           Text(
-            pin == null
+            page_index == 5
                 ? pin_1_confirmation == 0
                     ? 'Create 4 digit pin'
                     : 'Confrim 4 digit pin'
@@ -400,7 +402,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
           SizedBox(height: 10),
-          buildPinPut(),
+          buildPinPut(page_index),
           Container(
             width: 300,
             margin: EdgeInsets.only(top: 10),
@@ -408,7 +410,7 @@ class _LoginPageState extends State<LoginPage> {
             child: TextButton(
               onPressed: () {
                 pin_controller.clear();
-                if (pin == null && pin_1_confirmation == 1) {
+                if (page_index == 5 && pin_1_confirmation == 1) {
                   pin_1_confirmation = 0;
                   pin_1 = null;
                 } else {
@@ -422,7 +424,7 @@ class _LoginPageState extends State<LoginPage> {
 
                 setState(() {});
               },
-              child: Text((pin == null && pin_1_confirmation == 1)
+              child: Text((page_index == 5 && pin_1_confirmation == 1)
                   ? 'Go back'
                   : 'Switch account'),
             ),
@@ -433,7 +435,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   // pin put
-  Widget buildPinPut() {
+  Widget buildPinPut(int page_index) {
     bool isDarkTheme =
         Provider.of<AppData>(context).themeMode == ThemeMode.dark;
 
@@ -479,7 +481,7 @@ class _LoginPageState extends State<LoginPage> {
         submittedPinTheme: submittedPinTheme,
         obscureText: true,
         validator: (s) {
-          if (auth_pin == null) {
+          if (page_index == 5) {
             if (pin_1_confirmation == 1) {
               if (s != null && s.isNotEmpty && pin_1 != s) {
                 return 'Pin do not match';
@@ -488,11 +490,13 @@ class _LoginPageState extends State<LoginPage> {
             return null;
           }
 
-          return s == auth_pin ? null : 'Pin is incorrect';
+          return null;
         },
         pinputAutovalidateMode: PinputAutovalidateMode.onSubmit,
         showCursor: true,
-        onCompleted: check_pin);
+        onCompleted: (_pin) {
+          check_pin(staff_id_controller.text, _pin);
+        });
   }
 
   //? WIDGETS
@@ -1029,7 +1033,6 @@ class _LoginPageState extends State<LoginPage> {
 
     // continue
     else if (response['mode'] == 0) {
-      auth_pin = response['pin'];
       if (check) {
         return 'true';
       } else {
@@ -1067,7 +1070,6 @@ class _LoginPageState extends State<LoginPage> {
 
     // continue
     else if (response['mode'] == 0) {
-      auth_pin = null;
       role = response['role'];
     }
 
@@ -1099,7 +1101,6 @@ class _LoginPageState extends State<LoginPage> {
 
     // continue
     else if (response['mode'] == 0) {
-      auth_pin = pin;
       return pin;
     }
 
@@ -1116,9 +1117,9 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   // check pin
-  check_pin(String _pin) async {
+  check_pin(String staff_id, String _pin) async {
     // create pin
-    if (auth_pin == null) {
+    if (page_index == 5) {
       if (pin_1_confirmation == 0) {
         pin_1 = _pin;
         pin_1_confirmation = 1;
@@ -1141,8 +1142,50 @@ class _LoginPageState extends State<LoginPage> {
           }
         }
       }
-    } else {
-      if (auth_pin == _pin) login();
+    }
+
+    // check pin
+    else {
+      isLoading = true;
+      setState(() {});
+
+      var response = await AuthHelpers.check_pin(
+        context,
+        {
+          'staffId': staff_id,
+          'pin': _pin,
+        },
+      );
+
+      isLoading = false;
+      setState(() {});
+
+      if (response == null) return '';
+
+      // create pin
+      if (response['mode'] == 1) {
+        pin_controller.clear();
+        setState(() {
+          page_index = 5;
+        });
+        return '';
+      }
+
+      // continue
+      else if (response['mode'] == 0) {
+        login();
+      }
+
+      // invalid
+      else {
+        UniversalHelpers.showToast(
+          context: context,
+          color: Colors.red,
+          toastText: 'Invalid Action',
+          icon: Icons.warning,
+        );
+        return '';
+      }
     }
   }
 

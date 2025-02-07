@@ -36,7 +36,6 @@ List<String> category_type_list = [
   'Product Store'
 ];
 
-String? auth_pin;
 
 // ? Home Defaults
 bool inventories_expanded = true;
