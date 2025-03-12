@@ -120,6 +120,22 @@ class DataGetters {
         .update_product_request_record(rec);
   }
 
+  // Get product takeOut record
+  static get_product_takeOut_record(context) async {
+    var rec = await ProductStoreHelpers.get_product_takeOut_record(context);
+
+    Provider.of<AppData>(context, listen: false)
+        .update_product_takeOut_record(rec);
+  }
+
+  // Get product return record
+  static get_product_return_record(context) async {
+    var rec = await ProductStoreHelpers.get_product_return_record(context);
+
+    Provider.of<AppData>(context, listen: false)
+        .update_product_return_record(rec);
+  }
+
   // Get bad product record
   static get_bad_product_record(context) async {
     var rec = await ProductStoreHelpers.get_bad_product_record(context);

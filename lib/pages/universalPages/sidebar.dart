@@ -12,6 +12,8 @@ import 'package:delightsome_software/pages/materialStorePages/restock_raw_materi
 import 'package:delightsome_software/pages/productStorePages/bad_product_record.page.dart';
 import 'package:delightsome_software/pages/productStorePages/product_received_record.page.dart';
 import 'package:delightsome_software/pages/productStorePages/product_request_record.page.dart';
+import 'package:delightsome_software/pages/productStorePages/product_return_record.page.dart';
+import 'package:delightsome_software/pages/productStorePages/product_takeOut_record.page.dart';
 import 'package:delightsome_software/pages/productStorePages/production_record.page.dart';
 import 'package:delightsome_software/pages/productStorePages/terminal_collection_record.page.dart';
 import 'package:delightsome_software/utils/appdata.dart';
@@ -31,6 +33,8 @@ class _SideBarState extends State<SideBar> {
   int production_rec = 0;
   int productReceived_rec = 0;
   int productRequest_rec = 0;
+  int productTakeOut_rec = 0;
+  int productReturn_rec = 0;
   int terminalCollection_rec = 0;
   int badProduct_rec = 0;
 
@@ -87,6 +91,26 @@ class _SideBarState extends State<SideBar> {
           title: 'Terminal Collection',
           icon: FontAwesomeIcons.store,
           key: 3,
+        ),
+      );
+
+    if (auth_staff.role != 'Terminal' && auth_staff.role != 'Production')
+      // product takeOut
+      product_store_items.add(
+        SidebarItemModel(
+          title: 'Product TakeOut',
+          icon: FontAwesomeIcons.appleWhole,
+          key: 10,
+        ),
+      );
+
+    if (auth_staff.role != 'Terminal' && auth_staff.role != 'Production')
+      // product return
+      product_store_items.add(
+        SidebarItemModel(
+          title: 'Product Return',
+          icon: FontAwesomeIcons.appleWhole,
+          key: 11,
         ),
       );
 
@@ -176,6 +200,16 @@ class _SideBarState extends State<SideBar> {
         .where((rec) => !rec.verified!)
         .length;
 
+    productTakeOut_rec = Provider.of<AppData>(context)
+        .product_takeOut_record
+        .where((rec) => !rec.verified!)
+        .length;
+
+    productReturn_rec = Provider.of<AppData>(context)
+        .product_return_record
+        .where((rec) => !rec.verified!)
+        .length;
+
     badProduct_rec = Provider.of<AppData>(context)
         .bad_product_record
         .where((rec) => !rec.verified!)
@@ -231,6 +265,10 @@ class _SideBarState extends State<SideBar> {
         return rawMaterialRequest_rec;
       case 9:
         return productMaterialReturn_rec;
+      case 10:
+        return productTakeOut_rec;
+      case 11:
+        return productReturn_rec;
       default:
         return 0;
     }
@@ -809,6 +847,10 @@ class _SideBarState extends State<SideBar> {
         break;
       case 9:
         navigateTo(ProductMaterialReturnRecordPage());
+      case 10:
+        navigateTo(ProductTakeOutRecordPage());
+      case 11:
+        navigateTo(ProductReturnRecordPage());
         break;
     }
   }

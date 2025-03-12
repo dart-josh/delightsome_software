@@ -38,6 +38,8 @@ class DailySalesProductsModel {
   int openingQuantity;
   int added;
   int request;
+  int takeOut;
+  int returnn;
   int terminalCollected;
   int terminalReturn;
   int badProduct;
@@ -52,6 +54,8 @@ class DailySalesProductsModel {
     required this.openingQuantity,
     required this.added,
     required this.request,
+    required this.takeOut,
+    required this.returnn,
     required this.terminalCollected,
     required this.terminalReturn,
     required this.badProduct,
@@ -83,6 +87,8 @@ class DailySalesProductsModel {
       openingQuantity: json['openingQuantity'] ?? 0,
       added: json['added'] ?? 0,
       request: json['request'] ?? 0,
+      takeOut: json['takeOut'] ?? 0,
+      returnn: json['return'] ?? 0,
       terminalCollected: json['terminalCollected'] ?? 0,
       terminalReturn: json['terminalReturn'] ?? 0,
       badProduct: json['badProduct'] ?? 0,
@@ -100,6 +106,8 @@ class DailySalesProductsModel {
         openingQuantity = other.openingQuantity,
         added = other.added,
         request = other.request,
+        takeOut = other.takeOut,
+        returnn = other.returnn,
         terminalCollected = other.terminalCollected,
         terminalReturn = other.terminalReturn,
         badProduct = other.badProduct,

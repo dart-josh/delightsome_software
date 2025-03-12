@@ -5,7 +5,7 @@ import 'package:delightsome_software/helpers/universalHelpers.dart';
 import 'package:delightsome_software/pages/salePages/widgets/terminal_daily_sale_record_view.dart';
 import 'package:delightsome_software/utils/appdata.dart';
 import 'package:flutter/material.dart';
-import 'package:month_year_picker2/month_year_picker2.dart';
+import 'package:simple_month_year_picker/simple_month_year_picker.dart';
 import 'package:provider/provider.dart';
 
 class TerminalDailySalesRecordPage extends StatefulWidget {
@@ -421,11 +421,11 @@ class _TerminalDailySalesRecordPageState
           // month picker
           IconButton(
             onPressed: () async {
-              final res = await showMonthYearPicker(
+              final res = await SimpleMonthYearPicker.showMonthYearPickerDialog(
                 context: context,
-                initialDate: dateM ?? DateTime.now(),
-                firstDate: DateTime(2020),
-                lastDate: DateTime.now(),
+                // initialDate: dateM ?? DateTime.now(),
+                // firstDate: DateTime(2020),
+                // lastDate: DateTime.now(),
               );
 
               if (res != null) {

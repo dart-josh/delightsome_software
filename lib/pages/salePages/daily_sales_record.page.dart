@@ -5,7 +5,7 @@ import 'package:delightsome_software/helpers/universalHelpers.dart';
 import 'package:delightsome_software/pages/salePages/widgets/daily_sale_record_view.dart';
 import 'package:delightsome_software/utils/appdata.dart';
 import 'package:flutter/material.dart';
-import 'package:month_year_picker2/month_year_picker2.dart';
+import 'package:simple_month_year_picker/simple_month_year_picker.dart';
 import 'package:provider/provider.dart';
 
 class DailySalesRecordPage extends StatefulWidget {
@@ -80,6 +80,8 @@ class _DailySalesRecordPageState extends State<DailySalesRecordPage> {
                 onlinePrice: element.onlinePrice,
                 added: element.added + _prods[prod].added,
                 request: element.request + _prods[prod].request,
+                takeOut: element.takeOut + _prods[prod].takeOut,
+                returnn: element.returnn + _prods[prod].returnn,
                 terminalCollected:
                     element.terminalCollected + _prods[prod].terminalCollected,
                 terminalReturn:
@@ -148,6 +150,8 @@ class _DailySalesRecordPageState extends State<DailySalesRecordPage> {
             onlinePrice: element.onlinePrice,
             added: element.added + products[prod].added,
             request: element.request + products[prod].request,
+            takeOut: element.takeOut + products[prod].takeOut,
+            returnn: element.request + products[prod].request,
             terminalCollected:
                 element.terminalCollected + products[prod].terminalCollected,
             terminalReturn:
@@ -433,11 +437,11 @@ class _DailySalesRecordPageState extends State<DailySalesRecordPage> {
           // month picker
           IconButton(
             onPressed: () async {
-              final res = await showMonthYearPicker(
+              final res = await SimpleMonthYearPicker.showMonthYearPickerDialog(
                 context: context,
-                initialDate: dateM ?? DateTime.now(),
-                firstDate: DateTime(2020),
-                lastDate: DateTime.now(),
+                // initialDate: dateM ?? DateTime.now(),
+                // firstDate: DateTime(2020),
+                // lastDate: DateTime.now(),
               );
 
               if (res != null) {

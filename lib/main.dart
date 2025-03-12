@@ -4,8 +4,6 @@ import 'package:delightsome_software/pages/login.page.dart';
 import 'package:delightsome_software/utils/appdata.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:month_year_picker2/month_year_picker2.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -42,11 +40,6 @@ class MyApp extends StatelessWidget {
     bool isDark = theme == ThemeMode.dark;
 
     return MaterialApp(
-      localizationsDelegates: [
-        GlobalWidgetsLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        MonthYearPickerLocalizations.delegate,
-      ],
       debugShowCheckedModeBanner: false,
       title: 'Delightsome Inventory',
       theme: ThemeData(

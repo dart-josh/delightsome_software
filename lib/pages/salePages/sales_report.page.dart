@@ -6,7 +6,7 @@ import 'package:delightsome_software/helpers/saleHelpers.dart';
 import 'package:delightsome_software/helpers/universalHelpers.dart';
 import 'package:delightsome_software/utils/appdata.dart';
 import 'package:flutter/material.dart';
-import 'package:month_year_picker2/month_year_picker2.dart';
+import 'package:simple_month_year_picker/simple_month_year_picker.dart';
 import 'package:provider/provider.dart';
 
 class SalesReportPage extends StatefulWidget {
@@ -165,7 +165,7 @@ class _SalesReportPageState extends State<SalesReportPage> {
       store_selected_date = store_list.date;
     }
 
-    if (store_record.isNotEmpty) {
+    if (online_record.isNotEmpty) {
       online_record.sort((a, b) => b.date.compareTo(a.date));
       var online_list = online_record.first;
 
@@ -367,15 +367,15 @@ class _SalesReportPageState extends State<SalesReportPage> {
           // month picker
           IconButton(
             onPressed: () async {
-              final res = await showMonthYearPicker(
+              final res = await SimpleMonthYearPicker.showMonthYearPickerDialog(
                 context: context,
-                initialDate: (sale_type == 'store')
-                    ? store_dateM ?? DateTime.now()
-                    : (sale_type == 'online')
-                        ? online_dateM ?? DateTime.now()
-                        : terminal_dateM ?? DateTime.now(),
-                firstDate: DateTime(2020),
-                lastDate: DateTime.now(),
+                // initialDate: (sale_type == 'store')
+                //     ? store_dateM ?? DateTime.now()
+                //     : (sale_type == 'online')
+                //         ? online_dateM ?? DateTime.now()
+                //         : terminal_dateM ?? DateTime.now(),
+                // firstDate: DateTime(2020),
+                // lastDate: DateTime.now(),
               );
 
               if (res != null) {

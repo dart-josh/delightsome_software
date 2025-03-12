@@ -7,7 +7,7 @@ import 'package:delightsome_software/pages/productStorePages/enter_product_recei
 import 'package:delightsome_software/pages/universalPages/record_info_dialog.dart';
 import 'package:delightsome_software/utils/appdata.dart';
 import 'package:flutter/material.dart';
-import 'package:month_year_picker2/month_year_picker2.dart';
+import 'package:simple_month_year_picker/simple_month_year_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:sticky_grouped_list/sticky_grouped_list.dart';
 
@@ -241,11 +241,11 @@ class _ProductReceivedRecordPageState extends State<ProductReceivedRecordPage> {
           // month picker
           IconButton(
             onPressed: () async {
-              final res = await showMonthYearPicker(
+              final res = await SimpleMonthYearPicker.showMonthYearPickerDialog(
                 context: context,
-                initialDate: dateM ?? DateTime.now(),
-                firstDate: DateTime(2020),
-                lastDate: DateTime.now(),
+                // initialDate: dateM ?? DateTime.now(),
+                // firstDate: DateTime(2020),
+                // lastDate: DateTime.now(),
               );
 
               if (res != null) {

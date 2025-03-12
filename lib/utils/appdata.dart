@@ -12,6 +12,8 @@ import 'package:delightsome_software/dataModels/productStoreModels/badProductRec
 import 'package:delightsome_software/dataModels/productStoreModels/product.model.dart';
 import 'package:delightsome_software/dataModels/productStoreModels/productReceivedRecord.model.dart';
 import 'package:delightsome_software/dataModels/productStoreModels/productRequestRecord.model.dart';
+import 'package:delightsome_software/dataModels/productStoreModels/productReturnRecord.model.dart';
+import 'package:delightsome_software/dataModels/productStoreModels/productTakeOutRecord.model.dart';
 import 'package:delightsome_software/dataModels/productStoreModels/productionRecord.model.dart';
 import 'package:delightsome_software/dataModels/productStoreModels/terminalCollectionRecord.model.dart';
 
@@ -62,6 +64,8 @@ class AppData extends ChangeNotifier {
   List<ProductionRecordModel> production_record = [];
   List<ProductReceivedRecordModel> product_received_record = [];
   List<ProductRequestRecordModel> product_request_record = [];
+  List<ProductTakeOutRecordModel> product_takeOut_record = [];
+  List<ProductReturnRecordModel> product_return_record = [];
   List<BadProductRecordModel> bad_product_record = [];
   List<TerminalCollectionRecordModel> terminal_collection_record = [];
 
@@ -238,6 +242,18 @@ class AppData extends ChangeNotifier {
   // product_request_record
   void update_product_request_record(List<ProductRequestRecordModel> value) {
     product_request_record = value;
+    notifyListeners();
+  }
+
+  // product_takeOut_record
+  void update_product_takeOut_record(List<ProductTakeOutRecordModel> value) {
+    product_takeOut_record = value;
+    notifyListeners();
+  }
+
+  // product_return_record
+  void update_product_return_record(List<ProductReturnRecordModel> value) {
+    product_return_record = value;
     notifyListeners();
   }
 

@@ -101,6 +101,16 @@ class ServerHelpers {
       DataGetters.get_product_request_record(context);
     });
 
+    // ProductTakeOut
+    socket!.on('ProductTakeOut', (data) {
+      DataGetters.get_product_takeOut_record(context);
+    });
+
+    // ProductReturn
+    socket!.on('ProductReturn', (data) {
+      DataGetters.get_product_return_record(context);
+    });
+
     // BadProduct
     socket!.on('BadProduct', (data) {
       DataGetters.get_bad_product_record(context);
@@ -188,6 +198,8 @@ class ServerHelpers {
       DataGetters.get_production_record(context);
       DataGetters.get_product_received_record(context);
       DataGetters.get_product_request_record(context);
+      DataGetters.get_product_takeOut_record(context);
+      DataGetters.get_product_return_record(context);
       DataGetters.get_bad_product_record(context);
       DataGetters.get_terminalCollection_record(context);
 

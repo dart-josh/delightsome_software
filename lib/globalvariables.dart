@@ -6,11 +6,13 @@ import 'package:delightsome_software/dataModels/materialStoreModels/restockRawMa
 import 'package:delightsome_software/dataModels/productStoreModels/badProductRecord.model.dart';
 import 'package:delightsome_software/dataModels/productStoreModels/productReceivedRecord.model.dart';
 import 'package:delightsome_software/dataModels/productStoreModels/productRequestRecord.model.dart';
+import 'package:delightsome_software/dataModels/productStoreModels/productReturnRecord.model.dart';
+import 'package:delightsome_software/dataModels/productStoreModels/productTakeOutRecord.model.dart';
 import 'package:delightsome_software/dataModels/productStoreModels/productionRecord.model.dart';
 import 'package:delightsome_software/dataModels/productStoreModels/terminalCollectionRecord.model.dart';
 import 'package:flutter/material.dart';
 
-String server_url = 'http://192.168.0.111:5000';
+String server_url = 'http://192.168.1.111:5000';
 
 //? APP RESTART
 final ValueNotifier<UniqueKey> appRestartNotifier = ValueNotifier(UniqueKey());
@@ -25,6 +27,8 @@ RestockRawMaterialModel? saved_restock_raw_material_model;
 BadProductRecordModel? saved_bad_product_model;
 ProductReceivedRecordModel? saved_product_received_model;
 ProductRequestRecordModel? saved_product_request_model;
+ProductTakeOutRecordModel? saved_product_takeOut_model;
+ProductReturnRecordModel? saved_product_return_model;
 ProductionRecordModel? saved_production_model;
 TerminalCollectionRecordModel? saved_terminal_collected_model;
 TerminalCollectionRecordModel? saved_terminal_returned_model;

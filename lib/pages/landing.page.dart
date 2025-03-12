@@ -11,6 +11,8 @@ import 'package:delightsome_software/pages/materialStorePages/raw_material_list.
 import 'package:delightsome_software/pages/productStorePages/enter_bad_product.page.dart';
 import 'package:delightsome_software/pages/productStorePages/enter_product_received.page.dart';
 import 'package:delightsome_software/pages/productStorePages/enter_product_request.page.dart';
+import 'package:delightsome_software/pages/productStorePages/enter_product_return.page.dart';
+import 'package:delightsome_software/pages/productStorePages/enter_product_takeOut.page.dart';
 import 'package:delightsome_software/pages/productStorePages/enter_production.page.dart';
 import 'package:delightsome_software/pages/productStorePages/enter_terminalCollection.page.dart';
 import 'package:delightsome_software/pages/productStorePages/product_list.page.dart';
@@ -451,6 +453,43 @@ class _LandingPageState extends State<LandingPage> {
                         );
                       },
                     ),
+                  
+                  // product takeOut form
+                  if (auth_staff!.role != 'Terminal' &&
+                      auth_staff!.role != 'Production')
+                    menu_tile(
+                      icon: FontAwesomeIcons.appleWhole,
+                      title: 'Enter TakeOut Product',
+                      color: product_store_color,
+                      show_not: saved_product_takeOut_model != null,
+                      onClicked: () {
+                        goto_page(
+                          dialog: null,
+                          page: EnterProductTakeOutPage(
+                            editModel: saved_product_takeOut_model,
+                          ),
+                        );
+                      },
+                    ),
+
+                    // product return form
+                  if (auth_staff!.role != 'Terminal' &&
+                      auth_staff!.role != 'Production')
+                    menu_tile(
+                      icon: FontAwesomeIcons.appleWhole,
+                      title: 'Enter Return Product',
+                      color: product_store_color,
+                      show_not: saved_product_return_model != null,
+                      onClicked: () {
+                        goto_page(
+                          dialog: null,
+                          page: EnterProductReturnPage(
+                            editModel: saved_product_return_model,
+                          ),
+                        );
+                      },
+                    ),
+
 
                   // terminal collection form
                   if (auth_staff!.role != 'Production')

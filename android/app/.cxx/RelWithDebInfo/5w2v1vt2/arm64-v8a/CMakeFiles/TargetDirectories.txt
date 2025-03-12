@@ -1,0 +1,2 @@
+C:/Users/User/Documents/Projects/delightsome_software/android/app/.cxx/RelWithDebInfo/5w2v1vt2/arm64-v8a/CMakeFiles/edit_cache.dir
+C:/Users/User/Documents/Projects/delightsome_software/android/app/.cxx/RelWithDebInfo/5w2v1vt2/arm64-v8a/CMakeFiles/rebuild_cache.dir

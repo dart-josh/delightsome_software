@@ -4,6 +4,8 @@ import 'package:delightsome_software/dataModels/productStoreModels/badProductRec
 import 'package:delightsome_software/dataModels/productStoreModels/product.model.dart';
 import 'package:delightsome_software/dataModels/productStoreModels/productReceivedRecord.model.dart';
 import 'package:delightsome_software/dataModels/productStoreModels/productRequestRecord.model.dart';
+import 'package:delightsome_software/dataModels/productStoreModels/productReturnRecord.model.dart';
+import 'package:delightsome_software/dataModels/productStoreModels/productTakeOutRecord.model.dart';
 import 'package:delightsome_software/dataModels/productStoreModels/productionRecord.model.dart';
 import 'package:delightsome_software/dataModels/productStoreModels/terminalCollectionRecord.model.dart';
 import 'package:delightsome_software/utils/appdata.dart';
@@ -338,6 +340,62 @@ class ProductStoreHelpers {
     }
   }
 
+  // Get product takeOut record
+  static Future<List<ProductTakeOutRecordModel>>
+      get_product_takeOut_record(context) async {
+    try {
+      var response = await post_getters(context, 'get_product_takeOut_record');
+
+      var jsonResponse = jsonDecode(response.body);
+
+      if (response.statusCode != 200) {
+        throw jsonResponse['message'];
+      }
+
+      List<ProductTakeOutRecordModel> recordList = [];
+      List record = jsonResponse['record'];
+      for (var element in record) {
+        ProductTakeOutRecordModel recordModel =
+            ProductTakeOutRecordModel.fromJson(element);
+
+        recordList.add(recordModel);
+      }
+
+      return recordList;
+    } catch (e) {
+      print(e);
+      return [];
+    }
+  }
+
+  // Get product return record
+  static Future<List<ProductReturnRecordModel>>
+      get_product_return_record(context) async {
+    try {
+      var response = await post_getters(context, 'get_product_return_record');
+
+      var jsonResponse = jsonDecode(response.body);
+
+      if (response.statusCode != 200) {
+        throw jsonResponse['message'];
+      }
+
+      List<ProductReturnRecordModel> recordList = [];
+      List record = jsonResponse['record'];
+      for (var element in record) {
+        ProductReturnRecordModel recordModel =
+            ProductReturnRecordModel.fromJson(element);
+
+        recordList.add(recordModel);
+      }
+
+      return recordList;
+    } catch (e) {
+      print(e);
+      return [];
+    }
+  }
+
   // Get bad product record
   static Future<List<BadProductRecordModel>> get_bad_product_record(context) async {
     try {
@@ -483,6 +541,48 @@ class ProductStoreHelpers {
     return recordList;
   }
 
+  // Get selected product takeOut record
+  static Future<List<ProductTakeOutRecordModel>>
+      get_selected_product_takeOut_record(
+          BuildContext context, Map data) async {
+    var map = await send_get_dataToServer(context,
+        route: 'get_selected_product_takeOut_record', data: data);
+    List<ProductTakeOutRecordModel> recordList = [];
+
+    if (map != null) {
+      List record = map['record'] ?? [];
+      for (var item in record) {
+        ProductTakeOutRecordModel recordModel =
+            ProductTakeOutRecordModel.fromJson(item);
+
+        recordList.add(recordModel);
+      }
+    }
+
+    return recordList;
+  }
+
+  // Get selected product return record
+  static Future<List<ProductReturnRecordModel>>
+      get_selected_product_return_record(
+          BuildContext context, Map data) async {
+    var map = await send_get_dataToServer(context,
+        route: 'get_selected_product_return_record', data: data);
+    List<ProductReturnRecordModel> recordList = [];
+
+    if (map != null) {
+      List record = map['record'] ?? [];
+      for (var item in record) {
+        ProductReturnRecordModel recordModel =
+            ProductReturnRecordModel.fromJson(item);
+
+        recordList.add(recordModel);
+      }
+    }
+
+    return recordList;
+  }
+
   // Get selected bad product record
   static Future<List<BadProductRecordModel>> get_selected_bad_product_record(
       BuildContext context, Map data) async {
@@ -574,6 +674,34 @@ class ProductStoreHelpers {
         route: 'verify_product_request_record', data: data);
   }
 
+// Enter product takeOut record
+  static Future<bool> enter_product_takeOut_record(
+      BuildContext context, Map data) async {
+    return await sendDataToServer(context,
+        route: 'enter_product_takeOut_record', data: data);
+  }
+
+// Verify product takeOut record
+  static Future<bool> verify_product_takeOut_record(
+      BuildContext context, Map data) async {
+    return await sendDataToServer(context,
+        route: 'verify_product_takeOut_record', data: data);
+  }
+
+// Enter product return record
+  static Future<bool> enter_product_return_record(
+      BuildContext context, Map data) async {
+    return await sendDataToServer(context,
+        route: 'enter_product_return_record', data: data);
+  }
+
+// Verify product return record
+  static Future<bool> verify_product_return_record(
+      BuildContext context, Map data) async {
+    return await sendDataToServer(context,
+        route: 'verify_product_return_record', data: data);
+  }
+
 // Enter bad product record
   static Future<bool> enter_bad_product_record(
       BuildContext context, Map data) async {
@@ -635,6 +763,20 @@ class ProductStoreHelpers {
       BuildContext context, String id) async {
     return await deleteFromServer(context,
         route: 'delete_product_request_record', id: id);
+  }
+
+// Delete product takeOut record
+  static Future<bool> delete_product_takeOut_record(
+      BuildContext context, String id) async {
+    return await deleteFromServer(context,
+        route: 'delete_product_takeOut_record', id: id);
+  }
+
+  // Delete product return record
+  static Future<bool> delete_product_return_record(
+      BuildContext context, String id) async {
+    return await deleteFromServer(context,
+        route: 'delete_product_return_record', id: id);
   }
 
 // Delete Bad product record

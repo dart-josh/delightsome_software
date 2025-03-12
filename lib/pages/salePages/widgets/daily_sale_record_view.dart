@@ -135,7 +135,7 @@ class _DailySaleRecordViewState extends State<DailySaleRecordView> {
     bool isDarkTheme =
         Provider.of<AppData>(context).themeMode == ThemeMode.dark;
     double width = MediaQuery.of(context).size.width;
-    double space_left = width - 920;
+    double space_left = width - 1060;
     return Container(
       decoration: BoxDecoration(
         border: Border(
@@ -181,6 +181,81 @@ class _DailySaleRecordViewState extends State<DailySaleRecordView> {
 
                   // request
                   _head_tile(value: 'Request'),
+
+                  // product supply
+                  Container(
+                    width: 140,
+                    decoration: BoxDecoration(
+                      border: Border(
+                          right: BorderSide(
+                        color: isDarkTheme
+                            ? AppColors.dark_dimTextColor
+                            : AppColors.light_dimTextColor,
+                      )),
+                    ),
+                    child: Column(
+                      children: [
+                        SizedBox(height: 2),
+
+                        // head
+                        Text(
+                          'Supply',
+                          style: TextStyle(
+                            height: 1,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+
+                        SizedBox(height: 3),
+
+                        // bottom
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            // taken out
+                            Container(
+                              width: 70,
+                              padding: EdgeInsets.only(bottom: 3),
+                              decoration: BoxDecoration(
+                                border: Border(
+                                    right: BorderSide(
+                                  color: isDarkTheme
+                                      ? AppColors.dark_dimTextColor
+                                      : AppColors.light_dimTextColor,
+                                )),
+                              ),
+                              alignment: Alignment.center,
+                              child: Text(
+                                'Taken Out',
+                                style: TextStyle(
+                                  height: 1,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+
+                            // return
+                            Container(
+                              width: 69,
+                              padding: EdgeInsets.only(bottom: 3),
+                              alignment: Alignment.center,
+                              child: Text(
+                                'Returned',
+                                style: TextStyle(
+                                  height: 1,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+
 
                   // terminal collection
                   Container(
@@ -282,7 +357,7 @@ class _DailySaleRecordViewState extends State<DailySaleRecordView> {
   // product list
   Widget product_list(List<DailySalesProductsModel> _record) {
     double width = MediaQuery.of(context).size.width;
-    double space_left = width - 930;
+    double space_left = width - 1070;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -357,7 +432,7 @@ class _DailySaleRecordViewState extends State<DailySaleRecordView> {
             ? product.storePrice
             : product.product.storePrice);
     int balance = total -
-        (product.request +
+        (product.request + (product.takeOut - product.returnn) +
             (product.terminalCollected - product.terminalReturn) +
             product.badProduct +
             product.online +
@@ -379,6 +454,12 @@ class _DailySaleRecordViewState extends State<DailySaleRecordView> {
 
           // request
           _tile_detail(value: product.request.toString()),
+
+          // takeout
+          _tile_detail(value: product.takeOut.toString(), width: 70),
+
+          // return
+          _tile_detail(value: product.returnn.toString(), width: 70),
 
           // terminal collected
           _tile_detail(value: product.terminalCollected.toString()),
