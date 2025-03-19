@@ -40,6 +40,7 @@ class MyApp extends StatelessWidget {
     bool isDark = theme == ThemeMode.dark;
 
     return MaterialApp(
+      restorationScopeId: "desktop-demo1",
       debugShowCheckedModeBanner: false,
       title: 'Delightsome Inventory',
       theme: ThemeData(
