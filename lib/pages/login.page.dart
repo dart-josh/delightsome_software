@@ -104,6 +104,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    print(page_index);
     bool isDarkTheme =
         Provider.of<AppData>(context).themeMode == ThemeMode.dark;
 
@@ -382,7 +383,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   // pin page
-  Widget pin_page(int page_index) {
+  Widget pin_page(int _page_index) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       child: Column(
@@ -402,7 +403,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
           SizedBox(height: 10),
-          buildPinPut(page_index),
+          buildPinPut(_page_index),
           Container(
             width: 300,
             margin: EdgeInsets.only(top: 10),
@@ -417,14 +418,15 @@ class _LoginPageState extends State<LoginPage> {
                   // logout
                   AuthHelpers.logout(context);
 
-                  page_index = prev_page;
+                  page_index = 2;
                   password_controller.clear();
                   password_2_controller.clear();
                 }
 
+                print(page_index);
                 setState(() {});
               },
-              child: Text((page_index == 5 && pin_1_confirmation == 1)
+              child: Text((_page_index == 5 && pin_1_confirmation == 1)
                   ? 'Go back'
                   : 'Switch account'),
             ),
@@ -1137,8 +1139,7 @@ class _LoginPageState extends State<LoginPage> {
           if (res.isNotEmpty) {
             login();
           } else {
-            isLoading = 
-            false;
+            isLoading = false;
             setState(() {});
           }
         }
