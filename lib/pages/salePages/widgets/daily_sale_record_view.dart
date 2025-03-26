@@ -256,7 +256,6 @@ class _DailySaleRecordViewState extends State<DailySaleRecordView> {
                     ),
                   ),
 
-
                   // terminal collection
                   Container(
                     width: 160,
@@ -378,6 +377,7 @@ class _DailySaleRecordViewState extends State<DailySaleRecordView> {
                       child: _tile_detail(
                         value: (index + 1).toString(),
                         width: 40,
+                        line: (product.product.name.length / 23).ceil(),
                       ),
                     ),
 
@@ -395,6 +395,7 @@ class _DailySaleRecordViewState extends State<DailySaleRecordView> {
                         storePrice: product.storePrice != 0
                             ? product.storePrice
                             : product.product.storePrice,
+                        line: (product.product.name.length / 23).ceil(),
                       ),
                     ),
                   ],
@@ -414,7 +415,8 @@ class _DailySaleRecordViewState extends State<DailySaleRecordView> {
               child: Column(
                 children: _record.map((product) {
                   int index = _record.indexOf(product);
-                  return product_detail_tile(product, index);
+                  return product_detail_tile(product, index,
+                      (product.product.name.length / 23).ceil());
                 }).toList(),
               ),
             ),
@@ -425,14 +427,16 @@ class _DailySaleRecordViewState extends State<DailySaleRecordView> {
   }
 
   // product tile
-  Widget product_detail_tile(DailySalesProductsModel product, int index) {
+  Widget product_detail_tile(
+      DailySalesProductsModel product, int index, int line) {
     int total = product.openingQuantity + product.added;
     int amount = product.quantitySold *
         (product.storePrice != 0
             ? product.storePrice
             : product.product.storePrice);
     int balance = total -
-        (product.request + (product.takeOut - product.returnn) +
+        (product.request +
+            (product.takeOut - product.returnn) +
             (product.terminalCollected - product.terminalReturn) +
             product.badProduct +
             product.online +
@@ -444,47 +448,51 @@ class _DailySaleRecordViewState extends State<DailySaleRecordView> {
       child: Row(
         children: [
           // opening quantity
-          _tile_detail(value: product.openingQuantity.toString()),
+          _tile_detail(value: product.openingQuantity.toString(), line: line),
 
           // added
-          _tile_detail(value: product.added.toString()),
+          _tile_detail(value: product.added.toString(), line: line),
 
           // total
-          _tile_detail(value: total.toString()),
+          _tile_detail(value: total.toString(), line: line),
 
           // request
-          _tile_detail(value: product.request.toString()),
+          _tile_detail(value: product.request.toString(), line: line),
 
           // takeout
-          _tile_detail(value: product.takeOut.toString(), width: 70),
+          _tile_detail(
+              value: product.takeOut.toString(), line: line, width: 70),
 
           // return
-          _tile_detail(value: product.returnn.toString(), width: 70),
+          _tile_detail(
+              value: product.returnn.toString(), line: line, width: 70),
 
           // terminal collected
-          _tile_detail(value: product.terminalCollected.toString()),
+          _tile_detail(value: product.terminalCollected.toString(), line: line),
 
           // terminal return
-          _tile_detail(value: product.terminalReturn.toString()),
+          _tile_detail(value: product.terminalReturn.toString(), line: line),
 
           // bad product
-          _tile_detail(value: product.badProduct.toString()),
+          _tile_detail(value: product.badProduct.toString(), line: line),
 
           // online
-          _tile_detail(value: product.online.toString()),
+          _tile_detail(value: product.online.toString(), line: line),
 
           // quantity sold
-          _tile_detail(value: product.quantitySold.toString(), width: 60),
+          _tile_detail(
+              value: product.quantitySold.toString(), line: line, width: 60),
 
           // amount
           _tile_detail(
             value: amount.toString(),
+            line: line,
             width: 100,
             currency: (amount != 0),
           ),
 
           // balance
-          _tile_detail(value: balance.toString()),
+          _tile_detail(value: balance.toString(), line: line),
         ],
       ),
     );
@@ -528,6 +536,7 @@ class _DailySaleRecordViewState extends State<DailySaleRecordView> {
   // tile detail
   Widget _tile_detail({
     required String value,
+    required int line,
     double width = 80,
     bool center = true,
     bool currency = false,
@@ -547,6 +556,7 @@ class _DailySaleRecordViewState extends State<DailySaleRecordView> {
 
     return Container(
       width: width,
+      height: line > 1 ? (line * 25) : 30,
       padding: EdgeInsets.symmetric(vertical: vertical_padding),
       decoration: BoxDecoration(
         color: custom_color,

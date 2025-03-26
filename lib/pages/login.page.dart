@@ -104,7 +104,6 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    print(page_index);
     bool isDarkTheme =
         Provider.of<AppData>(context).themeMode == ThemeMode.dark;
 
@@ -422,8 +421,6 @@ class _LoginPageState extends State<LoginPage> {
                   password_controller.clear();
                   password_2_controller.clear();
                 }
-
-                print(page_index);
                 setState(() {});
               },
               child: Text((_page_index == 5 && pin_1_confirmation == 1)
