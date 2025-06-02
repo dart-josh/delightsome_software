@@ -2,7 +2,7 @@ class AuthModel {
   String staff_id;
   String password;
   String role;
-  String? pin;
+  bool? pin;
 
   AuthModel({
     required this.staff_id,
