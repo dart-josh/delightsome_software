@@ -30,6 +30,7 @@ class _CustomerListPageState extends State<CustomerListPage> {
   List<CustomerModel> store_list = [];
   List<CustomerModel> online_list = [];
   List<CustomerModel> terminal_list = [];
+  List<CustomerModel> dangote_list = [];
 
   bool is_set = false;
 
@@ -50,10 +51,14 @@ class _CustomerListPageState extends State<CustomerListPage> {
     terminal_list = customers
         .where((element) => element.customerType == 'Terminal')
         .toList();
+    dangote_list = customers
+        .where((element) => element.customerType == 'Dangote')
+        .toList();
 
     store_list.sort((a, b) => a.nickName.compareTo(b.nickName));
     online_list.sort((a, b) => a.nickName.compareTo(b.nickName));
     terminal_list.sort((a, b) => a.nickName.compareTo(b.nickName));
+    dangote_list.sort((a, b) => a.nickName.compareTo(b.nickName));
   }
 
   @override
@@ -74,16 +79,16 @@ class _CustomerListPageState extends State<CustomerListPage> {
     auth_staff = Provider.of<AppData>(context).active_staff;
 
     int tabs_length = auth_staff!.role == 'Terminal'
-        ? 1
+        ? 2
         : auth_staff!.role == 'Sales'
             ? 2
-            : 3;
+            : 4;
 
     pages = auth_staff!.role == 'Terminal'
-        ? ['Terminal']
+        ? ['Terminal', 'Dangote']
         : auth_staff!.role == 'Sales'
             ? ['Store', 'Online']
-            : ['Store', 'Online', 'Terminal'];
+            : ['Store', 'Online', 'Terminal', 'Dangote'];
 
     get_list();
 
@@ -137,6 +142,7 @@ class _CustomerListPageState extends State<CustomerListPage> {
                               children: auth_staff!.role == 'Terminal'
                                   ? [
                                       customer_list_area(terminal_list),
+                                      customer_list_area(dangote_list),
                                     ]
                                   : auth_staff!.role == 'Sales'
                                       ? [
@@ -147,6 +153,7 @@ class _CustomerListPageState extends State<CustomerListPage> {
                                           customer_list_area(store_list),
                                           customer_list_area(online_list),
                                           customer_list_area(terminal_list),
+                                          customer_list_area(dangote_list),
                                         ],
                             ),
                           ),
@@ -203,6 +210,7 @@ class _CustomerListPageState extends State<CustomerListPage> {
                           children: auth_staff!.role == 'Terminal'
                               ? [
                                   customer_list_area(terminal_list),
+                                  customer_list_area(dangote_list),
                                 ]
                               : auth_staff!.role == 'Sales'
                                   ? [
@@ -213,6 +221,7 @@ class _CustomerListPageState extends State<CustomerListPage> {
                                       customer_list_area(store_list),
                                       customer_list_area(online_list),
                                       customer_list_area(terminal_list),
+                                      customer_list_area(dangote_list),
                                     ],
                         ),
                       ),
@@ -333,6 +342,7 @@ class _CustomerListPageState extends State<CustomerListPage> {
       tabs: auth_staff!.role == 'Terminal'
           ? [
               Tab(text: 'Terminal'),
+              Tab(text: 'Dangote'),
             ]
           : auth_staff!.role == 'Sales'
               ? [
@@ -343,6 +353,7 @@ class _CustomerListPageState extends State<CustomerListPage> {
                   Tab(text: 'Store'),
                   Tab(text: 'Online'),
                   Tab(text: 'Terminal'),
+                  Tab(text: 'Dangote'),
                 ],
     );
   }

@@ -20,18 +20,22 @@ class _SalesReportPageState extends State<SalesReportPage> {
   List<GroupedSalesModel> store_record = [];
   List<GroupedSalesModel> online_record = [];
   List<GroupedSalesModel> terminal_record = [];
+  List<GroupedSalesModel> dangote_record = [];
 
   List<SalesModel> main_store_record = [];
   List<SalesModel> main_online_record = [];
   List<SalesModel> main_terminal_record = [];
+  List<SalesModel> main_dangote_record = [];
 
   List<SalesModel> store_selected_record = [];
   List<SalesModel> online_selected_record = [];
   List<SalesModel> terminal_selected_record = [];
+  List<SalesModel> dangote_selected_record = [];
 
   DateTime? store_selected_date;
   DateTime? online_selected_date;
   DateTime? terminal_selected_date;
+  DateTime? dangote_selected_date;
 
   int index = 0;
 
@@ -49,9 +53,14 @@ class _SalesReportPageState extends State<SalesReportPage> {
   DateTime? terminal_dateD;
   DateTime? terminal_dateM;
 
+  DateTimeRange? dangote_dateR;
+  DateTime? dangote_dateD;
+  DateTime? dangote_dateM;
+
   get_record() {
     List<SalesModel> all_record = Provider.of<AppData>(context).sales_record;
     main_terminal_record = Provider.of<AppData>(context).terminal_sales_record;
+    main_dangote_record = Provider.of<AppData>(context).dangote_sales_record;
 
     main_store_record = all_record
         .where(
@@ -99,6 +108,18 @@ class _SalesReportPageState extends State<SalesReportPage> {
       },
     );
 
+    // group dangote by month/day
+    final dangote_groups = groupBy(
+      main_dangote_record,
+      (e) {
+        if (UniversalHelpers.get_month(e.recordDate!) !=
+            UniversalHelpers.get_month(DateTime.now()))
+          return UniversalHelpers.get_month(e.recordDate!);
+        else
+          return UniversalHelpers.get_date(e.recordDate!);
+      },
+    );
+
     store_record.clear();
     store_groups.forEach((key, value) {
       GroupedSalesModel val = GroupedSalesModel(date: key, record: value);
@@ -115,6 +136,12 @@ class _SalesReportPageState extends State<SalesReportPage> {
     terminal_groups.forEach((key, value) {
       GroupedSalesModel val = GroupedSalesModel(date: key, record: value);
       terminal_record.add(val);
+    });
+
+    dangote_record.clear();
+    dangote_groups.forEach((key, value) {
+      GroupedSalesModel val = GroupedSalesModel(date: key, record: value);
+      dangote_record.add(val);
     });
 
     if (store_selected_date != null) {
@@ -150,6 +177,17 @@ class _SalesReportPageState extends State<SalesReportPage> {
       }
     }
 
+    if (dangote_selected_date != null) {
+      var data = dangote_record.where((e) => e.date == dangote_selected_date);
+
+      if (data.isNotEmpty)
+        dangote_selected_record = data.first.record;
+      else {
+        dangote_selected_date = null;
+        dangote_selected_record.clear();
+      }
+    }
+
     set_initial_record();
     setState(() {});
   }
@@ -181,6 +219,14 @@ class _SalesReportPageState extends State<SalesReportPage> {
       terminal_selected_date = terminal_list.date;
     }
 
+    if (dangote_record.isNotEmpty) {
+      dangote_record.sort((a, b) => b.date.compareTo(a.date));
+      var dangote_list = dangote_record.first;
+
+      dangote_selected_record = dangote_list.record;
+      dangote_selected_date = dangote_list.date;
+    }
+
     is_set = true;
   }
 
@@ -191,7 +237,7 @@ class _SalesReportPageState extends State<SalesReportPage> {
         Provider.of<AppData>(context).themeMode == ThemeMode.dark;
 
     return DefaultTabController(
-      length: 3,
+      length: 4,
       initialIndex: index,
       child: Scaffold(
         backgroundColor: isDarkTheme
@@ -220,6 +266,7 @@ class _SalesReportPageState extends State<SalesReportPage> {
                 Tab(text: 'Outlet Sales'),
                 Tab(text: 'Online Sales'),
                 Tab(text: 'Terminal Sales'),
+                Tab(text: 'Dangote Sales'),
               ],
             ),
 
@@ -229,7 +276,9 @@ class _SalesReportPageState extends State<SalesReportPage> {
             else if (index == 1)
               date_selector_area(sale_type: 'online')
             else if (index == 2)
-              date_selector_area(sale_type: 'terminal'),
+              date_selector_area(sale_type: 'terminal')
+            else if (index == 3)
+              date_selector_area(sale_type: 'dangote'),
 
             // content
             Expanded(
@@ -238,6 +287,7 @@ class _SalesReportPageState extends State<SalesReportPage> {
                   record_view(store_selected_record),
                   record_view(online_selected_record),
                   record_view(terminal_selected_record),
+                  record_view(dangote_selected_record),
                 ],
               ),
             ),
@@ -300,7 +350,11 @@ class _SalesReportPageState extends State<SalesReportPage> {
         ? store_record
         : (sale_type == 'online')
             ? online_record
-            : terminal_record;
+            : (sale_type == 'terminal')
+                ? terminal_record
+                : (sale_type == 'dangote')
+                    ? dangote_record
+                    : [];
 
     g_sales.sort((a, b) => b.date.compareTo(a.date));
     bool isDarkTheme =
@@ -342,7 +396,11 @@ class _SalesReportPageState extends State<SalesReportPage> {
                     ? store_dateD
                     : (sale_type == 'online')
                         ? online_dateD
-                        : terminal_dateD,
+                        : (sale_type == 'terminal')
+                            ? terminal_dateD
+                            : (sale_type == 'dangote')
+                                ? dangote_dateD
+                                : null,
                 firstDate: DateTime(2020),
                 lastDate: DateTime.now(),
               );
@@ -352,8 +410,12 @@ class _SalesReportPageState extends State<SalesReportPage> {
                   store_dateD = res;
                 else if (sale_type == 'online')
                   online_dateD = res;
-                else
+                else if (sale_type == 'terminal')
                   terminal_dateD = res;
+                else if (sale_type == 'dangote')
+                  dangote_dateD = res;
+                else
+                  null;
 
                 showDialog(
                     context: context,
@@ -372,8 +434,10 @@ class _SalesReportPageState extends State<SalesReportPage> {
                 // initialDate: (sale_type == 'store')
                 //     ? store_dateM ?? DateTime.now()
                 //     : (sale_type == 'online')
-                //         ? online_dateM ?? DateTime.now()
-                //         : terminal_dateM ?? DateTime.now(),
+                //         ? online_dateM ?? DateTime.now(): (sale_type == 'terminal')
+                //         ? terminal_dateM ?? DateTime.now(): (sale_type == 'dangote')
+                //         ? dangote_dateM ?? DateTime.now()
+                //         : DateTime.now(),
                 // firstDate: DateTime(2020),
                 // lastDate: DateTime.now(),
               );
@@ -383,8 +447,12 @@ class _SalesReportPageState extends State<SalesReportPage> {
                   store_dateM = res;
                 else if (sale_type == 'online')
                   online_dateM = res;
-                else
+                else if (sale_type == 'terminal')
                   terminal_dateM = res;
+                else if (sale_type == 'dangote')
+                  dangote_dateM = res;
+                else
+                  null;
 
                 showDialog(
                     context: context,
@@ -406,7 +474,11 @@ class _SalesReportPageState extends State<SalesReportPage> {
                     ? store_dateR
                     : (sale_type == 'online')
                         ? online_dateR
-                        : terminal_dateR,
+                        : (sale_type == 'terminal')
+                            ? terminal_dateR
+                            : (sale_type == 'dangote')
+                                ? dangote_dateR
+                                : null,
               );
 
               if (res != null) {
@@ -414,8 +486,12 @@ class _SalesReportPageState extends State<SalesReportPage> {
                   store_dateR = res;
                 else if (sale_type == 'online')
                   online_dateR = res;
-                else
+                else if (sale_type == 'terminal')
                   terminal_dateR = res;
+                else if (sale_type == 'dangote')
+                  dangote_dateR = res;
+                else
+                  null;
 
                 showDialog(
                     context: context,
@@ -440,7 +516,11 @@ class _SalesReportPageState extends State<SalesReportPage> {
         ? (store_selected_date == record.date)
         : (sale_type == 'online')
             ? (online_selected_date == record.date)
-            : (terminal_selected_date == record.date);
+            : (sale_type == 'terminal')
+                ? (terminal_selected_date == record.date)
+                : (sale_type == 'dangote')
+                    ? (dangote_selected_date == record.date)
+                    : false;
 
     String title = (UniversalHelpers.get_month(record.date) !=
             UniversalHelpers.get_month(DateTime.now()))
@@ -461,10 +541,13 @@ class _SalesReportPageState extends State<SalesReportPage> {
         } else if (sale_type == 'online') {
           online_selected_record = record.record;
           online_selected_date = record.date;
-        } else {
+        } else if (sale_type == 'terminal') {
           terminal_selected_record = record.record;
           terminal_selected_date = record.date;
-        }
+        } else if (sale_type == 'dangote') {
+          dangote_selected_record = record.record;
+          dangote_selected_date = record.date;
+        } else {}
 
         setState(() {});
       },
@@ -678,12 +761,12 @@ class _SalesReportPageState extends State<SalesReportPage> {
                 Container(
                   decoration: BoxDecoration(
                     border: Border(
-                right: BorderSide(
-                  color: isDarkTheme
-                      ? AppColors.dark_dimTextColor
-                      : AppColors.light_dimTextColor,
-                ),
-              ),
+                      right: BorderSide(
+                        color: isDarkTheme
+                            ? AppColors.dark_dimTextColor
+                            : AppColors.light_dimTextColor,
+                      ),
+                    ),
                   ),
                   width: 40,
                   padding: EdgeInsets.symmetric(vertical: 6),
@@ -836,7 +919,11 @@ class _SalesReportPageState extends State<SalesReportPage> {
         ? main_store_record
         : (sale_type == 'online')
             ? main_online_record
-            : main_terminal_record;
+            : (sale_type == 'terminal')
+                ? main_terminal_record
+                : (sale_type == 'dangote')
+                    ? main_dangote_record
+                    : [];
 
     if (date != null) {
       if (date.isAfter(last_back) || date == last_back) {
@@ -882,35 +969,60 @@ class _SalesReportPageState extends State<SalesReportPage> {
       future: records.isNotEmpty
           ? null
           : (date != null && isOffList)
-              ? (sale_type != 'terminal')
+              ? ((sale_type == 'store') || (sale_type == 'online'))
                   ? SaleHelpers.get_selected_sales_record(
                       context, {'date': UniversalHelpers.get_raw_date(date)})
-                  : SaleHelpers.get_selected_terminal_sales_record(
-                      context, {'date': UniversalHelpers.get_raw_date(date)})
+                  : (sale_type == 'terminal')
+                      ? SaleHelpers.get_selected_terminal_sales_record(context,
+                          {'date': UniversalHelpers.get_raw_date(date)})
+                      : (sale_type == 'dangote')
+                          ? SaleHelpers.get_selected_dangote_sales_record(
+                              context,
+                              {'date': UniversalHelpers.get_raw_date(date)})
+                          : null
               : (month != null && isOffList)
-                  ? (sale_type != 'terminal')
-                      ? SaleHelpers.get_selected_sales_record(context, {
-                          'month': UniversalHelpers.get_raw_month(month),
-                        })
-                      : SaleHelpers.get_selected_terminal_sales_record(
-                          context, {
-                          'month': UniversalHelpers.get_raw_month(month),
-                        })
+                  ? ((sale_type == 'store') || (sale_type == 'online'))
+                      ? SaleHelpers.get_selected_sales_record(context,
+                          {'month': UniversalHelpers.get_raw_month(month)})
+                      : (sale_type == 'terminal')
+                          ? SaleHelpers.get_selected_terminal_sales_record(
+                              context,
+                              {'month': UniversalHelpers.get_raw_month(month)})
+                          : (sale_type == 'dangote')
+                              ? SaleHelpers.get_selected_dangote_sales_record(
+                                  context, {
+                                  'month': UniversalHelpers.get_raw_month(month)
+                                })
+                              : null
                   : (dateRange != null && isOffList)
-                      ? (sale_type != 'terminal')
+                      ? ((sale_type == 'store') || (sale_type == 'online'))
                           ? SaleHelpers.get_selected_sales_record(context, {
                               'timeFrame': [
                                 UniversalHelpers.get_raw_date(dateRange.start),
                                 UniversalHelpers.get_raw_date(dateRange.end)
                               ]
                             })
-                          : SaleHelpers.get_selected_terminal_sales_record(
-                              context, {
-                              'timeFrame': [
-                                UniversalHelpers.get_raw_date(dateRange.start),
-                                UniversalHelpers.get_raw_date(dateRange.end)
-                              ]
-                            })
+                          : (sale_type == 'terminal')
+                              ? SaleHelpers.get_selected_terminal_sales_record(
+                                  context, {
+                                  'timeFrame': [
+                                    UniversalHelpers.get_raw_date(
+                                        dateRange.start),
+                                    UniversalHelpers.get_raw_date(dateRange.end)
+                                  ]
+                                })
+                              : (sale_type == 'dangote')
+                                  ? SaleHelpers
+                                      .get_selected_dangote_sales_record(
+                                          context, {
+                                      'timeFrame': [
+                                        UniversalHelpers.get_raw_date(
+                                            dateRange.start),
+                                        UniversalHelpers.get_raw_date(
+                                            dateRange.end)
+                                      ]
+                                    })
+                                  : null
                       : null,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {

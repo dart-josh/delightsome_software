@@ -42,6 +42,8 @@ class DailySalesProductsModel {
   int returnn;
   int terminalCollected;
   int terminalReturn;
+  int dangoteCollected;
+  int dangoteReturn;
   int badProduct;
   int online;
   int quantitySold;
@@ -58,6 +60,8 @@ class DailySalesProductsModel {
     required this.returnn,
     required this.terminalCollected,
     required this.terminalReturn,
+    required this.dangoteCollected,
+    required this.dangoteReturn,
     required this.badProduct,
     required this.online,
     required this.quantitySold,
@@ -91,6 +95,8 @@ class DailySalesProductsModel {
       returnn: json['return'] ?? 0,
       terminalCollected: json['terminalCollected'] ?? 0,
       terminalReturn: json['terminalReturn'] ?? 0,
+      dangoteCollected: json['dangoteCollected'] ?? 0,
+      dangoteReturn: json['dangoteReturn'] ?? 0,
       badProduct: json['badProduct'] ?? 0,
       online: json['online'] ?? 0,
       quantitySold: json['quantitySold'] ?? 0,
@@ -110,6 +116,8 @@ class DailySalesProductsModel {
         returnn = other.returnn,
         terminalCollected = other.terminalCollected,
         terminalReturn = other.terminalReturn,
+        dangoteCollected = other.dangoteCollected,
+        dangoteReturn = other.dangoteReturn,
         badProduct = other.badProduct,
         online = other.online,
         quantitySold = other.quantitySold;

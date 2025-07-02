@@ -16,6 +16,7 @@ import 'package:delightsome_software/pages/productStorePages/product_return_reco
 import 'package:delightsome_software/pages/productStorePages/product_takeOut_record.page.dart';
 import 'package:delightsome_software/pages/productStorePages/production_record.page.dart';
 import 'package:delightsome_software/pages/productStorePages/terminal_collection_record.page.dart';
+import 'package:delightsome_software/pages/productStorePages/dangote_collection_record.page.dart';
 import 'package:delightsome_software/utils/appdata.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -36,6 +37,7 @@ class _SideBarState extends State<SideBar> {
   int productTakeOut_rec = 0;
   int productReturn_rec = 0;
   int terminalCollection_rec = 0;
+  int dangoteCollection_rec = 0;
   int badProduct_rec = 0;
 
   int restockProductMaterial_rec = 0;
@@ -91,6 +93,16 @@ class _SideBarState extends State<SideBar> {
           title: 'Terminal Collection',
           icon: FontAwesomeIcons.store,
           key: 3,
+        ),
+      );
+
+    if (auth_staff.role != 'Production')
+      // dangote collection
+      product_store_items.add(
+        SidebarItemModel(
+          title: 'Dangote Collection',
+          icon: FontAwesomeIcons.store,
+          key: 12,
         ),
       );
 
@@ -200,6 +212,11 @@ class _SideBarState extends State<SideBar> {
         .where((rec) => !rec.verified!)
         .length;
 
+    dangoteCollection_rec = Provider.of<AppData>(context)
+        .dangote_collection_record
+        .where((rec) => !rec.verified!)
+        .length;
+
     productTakeOut_rec = Provider.of<AppData>(context)
         .product_takeOut_record
         .where((rec) => !rec.verified!)
@@ -269,6 +286,8 @@ class _SideBarState extends State<SideBar> {
         return productTakeOut_rec;
       case 11:
         return productReturn_rec;
+      case 12:
+        return dangoteCollection_rec;
       default:
         return 0;
     }
@@ -851,6 +870,9 @@ class _SideBarState extends State<SideBar> {
         navigateTo(ProductTakeOutRecordPage());
       case 11:
         navigateTo(ProductReturnRecordPage());
+        break;
+      case 12:
+        navigateTo(DangoteCollectionRecordPage());
         break;
     }
   }

@@ -1,4 +1,5 @@
 import 'package:delightsome_software/dataModels/saleModels/dailysales.model.dart';
+import 'package:delightsome_software/dataModels/saleModels/dangoteDailysales.model.dart';
 import 'package:delightsome_software/dataModels/saleModels/sales.model.dart';
 import 'package:delightsome_software/dataModels/saleModels/terminalDailysales.model.dart';
 import 'package:delightsome_software/utils/appdata.dart';
@@ -309,6 +310,32 @@ class SaleHelpers {
     }
   }
 
+  // Get Dangote sales record
+  static Future<List<SalesModel>> get_dangote_sales_record(context) async {
+    try {
+      var response = await post_getters(context, 'get_dangote_sales_record');
+
+      var jsonResponse = jsonDecode(response.body);
+
+      if (response.statusCode != 200) {
+        throw jsonResponse['message'];
+      }
+
+      List<SalesModel> recordList = [];
+      List record = jsonResponse['record'];
+      for (var element in record) {
+        SalesModel recordModel = SalesModel.fromJson(element);
+
+        recordList.add(recordModel);
+      }
+
+      return recordList;
+    } catch (e) {
+      print(e);
+      return [];
+    }
+  }
+
   // Get selected sales record
   static Future<List<SalesModel>> get_selected_sales_record(
       BuildContext context, Map data) async {
@@ -333,6 +360,25 @@ class SaleHelpers {
       BuildContext context, Map data) async {
     var map = await send_get_dataToServer(context,
         route: 'get_selected_terminal_sales_record', data: data);
+    List<SalesModel> recordList = [];
+
+    if (map != null) {
+      List record = map['record'] ?? [];
+      for (var item in record) {
+        SalesModel recordModel = SalesModel.fromJson(item);
+
+        recordList.add(recordModel);
+      }
+    }
+
+    return recordList;
+  }
+
+  // Get selected Dangote sales record
+  static Future<List<SalesModel>> get_selected_dangote_sales_record(
+      BuildContext context, Map data) async {
+    var map = await send_get_dataToServer(context,
+        route: 'get_selected_dangote_sales_record', data: data);
     List<SalesModel> recordList = [];
 
     if (map != null) {
@@ -374,10 +420,11 @@ class SaleHelpers {
   }
 
   // Get terminal daily sales record
-  static Future<List<TerminalDailySalesModel>>
-      get_terminal_daily_sales_record(context) async {
+  static Future<List<TerminalDailySalesModel>> get_terminal_daily_sales_record(
+      context) async {
     try {
-      var response = await post_getters(context, 'get_terminal_daily_sales_record');
+      var response =
+          await post_getters(context, 'get_terminal_daily_sales_record');
 
       var jsonResponse = jsonDecode(response.body);
 
@@ -390,6 +437,35 @@ class SaleHelpers {
       for (var element in record) {
         TerminalDailySalesModel recordModel =
             TerminalDailySalesModel.fromJson(element);
+
+        recordList.add(recordModel);
+      }
+
+      return recordList;
+    } catch (e) {
+      print(e);
+      return [];
+    }
+  }
+
+  // Get dangote daily sales record
+  static Future<List<DangoteDailySalesModel>> get_dangote_daily_sales_record(
+      context) async {
+    try {
+      var response =
+          await post_getters(context, 'get_dangote_daily_sales_record');
+
+      var jsonResponse = jsonDecode(response.body);
+
+      if (response.statusCode != 200) {
+        throw jsonResponse['message'];
+      }
+
+      List<DangoteDailySalesModel> recordList = [];
+      List record = jsonResponse['record'];
+      for (var element in record) {
+        DangoteDailySalesModel recordModel =
+            DangoteDailySalesModel.fromJson(element);
 
         recordList.add(recordModel);
       }
@@ -441,6 +517,27 @@ class SaleHelpers {
     return recordList;
   }
 
+  // Get selected dangote daily sales record
+  static Future<List<DangoteDailySalesModel>>
+      get_selected_dangote_daily_sales_record(
+          BuildContext context, Map data) async {
+    var map = await send_get_dataToServer(context,
+        route: 'get_selected_dangote_daily_sales_record', data: data);
+    List<DangoteDailySalesModel> recordList = [];
+
+    if (map != null) {
+      List record = map['record'] ?? [];
+      for (var item in record) {
+        DangoteDailySalesModel recordModel =
+            DangoteDailySalesModel.fromJson(item);
+
+        recordList.add(recordModel);
+      }
+    }
+
+    return recordList;
+  }
+
   // ! SETTERS
 
   // Enter new sale
@@ -454,6 +551,13 @@ class SaleHelpers {
       BuildContext context, Map data) async {
     return await sendShopDataToServer(context,
         route: 'enter_new_terminal_sale', data: data);
+  }
+
+  // Enter new dangote Sales
+  static Future<List> enter_new_dangote_sale(
+      BuildContext context, Map data) async {
+    return await sendShopDataToServer(context,
+        route: 'enter_new_dangote_sale', data: data);
   }
 
   // ! REMOVALS
@@ -470,4 +574,13 @@ class SaleHelpers {
     return await deleteFromServer(context,
         route: 'delete_terminal_sale_record', id: id);
   }
+
+  // Delete Dangote Sale record
+  static Future<bool> delete_dangote_sale_record(
+      BuildContext context, String id) async {
+    return await deleteFromServer(context,
+        route: 'delete_dangote_sale_record', id: id);
+  }
+
+  //
 }

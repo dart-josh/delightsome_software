@@ -482,7 +482,7 @@ class Terminal_SalesPageState extends State<TerminalSalesPage> {
       return ShopBox(
         shop: active_shop!,
         active_key: active_shop?.key,
-        outlet_shop: false,
+        shop_type: 'terminal',
       );
     }
 
@@ -498,7 +498,7 @@ class Terminal_SalesPageState extends State<TerminalSalesPage> {
           child: ShopBox(
             shop: shop,
             active_key: active_shop?.key,
-            outlet_shop: false,
+            shop_type: 'terminal',
           ),
         );
 

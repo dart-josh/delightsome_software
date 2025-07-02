@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:delightsome_software/dataModels/category.model.dart';
 import 'package:delightsome_software/dataModels/productStoreModels/badProductRecord.model.dart';
+import 'package:delightsome_software/dataModels/productStoreModels/dangoteCollectionRecord.model.dart';
 import 'package:delightsome_software/dataModels/productStoreModels/product.model.dart';
 import 'package:delightsome_software/dataModels/productStoreModels/productReceivedRecord.model.dart';
 import 'package:delightsome_software/dataModels/productStoreModels/productRequestRecord.model.dart';
@@ -257,8 +258,35 @@ class ProductStoreHelpers {
     }
   }
 
+  // get dangote products
+  static Future<List<ProductModel>> get_dangote_products(context) async {
+    try {
+      var response = await post_getters(context, 'get_dangote_products');
+
+      var jsonResponse = jsonDecode(response.body);
+
+      if (response.statusCode != 200) {
+        throw jsonResponse['message'];
+      }
+
+      List<ProductModel> productList = [];
+      List products = jsonResponse['products'];
+      for (var product in products) {
+        ProductModel productModel = ProductModel.fromJson(product);
+
+        productList.add(productModel);
+      }
+
+      return productList;
+    } catch (e) {
+      print(e);
+      return [];
+    }
+  }
+
   // get production record
-  static Future<List<ProductionRecordModel>> get_production_record(context) async {
+  static Future<List<ProductionRecordModel>> get_production_record(
+      context) async {
     try {
       var response = await post_getters(context, 'get_production_record');
 
@@ -285,8 +313,8 @@ class ProductStoreHelpers {
   }
 
   // Get product received record
-  static Future<List<ProductReceivedRecordModel>>
-      get_product_received_record(context) async {
+  static Future<List<ProductReceivedRecordModel>> get_product_received_record(
+      context) async {
     try {
       var response = await post_getters(context, 'get_product_received_record');
 
@@ -313,8 +341,8 @@ class ProductStoreHelpers {
   }
 
   // Get product request record
-  static Future<List<ProductRequestRecordModel>>
-      get_product_request_record(context) async {
+  static Future<List<ProductRequestRecordModel>> get_product_request_record(
+      context) async {
     try {
       var response = await post_getters(context, 'get_product_request_record');
 
@@ -341,8 +369,8 @@ class ProductStoreHelpers {
   }
 
   // Get product takeOut record
-  static Future<List<ProductTakeOutRecordModel>>
-      get_product_takeOut_record(context) async {
+  static Future<List<ProductTakeOutRecordModel>> get_product_takeOut_record(
+      context) async {
     try {
       var response = await post_getters(context, 'get_product_takeOut_record');
 
@@ -369,8 +397,8 @@ class ProductStoreHelpers {
   }
 
   // Get product return record
-  static Future<List<ProductReturnRecordModel>>
-      get_product_return_record(context) async {
+  static Future<List<ProductReturnRecordModel>> get_product_return_record(
+      context) async {
     try {
       var response = await post_getters(context, 'get_product_return_record');
 
@@ -397,7 +425,8 @@ class ProductStoreHelpers {
   }
 
   // Get bad product record
-  static Future<List<BadProductRecordModel>> get_bad_product_record(context) async {
+  static Future<List<BadProductRecordModel>> get_bad_product_record(
+      context) async {
     try {
       var response = await post_getters(context, 'get_bad_product_record');
 
@@ -427,7 +456,8 @@ class ProductStoreHelpers {
   static Future<List<TerminalCollectionRecordModel>>
       get_terminalCollection_record(context) async {
     try {
-      var response = await post_getters(context, 'get_terminalCollection_record');
+      var response =
+          await post_getters(context, 'get_terminalCollection_record');
 
       var jsonResponse = jsonDecode(response.body);
 
@@ -440,6 +470,35 @@ class ProductStoreHelpers {
       for (var element in record) {
         TerminalCollectionRecordModel recordModel =
             TerminalCollectionRecordModel.fromJson(element);
+
+        recordList.add(recordModel);
+      }
+
+      return recordList;
+    } catch (e) {
+      print(e);
+      return [];
+    }
+  }
+
+  // Get Dangote collection record
+  static Future<List<DangoteCollectionRecordModel>>
+      get_dangoteCollection_record(context) async {
+    try {
+      var response =
+          await post_getters(context, 'get_dangoteCollection_record');
+
+      var jsonResponse = jsonDecode(response.body);
+
+      if (response.statusCode != 200) {
+        throw jsonResponse['message'];
+      }
+
+      List<DangoteCollectionRecordModel> recordList = [];
+      List record = jsonResponse['record'];
+      for (var element in record) {
+        DangoteCollectionRecordModel recordModel =
+            DangoteCollectionRecordModel.fromJson(element);
 
         recordList.add(recordModel);
       }
@@ -564,8 +623,7 @@ class ProductStoreHelpers {
 
   // Get selected product return record
   static Future<List<ProductReturnRecordModel>>
-      get_selected_product_return_record(
-          BuildContext context, Map data) async {
+      get_selected_product_return_record(BuildContext context, Map data) async {
     var map = await send_get_dataToServer(context,
         route: 'get_selected_product_return_record', data: data);
     List<ProductReturnRecordModel> recordList = [];
@@ -616,6 +674,27 @@ class ProductStoreHelpers {
       for (var item in record) {
         TerminalCollectionRecordModel recordModel =
             TerminalCollectionRecordModel.fromJson(item);
+
+        recordList.add(recordModel);
+      }
+    }
+
+    return recordList;
+  }
+
+  // Get selected Dangote collection record
+  static Future<List<DangoteCollectionRecordModel>>
+      get_selected_dangoteCollection_record(
+          BuildContext context, Map data) async {
+    var map = await send_get_dataToServer(context,
+        route: 'get_selected_dangoteCollection_record', data: data);
+    List<DangoteCollectionRecordModel> recordList = [];
+
+    if (map != null) {
+      List record = map['record'] ?? [];
+      for (var item in record) {
+        DangoteCollectionRecordModel recordModel =
+            DangoteCollectionRecordModel.fromJson(item);
 
         recordList.add(recordModel);
       }
@@ -730,6 +809,20 @@ class ProductStoreHelpers {
         route: 'verify_terminalCollection_record', data: data);
   }
 
+// Enter dangote collection record
+  static Future<bool> enter_dangoteCollection_record(
+      BuildContext context, Map data) async {
+    return await sendDataToServer(context,
+        route: 'enter_dangoteCollection_record', data: data);
+  }
+
+// Verify dangote collection record
+  static Future<bool> verify_dangoteCollection_record(
+      BuildContext context, Map data) async {
+    return await sendDataToServer(context,
+        route: 'verify_dangoteCollection_record', data: data);
+  }
+
 // Add/update product category
   static Future<bool> add_update_product_category(
       BuildContext context, Map data) async {
@@ -791,6 +884,13 @@ class ProductStoreHelpers {
       BuildContext context, String id) async {
     return await deleteFromServer(context,
         route: 'delete_terminalCollection_record', id: id);
+  }
+
+// Delete dangote collection record
+  static Future<bool> delete_dangoteCollection_record(
+      BuildContext context, String id) async {
+    return await deleteFromServer(context,
+        route: 'delete_dangoteCollection_record', id: id);
   }
 
 // Delete product category

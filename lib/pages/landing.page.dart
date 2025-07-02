@@ -15,15 +15,19 @@ import 'package:delightsome_software/pages/productStorePages/enter_product_retur
 import 'package:delightsome_software/pages/productStorePages/enter_product_takeOut.page.dart';
 import 'package:delightsome_software/pages/productStorePages/enter_production.page.dart';
 import 'package:delightsome_software/pages/productStorePages/enter_terminalCollection.page.dart';
+import 'package:delightsome_software/pages/productStorePages/enter_dangoteCollection.page.dart';
 import 'package:delightsome_software/pages/productStorePages/product_list.page.dart';
 import 'package:delightsome_software/pages/productStorePages/production_summary.page.dart';
 import 'package:delightsome_software/pages/salePages/daily_sales_record.page.dart';
 import 'package:delightsome_software/pages/salePages/enter_new_sale.page.dart';
 import 'package:delightsome_software/pages/salePages/enter_new_terminal_sale.page.dart';
+import 'package:delightsome_software/pages/salePages/enter_new_dangote_sale.page.dart';
 import 'package:delightsome_software/pages/salePages/sales_record.page.dart';
 import 'package:delightsome_software/pages/salePages/sales_report.page.dart';
 import 'package:delightsome_software/pages/salePages/terminal_daily_sales_record.page.dart';
 import 'package:delightsome_software/pages/salePages/terminal_sales_record.page.dart';
+import 'package:delightsome_software/pages/salePages/dangote_daily_sales_record.page.dart';
+import 'package:delightsome_software/pages/salePages/dangote_sales_record.page.dart';
 import 'package:delightsome_software/pages/universalPages/category_list.page.dart';
 import 'package:delightsome_software/pages/universalPages/sidebar.dart';
 import 'package:delightsome_software/pages/userPages/customer_list.page.dart';
@@ -184,6 +188,7 @@ class _LandingPageState extends State<LandingPage> {
     Color p_material_store_color = Color.fromARGB(57, 227, 222, 151);
     Color r_material_store_color = Color.fromARGB(57, 148, 126, 69);
     Color terminal_color = Color.fromARGB(57, 151, 186, 227);
+    Color dangote_color = Color.fromARGB(57, 151, 186, 227);
 
     return Container(
       margin: EdgeInsets.only(bottom: 10),
@@ -243,6 +248,22 @@ class _LandingPageState extends State<LandingPage> {
                       },
                     ),
 
+                    // dangote product list
+                  if (auth_staff!.role != 'Production')
+                    menu_tile(
+                      icon: FontAwesomeIcons.productHunt,
+                      title: 'Dangote Products',
+                      color: dangote_color,
+                      onClicked: () {
+                        goto_page(
+                          dialog: null,
+                          page: ProductListPage(
+                            page: 'dangote_product',
+                          ),
+                        );
+                      },
+                    ),
+
                   // product material list
                   if (auth_staff!.role != 'Terminal')
                     menu_tile(
@@ -280,6 +301,7 @@ class _LandingPageState extends State<LandingPage> {
   Widget shops() {
     Color outlet_color = Color.fromARGB(57, 217, 151, 227);
     Color terminal_color = Color.fromARGB(57, 151, 186, 227);
+    Color dangote_color = Color.fromARGB(57, 151, 186, 227);
 
     if (auth_staff!.role == 'Production') return Container();
 
@@ -362,6 +384,34 @@ class _LandingPageState extends State<LandingPage> {
                             dialog: false, page: TerminalSalesRecordPage());
                       },
                     ),
+
+                    // dangote shop
+                  if (auth_staff!.role != 'Production' &&
+                      auth_staff!.role != 'Sales')
+                    menu_tile(
+                      icon: FontAwesomeIcons.store,
+                      title: 'Dangote Store',
+                      color: dangote_color,
+                      show_not: Provider.of<AppData>(context)
+                          .dangote_shops
+                          .isNotEmpty,
+                      onClicked: () {
+                        goto_page(dialog: false, page: DangoteSalesPage());
+                      },
+                    ),
+
+                  // dangote sales record
+                  if (auth_staff!.role != 'Production' &&
+                      auth_staff!.role != 'Sales')
+                    menu_tile(
+                      icon: FontAwesomeIcons.rectangleList,
+                      title: 'Dangote Store Record',
+                      color: dangote_color,
+                      onClicked: () {
+                        goto_page(
+                            dialog: false, page: DangoteSalesRecordPage());
+                      },
+                    ),
                 ],
               ),
             ),
@@ -374,6 +424,7 @@ class _LandingPageState extends State<LandingPage> {
   Widget product_store_forms() {
     Color product_store_color = Color.fromARGB(57, 151, 227, 157);
     Color terminal_color = Color.fromARGB(57, 151, 186, 227);
+    Color dangote_color = Color.fromARGB(57, 151, 186, 227);
     Color bad_product_color = Color.fromARGB(77, 234, 132, 132);
 
     return Container(
@@ -541,6 +592,57 @@ class _LandingPageState extends State<LandingPage> {
                         }
                       },
                     ),
+                  
+                  // dangote collection form
+                  if (auth_staff!.role != 'Production')
+                    menu_tile(
+                      icon: FontAwesomeIcons.store,
+                      title: 'Enter Dangote Collection',
+                      color: dangote_color,
+                      show_not: (saved_dangote_collected_model != null ||
+                          saved_dangote_returned_model != null),
+                      onClicked: () async {
+                        var collectionType = await showDialog(
+                          context: context,
+                          builder: (context) => Dialog(
+                            child: Container(
+                              width: 300,
+                              padding: EdgeInsets.all(20),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text('Select Collection Type'),
+                                  SizedBox(height: 20),
+                                  Row(
+                                    children: ['Collected', 'Returned']
+                                        .map(
+                                          (e) => TextButton(
+                                              onPressed: () {
+                                                Navigator.pop(context, e);
+                                              },
+                                              child: Text(e)),
+                                        )
+                                        .toList(),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+
+                        if (collectionType != null) {
+                          goto_page(
+                            dialog: null,
+                            page: EnterDangotecollectionPage(
+                              editModel: (collectionType == 'Collected')
+                                  ? saved_dangote_collected_model
+                                  : saved_dangote_returned_model,
+                              collectionType: collectionType,
+                            ),
+                          );
+                        }
+                      },
+                    ),
 
                   // bad product form
                   if (auth_staff!.role != 'Terminal')
@@ -698,6 +800,7 @@ class _LandingPageState extends State<LandingPage> {
     Color outlet_color = Color.fromARGB(57, 217, 151, 227);
     Color product_store_color = Color.fromARGB(57, 151, 227, 157);
     Color terminal_color = Color.fromARGB(57, 151, 186, 227);
+    Color dangote_color = Color.fromARGB(57, 151, 186, 227);
 
     if (auth_staff!.role == 'Production') return Container();
 
@@ -780,6 +883,21 @@ class _LandingPageState extends State<LandingPage> {
                         goto_page(
                           dialog: false,
                           page: TerminalDailySalesRecordPage(),
+                        );
+                      },
+                    ),
+
+                    // dangote product record
+                  if (auth_staff!.role != 'Production' &&
+                      auth_staff!.role != 'Sales')
+                    menu_tile(
+                      icon: FontAwesomeIcons.book,
+                      title: 'Dangote Daily Record',
+                      color: dangote_color,
+                      onClicked: () {
+                        goto_page(
+                          dialog: false,
+                          page: DangoteDailySalesRecordPage(),
                         );
                       },
                     ),

@@ -18,12 +18,12 @@ import 'package:provider/provider.dart';
 class ShopBox extends StatefulWidget {
   final ShopModel shop;
   final String? active_key;
-  final bool outlet_shop;
+  final String shop_type;
   const ShopBox({
     super.key,
     required this.shop,
     required this.active_key,
-    required this.outlet_shop,
+    required this.shop_type,
   });
 
   @override
@@ -128,13 +128,16 @@ class _ShopBoxState extends State<ShopBox> {
                     );
 
                     if (conf != null && conf) {
-                      if (widget.outlet_shop) {
+                      if (widget.shop_type == 'outlet') {
                         Provider.of<AppData>(context, listen: false)
                             .delete_outlet_shop(shop);
-                      } else {
+                      } else if (widget.shop_type == 'terminal') {
                         Provider.of<AppData>(context, listen: false)
                             .delete_terminal_shop(shop);
-                      }
+                      } else if (widget.shop_type == 'dangote') {
+                        Provider.of<AppData>(context, listen: false)
+                            .delete_dangote_shop(shop);
+                      } else {}
                     }
                   },
                   child: Icon(
@@ -147,17 +150,16 @@ class _ShopBoxState extends State<ShopBox> {
                 Expanded(child: Container()),
 
                 // shop type
-                if (shop.isExpanded && !shop.done && widget.outlet_shop)
+                if (shop.isExpanded &&
+                    !shop.done &&
+                    (widget.shop_type == 'outlet'))
                   TextButton(
                     onPressed: () {
                       shop.is_online = !shop.is_online;
-                      if (widget.outlet_shop) {
+                      if (widget.shop_type == 'outlet') {
                         Provider.of<AppData>(context, listen: false)
                             .update_outlet_shop(shop);
-                      } else {
-                        Provider.of<AppData>(context, listen: false)
-                            .update_terminal_shop(shop);
-                      }
+                      } else {}
                     },
                     child: Text(
                       shop.is_online ? 'Online' : 'Store',
@@ -174,12 +176,15 @@ class _ShopBoxState extends State<ShopBox> {
                 InkWell(
                   onTap: () {
                     shop.isExpanded = !shop.isExpanded;
-                    if (widget.outlet_shop) {
+                    if (widget.shop_type == 'outlet') {
                       Provider.of<AppData>(context, listen: false)
                           .update_outlet_shop(shop);
-                    } else {
+                    } else if (widget.shop_type == 'terminal') {
                       Provider.of<AppData>(context, listen: false)
                           .update_terminal_shop(shop);
+                    } else if (widget.shop_type == 'dangote') {
+                      Provider.of<AppData>(context, listen: false)
+                          .update_dangote_shop(shop);
                     }
                   },
                   child: Icon(
@@ -526,12 +531,15 @@ class _ShopBoxState extends State<ShopBox> {
                       onTap: () {
                         shop.key = UniqueKey().toString();
                         shop.done = false;
-                        if (widget.outlet_shop) {
+                        if (widget.shop_type == 'outlet') {
                           Provider.of<AppData>(context, listen: false)
                               .update_outlet_shop(shop);
-                        } else {
+                        } else if (widget.shop_type == 'terminal') {
                           Provider.of<AppData>(context, listen: false)
                               .update_terminal_shop(shop);
+                        } else if (widget.shop_type == 'dangote') {
+                          Provider.of<AppData>(context, listen: false)
+                              .update_dangote_shop(shop);
                         }
                       },
                       child: Container(
@@ -581,12 +589,15 @@ class _ShopBoxState extends State<ShopBox> {
               shop.customer = null;
               shop.products = [];
               shop.done = false;
-              if (widget.outlet_shop) {
+              if (widget.shop_type == 'outlet') {
                 Provider.of<AppData>(context, listen: false)
                     .update_outlet_shop(shop);
-              } else {
+              } else if (widget.shop_type == 'terminal') {
                 Provider.of<AppData>(context, listen: false)
                     .update_terminal_shop(shop);
+              } else if (widget.shop_type == 'dangote') {
+                Provider.of<AppData>(context, listen: false)
+                    .update_dangote_shop(shop);
               }
             },
             child: Text('Clear ticket'),
@@ -714,12 +725,15 @@ class _ShopBoxState extends State<ShopBox> {
 
                                 if (conf != null && conf) {
                                   shop.products.clear();
-                                  if (widget.outlet_shop) {
+                                  if (widget.shop_type == 'outlet') {
                                     Provider.of<AppData>(context, listen: false)
                                         .update_outlet_shop(shop);
-                                  } else {
+                                  } else if (widget.shop_type == 'terminal') {
                                     Provider.of<AppData>(context, listen: false)
                                         .update_terminal_shop(shop);
+                                  } else if (widget.shop_type == 'dangote') {
+                                    Provider.of<AppData>(context, listen: false)
+                                        .update_dangote_shop(shop);
                                   }
                                 }
                               },
@@ -903,12 +917,15 @@ class _ShopBoxState extends State<ShopBox> {
           InkWell(
             onTap: () {
               shop.products.remove(product);
-              if (widget.outlet_shop) {
+              if (widget.shop_type == 'outlet') {
                 Provider.of<AppData>(context, listen: false)
                     .update_outlet_shop(shop);
-              } else {
+              } else if (widget.shop_type == 'terminal') {
                 Provider.of<AppData>(context, listen: false)
                     .update_terminal_shop(shop);
+              } else if (widget.shop_type == 'dangote') {
+                Provider.of<AppData>(context, listen: false)
+                    .update_dangote_shop(shop);
               }
               setState(() {});
             },
@@ -1091,14 +1108,21 @@ class _ShopBoxState extends State<ShopBox> {
 
                       Map data = sale.toJson(soldBy: auth_staff.key ?? '');
 
-                      if (widget.outlet_shop) {
+                      if (widget.shop_type == 'outlet') {
                         var shop_data =
                             await SaleHelpers.enter_new_sale(context, data);
                         shop.done = shop_data[0];
                         shop.orderId = shop_data[1];
-                      } else {
+                      } else if (widget.shop_type == 'terminal') {
                         var shop_data =
                             await SaleHelpers.enter_new_terminal_sale(
+                                context, data);
+
+                        shop.done = shop_data[0];
+                        shop.orderId = shop_data[1];
+                      } else if (widget.shop_type == 'dangote') {
+                        var shop_data =
+                            await SaleHelpers.enter_new_dangote_sale(
                                 context, data);
 
                         shop.done = shop_data[0];
@@ -1136,11 +1160,15 @@ class _ShopBoxState extends State<ShopBox> {
                           time: DateFormat.jm()
                               .format(sale.recordDate ?? DateTime.now()),
                           receipt_id: shop.orderId ?? 'null',
-                          store: (widget.outlet_shop)
+                          store: (widget.shop_type == 'outlet')
                               ? shop.is_online
                                   ? 'Online'
                                   : 'Outlet'
-                              : 'Terminal',
+                              : (widget.shop_type == 'terminal')
+                                  ? 'Terminal'
+                                  : (widget.shop_type == 'dangote')
+                                      ? 'Dangote'
+                                      : '',
                           seller: auth_staff.nickName,
                           customer: shop.customer?.nickName ?? 'Walk-in',
                           items: items,
@@ -1157,12 +1185,15 @@ class _ShopBoxState extends State<ShopBox> {
                         shop.printModel = null;
                       }
 
-                      if (widget.outlet_shop) {
+                      if (widget.shop_type == 'outlet') {
                         Provider.of<AppData>(context, listen: false)
                             .update_outlet_shop(shop);
-                      } else {
+                      } else if (widget.shop_type == 'terminal') {
                         Provider.of<AppData>(context, listen: false)
                             .update_terminal_shop(shop);
+                      } else if (widget.shop_type == 'dangote') {
+                        Provider.of<AppData>(context, listen: false)
+                            .update_dangote_shop(shop);
                       }
                     }
                   },
@@ -1275,12 +1306,15 @@ class _ShopBoxState extends State<ShopBox> {
                   shop.customer = null;
                   customer_controller.clear();
                   setState(() {});
-                  if (widget.outlet_shop) {
+                  if (widget.shop_type == 'outlet') {
                     Provider.of<AppData>(context, listen: false)
                         .update_outlet_shop(shop);
-                  } else {
+                  } else if (widget.shop_type == 'terminal') {
                     Provider.of<AppData>(context, listen: false)
                         .update_terminal_shop(shop);
+                  } else if (widget.shop_type == 'dangote') {
+                    Provider.of<AppData>(context, listen: false)
+                        .update_dangote_shop(shop);
                   }
                 },
                 child: Icon(
@@ -1306,7 +1340,7 @@ class _ShopBoxState extends State<ShopBox> {
       context: context,
       builder: (context) => CustomerListPage(
           selector: true,
-          initial_index: widget.outlet_shop
+          initial_index: (widget.shop_type == 'outlet')
               ? shop.is_online
                   ? 1
                   : 0
@@ -1315,10 +1349,12 @@ class _ShopBoxState extends State<ShopBox> {
 
     if (cus != null) {
       shop.customer = cus;
-      if (widget.outlet_shop) {
+      if (widget.shop_type == 'outlet') {
         Provider.of<AppData>(context, listen: false).update_outlet_shop(shop);
-      } else {
+      } else if (widget.shop_type == 'terminal') {
         Provider.of<AppData>(context, listen: false).update_terminal_shop(shop);
+      } else if (widget.shop_type == 'dangote') {
+        Provider.of<AppData>(context, listen: false).update_dangote_shop(shop);
       }
     }
   }
@@ -1326,11 +1362,13 @@ class _ShopBoxState extends State<ShopBox> {
   bool check_products_qty() {
     List<ProductModel> prods = [];
 
-    if (widget.outlet_shop) {
+    if (widget.shop_type == 'outlet') {
       prods = Provider.of<AppData>(context, listen: false).product_list;
-    } else {
+    } else if (widget.shop_type == 'terminal') {
       prods =
           Provider.of<AppData>(context, listen: false).terminal_product_list;
+    } else if (widget.shop_type == 'dangote') {
+      prods = Provider.of<AppData>(context, listen: false).dangote_product_list;
     }
 
     for (var i = 0; i < shop.products.length; i++) {
@@ -1363,6 +1401,6 @@ class _ShopBoxState extends State<ShopBox> {
 
     return true;
   }
-  
+
   //
 }

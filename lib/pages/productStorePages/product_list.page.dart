@@ -40,6 +40,13 @@ class _ProductListPageState extends State<ProductListPage> {
               .where((e) => e.quantity <= e.restockLimit)
               .toList()
           : Provider.of<AppData>(context).terminal_product_list;
+    } else if (widget.page == 'dangote_product') {
+      all_product = (restock_page)
+          ? Provider.of<AppData>(context)
+              .dangote_product_list
+              .where((e) => e.quantity <= e.restockLimit)
+              .toList()
+          : Provider.of<AppData>(context).dangote_product_list;
     } else {
       all_product = (restock_page)
           ? Provider.of<AppData>(context)
@@ -228,7 +235,9 @@ class _ProductListPageState extends State<ProductListPage> {
 
               Expanded(child: Container()),
 
-              if (!restock_page && (widget.page != 'terminal_product'))
+              if (!restock_page &&
+                  (widget.page != 'terminal_product') &&
+                  (widget.page != 'dangote_product'))
                 if (auth_staff!.fullaccess)
                   Padding(
                     padding: EdgeInsets.only(right: 10),
@@ -274,9 +283,11 @@ class _ProductListPageState extends State<ProductListPage> {
             child: Text(
               (widget.page == 'terminal_product')
                   ? 'Terminal Products'
-                  : restock_page
-                      ? 'Products to Restock'
-                      : 'Product List',
+                  : (widget.page == 'dangote_product')
+                      ? 'Dangote Products'
+                      : restock_page
+                          ? 'Products to Restock'
+                          : 'Product List',
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 16,
@@ -536,20 +547,21 @@ class _ProductListPageState extends State<ProductListPage> {
           ),
 
           // qunatity
-          if (width > 600) Container(
-            width: 70,
-            child: Center(
-              child: Text(
-                UniversalHelpers.format_number(
-                  product.quantity,
-                ),
-                style: TextStyle(
-                  fontSize: 14,
-                  color: text_color,
+          if (width > 600)
+            Container(
+              width: 70,
+              child: Center(
+                child: Text(
+                  UniversalHelpers.format_number(
+                    product.quantity,
+                  ),
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: text_color,
+                  ),
                 ),
               ),
             ),
-          ),
 
           // actions
           Container(
@@ -590,7 +602,7 @@ class _ProductListPageState extends State<ProductListPage> {
                 ),
 
                 // delete
-                if (!restock_page && (widget.page != 'terminal_product'))
+                if (!restock_page && (widget.page != 'terminal_product') && (widget.page != 'dangote_product'))
                   if (auth_staff.fullaccess)
                     InkWell(
                       onTap: () async {

@@ -86,6 +86,11 @@ class ServerHelpers {
       DataGetters.get_terminal_products(context);
     });
 
+    // DangoteProduct
+    socket!.on('DangoteProduct', (data) {
+      DataGetters.get_dangote_products(context);
+    });
+
     // ProductionRecord
     socket!.on('ProductionRecord', (data) {
       DataGetters.get_production_record(context);
@@ -121,6 +126,11 @@ class ServerHelpers {
       DataGetters.get_terminalCollection_record(context);
     });
 
+    // DangoteCollectionRecord
+    socket!.on('DangoteCollectionRecord', (data) {
+      DataGetters.get_dangoteCollection_record(context);
+    });
+
     // ProductCategory
     socket!.on('ProductCategory', (data) {
       DataGetters.get_product_categories(context);
@@ -146,6 +156,16 @@ class ServerHelpers {
     // TerminalDailySalesRecord
     socket!.on('TerminalDailySalesRecord', (data) {
       DataGetters.get_terminal_daily_sales_record(context);
+    });
+
+    // DangoteSalesRecord
+    socket!.on('DangoteSalesRecord', (data) {
+      DataGetters.get_dangote_sales_record(context);
+    });
+
+    // DangoteDailySalesRecord
+    socket!.on('DangoteDailySalesRecord', (data) {
+      DataGetters.get_dangote_daily_sales_record(context);
     });
 
     // ? USER
@@ -192,6 +212,7 @@ class ServerHelpers {
       //? PRODUCTS STORE
       DataGetters.get_products(context);
       DataGetters.get_terminal_products(context);
+      DataGetters.get_dangote_products(context);
 
       DataGetters.get_product_categories(context);
 
@@ -202,6 +223,7 @@ class ServerHelpers {
       DataGetters.get_product_return_record(context);
       DataGetters.get_bad_product_record(context);
       DataGetters.get_terminalCollection_record(context);
+      DataGetters.get_dangoteCollection_record(context);
 
       // ? SALES
       DataGetters.get_sales_record(context);
@@ -209,6 +231,9 @@ class ServerHelpers {
 
       DataGetters.get_terminal_sales_record(context);
       DataGetters.get_terminal_daily_sales_record(context);
+
+      DataGetters.get_dangote_sales_record(context);
+      DataGetters.get_dangote_daily_sales_record(context);
 
       // ? USER
       DataGetters.get_all_staff(context);

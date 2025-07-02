@@ -244,7 +244,7 @@ class _AddUpdateProductState extends State<AddUpdateProduct> {
               Expanded(child: Container()),
 
               // edit button
-              if (!new_product && (widget.page != 'terminal_product') &&
+              if (!new_product && (widget.page != 'terminal_product') && (widget.page != 'dangote_product') &&
                   (auth_staff!.fullaccess))
                 InkWell(
                   onTap: () {
@@ -266,7 +266,7 @@ class _AddUpdateProductState extends State<AddUpdateProduct> {
               SizedBox(width: 10),
 
               // delete button
-              if (edit && !new_product && (widget.page != 'terminal_product') && (auth_staff!.fullaccess))
+              if (edit && !new_product && (widget.page != 'terminal_product') && (widget.page != 'dangote_product') && (auth_staff!.fullaccess))
                 InkWell(
                   onTap: () async {
                     bool? response = await UniversalHelpers.showConfirmBox(

@@ -4,22 +4,22 @@ import 'package:delightsome_software/dataModels/productStoreModels/productItem.m
 import 'package:delightsome_software/dataModels/saleModels/shop.model.dart';
 import 'package:delightsome_software/helpers/universalHelpers.dart';
 import 'package:delightsome_software/pages/productStorePages/widgets/product_selector.dart';
-import 'package:delightsome_software/pages/salePages/sales_record.page.dart';
+import 'package:delightsome_software/pages/salePages/dangote_sales_record.page.dart';
 import 'package:delightsome_software/pages/salePages/widgets/shop_box.dart';
 import 'package:delightsome_software/utils/appdata.dart';
 import 'package:delightsome_software/widgets/enter_qty_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:indexed/indexed.dart';
+import 'package:provider/provider.dart';
 
-class SalesPage extends StatefulWidget {
-  const SalesPage({super.key});
+class DangoteSalesPage extends StatefulWidget {
+  const DangoteSalesPage({super.key});
 
   @override
-  State<SalesPage> createState() => _SalesPageState();
+  State<DangoteSalesPage> createState() => Dangote_SalesPageState();
 }
 
-class _SalesPageState extends State<SalesPage> {
+class Dangote_SalesPageState extends State<DangoteSalesPage> {
   TextEditingController search_controller = TextEditingController();
   FocusNode searchNode = FocusNode();
 
@@ -34,8 +34,8 @@ class _SalesPageState extends State<SalesPage> {
   ShopModel? active_shop;
 
   get_products() {
-    products = Provider.of<AppData>(context).product_list;
-    shops = Provider.of<AppData>(context).outlet_shops;
+    products = Provider.of<AppData>(context).dangote_product_list;
+    shops = Provider.of<AppData>(context).dangote_shops;
   }
 
   @override
@@ -58,7 +58,7 @@ class _SalesPageState extends State<SalesPage> {
       active_shop = shops[0];
 
     return Scaffold(
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
       floatingActionButton: (width < 800) ? null : add_button(),
       backgroundColor: isDarkTheme
           ? AppColors.dark_primaryBackgroundColor
@@ -67,17 +67,17 @@ class _SalesPageState extends State<SalesPage> {
         children: [
           // top bar
           top_bar(),
-      
+
           // product selector
           selection(),
-      
+
           // content
           Expanded(
             child: Stack(
               children: [
                 // shop
                 shop_area(),
-      
+
                 // search list
                 if (search_on)
                   Positioned.fill(
@@ -96,7 +96,7 @@ class _SalesPageState extends State<SalesPage> {
                             ),
                           ),
                         ),
-      
+
                         // list
                         Positioned(
                           top: 0,
@@ -127,7 +127,7 @@ class _SalesPageState extends State<SalesPage> {
                                   ),
                           ),
                         ),
-      
+
                         //
                       ],
                     ),
@@ -171,7 +171,7 @@ class _SalesPageState extends State<SalesPage> {
               Expanded(child: Container()),
 
               // search button
-              if (!(width > 600) && active_shop != null && !active_shop!.done)
+              if (!(width > 600) && active_shop != null  && !active_shop!.done)
                 InkWell(
                   onTap: () {
                     search_open = !search_open;
@@ -200,16 +200,17 @@ class _SalesPageState extends State<SalesPage> {
                 ),
 
               IconButton(
-                  onPressed: () async {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => SalesRecordPage()));
-                  },
-                  icon: Icon(
-                    Icons.list,
-                    color: Colors.white,
-                  )),
+                onPressed: () async {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => DangoteSalesRecordPage()));
+                },
+                icon: Icon(
+                  Icons.list,
+                  color: Colors.white,
+                ),
+              ),
 
               SizedBox(width: 10),
             ],
@@ -218,7 +219,7 @@ class _SalesPageState extends State<SalesPage> {
           // title
           Center(
             child: Text(
-              'Sales Page',
+              'Dangote Sales Page',
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 16,
@@ -242,9 +243,7 @@ class _SalesPageState extends State<SalesPage> {
       child: Row(
         children: [
           // selector
-          if ((!search_open || (width > 600)) &&
-              active_shop != null &&
-              !active_shop!.done)
+          if ((!search_open || (width > 600)) && active_shop != null && !active_shop!.done)
             InkWell(
               onTap: () async {
                 ProductModel? product = await showDialog(
@@ -284,23 +283,6 @@ class _SalesPageState extends State<SalesPage> {
               search_bar()
             else if (search_open)
               Expanded(child: search_bar()),
-
-          // shop type
-          if (active_shop != null && !active_shop!.done && width < 800)
-            TextButton(
-              onPressed: () {
-                active_shop!.is_online = !active_shop!.is_online;
-                Provider.of<AppData>(context, listen: false)
-                    .update_outlet_shop(active_shop!);
-              },
-              child: Text(
-                active_shop!.is_online ? 'Online' : 'Store',
-                style: TextStyle(
-                  // color: Colors.white,
-                  fontSize: 14,
-                ),
-              ),
-            ),
         ],
       ),
     );
@@ -475,6 +457,7 @@ class _SalesPageState extends State<SalesPage> {
                         : AppColors.light_primaryTextColor,
               ),
             ),
+
             if (!(width > 600)) SizedBox(width: 10) else SizedBox(width: 5),
           ],
         ),
@@ -499,7 +482,7 @@ class _SalesPageState extends State<SalesPage> {
       return ShopBox(
         shop: active_shop!,
         active_key: active_shop?.key,
-        shop_type: 'outlet',
+        shop_type: 'dangote',
       );
     }
 
@@ -510,12 +493,12 @@ class _SalesPageState extends State<SalesPage> {
             if (!shop.isExpanded) shop.isExpanded = true;
             if (!shop.done) active_shop = shop;
             Provider.of<AppData>(context, listen: false)
-                .update_outlet_shop(shop);
+                .update_dangote_shop(shop);
           },
           child: ShopBox(
             shop: shop,
             active_key: active_shop?.key,
-            shop_type: 'outlet',
+            shop_type: 'dangote',
           ),
         );
 
@@ -565,7 +548,7 @@ class _SalesPageState extends State<SalesPage> {
                 Offset offset = Offset(dx, dy);
                 shop.position = offset;
                 Provider.of<AppData>(context, listen: false)
-                    .update_outlet_shop(shop);
+                    .update_dangote_shop(shop);
               },
               child: child,
             ),
@@ -597,7 +580,8 @@ class _SalesPageState extends State<SalesPage> {
           position: set_offset(),
         );
 
-        Provider.of<AppData>(context, listen: false).new_outlet_shop(new_shop);
+        Provider.of<AppData>(context, listen: false)
+            .new_dangote_shop(new_shop);
         active_shop = new_shop;
         setState(() {});
       },
@@ -656,17 +640,11 @@ class _SalesPageState extends State<SalesPage> {
         }
 
         active_shop!.products.add(
-          ProductItemModel(
-            product: product,
-            quantity: res,
-            price: active_shop!.is_online
-                ? product.onlinePrice
-                : product.storePrice,
-          ),
+          ProductItemModel(product: product, quantity: res, price: active_shop!.is_online ? product.onlinePrice : product.storePrice,),
         );
 
         Provider.of<AppData>(context, listen: false)
-            .update_outlet_shop(active_shop!);
+            .update_dangote_shop(active_shop!);
         search_on = false;
         setState(() {});
       }

@@ -4,6 +4,7 @@ import 'package:delightsome_software/dataModels/materialStoreModels/rawMaterials
 import 'package:delightsome_software/dataModels/materialStoreModels/restockProductMaterial.model.dart';
 import 'package:delightsome_software/dataModels/materialStoreModels/restockRawMaterial.model.dart';
 import 'package:delightsome_software/dataModels/productStoreModels/badProductRecord.model.dart';
+import 'package:delightsome_software/dataModels/productStoreModels/dangoteCollectionRecord.model.dart';
 import 'package:delightsome_software/dataModels/productStoreModels/productReceivedRecord.model.dart';
 import 'package:delightsome_software/dataModels/productStoreModels/productRequestRecord.model.dart';
 import 'package:delightsome_software/dataModels/productStoreModels/productReturnRecord.model.dart';
@@ -33,6 +34,8 @@ ProductReturnRecordModel? saved_product_return_model;
 ProductionRecordModel? saved_production_model;
 TerminalCollectionRecordModel? saved_terminal_collected_model;
 TerminalCollectionRecordModel? saved_terminal_returned_model;
+DangoteCollectionRecordModel? saved_dangote_collected_model;
+DangoteCollectionRecordModel? saved_dangote_returned_model;
 
 // category type
 List<String> category_type_list = [

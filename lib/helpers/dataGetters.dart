@@ -97,6 +97,14 @@ class DataGetters {
         .update_terminal_product_list(rec);
   }
 
+  // get dangote products
+  static get_dangote_products(context) async {
+    var rec = await ProductStoreHelpers.get_dangote_products(context);
+
+    Provider.of<AppData>(context, listen: false)
+        .update_dangote_product_list(rec);
+  }
+
   // get production record
   static get_production_record(context) async {
     var rec = await ProductStoreHelpers.get_production_record(context);
@@ -151,6 +159,14 @@ class DataGetters {
         .update_terminal_collection_record(rec);
   }
 
+  // Get Dangote collection record
+  static get_dangoteCollection_record(context) async {
+    var rec = await ProductStoreHelpers.get_dangoteCollection_record(context);
+
+    Provider.of<AppData>(context, listen: false)
+        .update_dangote_collection_record(rec);
+  }
+
   // get product categories
   static get_product_categories(context) async {
     var rec = await ProductStoreHelpers.get_product_categories(context);
@@ -187,6 +203,22 @@ class DataGetters {
 
     Provider.of<AppData>(context, listen: false)
         .update_terminal_daily_sales_record(rec);
+  }
+
+  // get dangote_sales record
+  static get_dangote_sales_record(context) async {
+    var rec = await SaleHelpers.get_dangote_sales_record(context);
+
+    Provider.of<AppData>(context, listen: false)
+        .update_dangote_sales_record(rec);
+  }
+
+  // get dangote daily sales record
+  static get_dangote_daily_sales_record(context) async {
+    var rec = await SaleHelpers.get_dangote_daily_sales_record(context);
+
+    Provider.of<AppData>(context, listen: false)
+        .update_dangote_daily_sales_record(rec);
   }
 
   // ? USER

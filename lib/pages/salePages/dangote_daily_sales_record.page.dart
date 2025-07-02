@@ -1,29 +1,31 @@
 import 'package:delightsome_software/appColors.dart';
-import 'package:delightsome_software/dataModels/saleModels/dailysales.model.dart';
+import 'package:delightsome_software/dataModels/saleModels/dangoteDailysales.model.dart';
 import 'package:delightsome_software/helpers/saleHelpers.dart';
 import 'package:delightsome_software/helpers/universalHelpers.dart';
-import 'package:delightsome_software/pages/salePages/widgets/daily_sale_record_view.dart';
+import 'package:delightsome_software/pages/salePages/widgets/dangote_daily_sale_record_view.dart';
 import 'package:delightsome_software/utils/appdata.dart';
 import 'package:flutter/material.dart';
 import 'package:simple_month_year_picker/simple_month_year_picker.dart';
 import 'package:provider/provider.dart';
 
-class DailySalesRecordPage extends StatefulWidget {
-  const DailySalesRecordPage({super.key});
+class DangoteDailySalesRecordPage extends StatefulWidget {
+  const DangoteDailySalesRecordPage({super.key});
 
   @override
-  State<DailySalesRecordPage> createState() => _DailySalesRecordPageState();
+  State<DangoteDailySalesRecordPage> createState() =>
+      _DangoteDailySalesRecordPageState();
 }
 
-class _DailySalesRecordPageState extends State<DailySalesRecordPage> {
+class _DangoteDailySalesRecordPageState
+    extends State<DangoteDailySalesRecordPage> {
   TextEditingController search_controller = TextEditingController();
   FocusNode searchNode = FocusNode();
-  List<DailySalesModel> all_record = [];
+  List<DangoteDailySalesModel> all_record = [];
 
-  List<DailySalesModel> record = [];
+  List<DangoteDailySalesModel> record = [];
 
-  List<DailySalesProductsModel> selected_record = [];
-  List<DailySalesProductsModel> search_list = [];
+  List<DangoteDailySalesProductsModel> selected_record = [];
+  List<DangoteDailySalesProductsModel> search_list = [];
 
   String? selected_date;
 
@@ -37,13 +39,13 @@ class _DailySalesRecordPageState extends State<DailySalesRecordPage> {
   bool search_open = false;
 
   get_record() {
-    all_record = Provider.of<AppData>(context).daily_sales_record;
+    all_record = Provider.of<AppData>(context).dangote_daily_sales_record;
 
     record.clear();
 
     for (var r in all_record) {
       // Clone the model to avoid modifying the original `all_record`
-      DailySalesModel clonedRecord = DailySalesModel.copy(r);
+      DangoteDailySalesModel clonedRecord = DangoteDailySalesModel.copy(r);
       if (UniversalHelpers.get_month(DateTime.parse(clonedRecord.date)) !=
           UniversalHelpers.get_month(DateTime.now())) {
         final chk = record
@@ -54,8 +56,8 @@ class _DailySalesRecordPageState extends State<DailySalesRecordPage> {
             .toList();
 
         if (chk.isNotEmpty) {
-          final DailySalesModel _rec = chk.first;
-          final List<DailySalesProductsModel> _prods = _rec.products;
+          final DangoteDailySalesModel _rec = chk.first;
+          final List<DangoteDailySalesProductsModel> _prods = _rec.products;
 
           var rec_int = record.indexWhere((rec) =>
               rec.date ==
@@ -71,28 +73,15 @@ class _DailySalesRecordPageState extends State<DailySalesRecordPage> {
               int prod = _prods
                   .indexWhere((p) => p.product.key == element.product.key);
 
-              var new_p = DailySalesProductsModel(
+              var new_p = DangoteDailySalesProductsModel(
                 key: element.product.key ?? '',
                 product: element.product,
                 openingQuantity:
                     element.openingQuantity + _prods[prod].openingQuantity,
                 storePrice: element.storePrice,
-                onlinePrice: element.onlinePrice,
-                added: element.added + _prods[prod].added,
-                request: element.request + _prods[prod].request,
-                takeOut: element.takeOut + _prods[prod].takeOut,
-                returnn: element.returnn + _prods[prod].returnn,
-                terminalCollected:
-                    element.terminalCollected + _prods[prod].terminalCollected,
-                terminalReturn:
-                    element.terminalReturn + _prods[prod].terminalReturn,
-                dangoteCollected:
-                    element.dangoteCollected + _prods[prod].dangoteCollected,
-                dangoteReturn:
-                    element.dangoteReturn + _prods[prod].dangoteReturn,
-                badProduct: element.badProduct + _prods[prod].badProduct,
-                online: element.online + _prods[prod].online,
-                quantitySold: element.quantitySold + _prods[prod].quantitySold,
+                collected: element.collected + _prods[prod].collected,
+                returned: element.returned + _prods[prod].returned,
+                sold: element.sold + _prods[prod].sold,
               );
 
               _prods[prod] = new_p;
@@ -103,7 +92,7 @@ class _DailySalesRecordPageState extends State<DailySalesRecordPage> {
             record[rec_int].products = _prods;
           }
         } else {
-          DailySalesModel new_rec = DailySalesModel(
+          DangoteDailySalesModel new_rec = DangoteDailySalesModel(
             key: clonedRecord.key,
             date: UniversalHelpers.get_raw_month(
                 DateTime.parse(clonedRecord.date)),
@@ -131,12 +120,12 @@ class _DailySalesRecordPageState extends State<DailySalesRecordPage> {
     setState(() {});
   }
 
-  List<DailySalesProductsModel> map_record(
-      {required List<DailySalesModel> recs}) {
-    List<DailySalesProductsModel> products = [];
+  List<DangoteDailySalesProductsModel> map_record(
+      {required List<DangoteDailySalesModel> recs}) {
+    List<DangoteDailySalesProductsModel> products = [];
 
     for (var r in recs) {
-      DailySalesModel clonedRecord = DailySalesModel.copy(r);
+      DangoteDailySalesModel clonedRecord = DangoteDailySalesModel.copy(r);
       for (var element in clonedRecord.products) {
         final check =
             products.where((p) => p.product.key == element.product.key);
@@ -145,27 +134,15 @@ class _DailySalesRecordPageState extends State<DailySalesRecordPage> {
           int prod =
               products.indexWhere((p) => p.product.key == element.product.key);
 
-          var new_p = DailySalesProductsModel(
+          var new_p = DangoteDailySalesProductsModel(
             key: element.product.key ?? '',
             product: element.product,
             openingQuantity:
                 element.openingQuantity + products[prod].openingQuantity,
             storePrice: element.storePrice,
-            onlinePrice: element.onlinePrice,
-            added: element.added + products[prod].added,
-            request: element.request + products[prod].request,
-            takeOut: element.takeOut + products[prod].takeOut,
-            returnn: element.request + products[prod].request,
-            terminalCollected:
-                element.terminalCollected + products[prod].terminalCollected,
-            terminalReturn:
-                element.terminalReturn + products[prod].terminalReturn,
-            dangoteCollected:
-                element.dangoteCollected + products[prod].dangoteCollected,
-            dangoteReturn: element.dangoteReturn + products[prod].dangoteReturn,
-            badProduct: element.badProduct + products[prod].badProduct,
-            online: element.online + products[prod].online,
-            quantitySold: element.quantitySold + products[prod].quantitySold,
+            collected: element.collected + products[prod].collected,
+            returned: element.returned + products[prod].returned,
+            sold: element.sold + products[prod].sold,
           );
 
           products[prod] = new_p;
@@ -223,7 +200,7 @@ class _DailySalesRecordPageState extends State<DailySalesRecordPage> {
 
           // content
           Expanded(
-            child: DailySaleRecordView(
+            child: DangoteDailySaleRecordView(
                 record: (search_on) ? search_list : selected_record),
           ),
         ],
@@ -263,7 +240,7 @@ class _DailySalesRecordPageState extends State<DailySalesRecordPage> {
               Expanded(child: Container()),
 
               // search button
-              if (width > 800 && title == null)
+              if (width > 600 && title == null)
                 if (search_open)
                   search_bar()
                 else
@@ -295,7 +272,7 @@ class _DailySalesRecordPageState extends State<DailySalesRecordPage> {
           // title
           Center(
             child: Text(
-              title ?? 'Daily Product Record',
+              title ?? 'Dangote Daily Product Record',
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 16,
@@ -488,7 +465,7 @@ class _DailySalesRecordPageState extends State<DailySalesRecordPage> {
   }
 
   // date picker tile
-  Widget date_picker_tile(DailySalesModel _record) {
+  Widget date_picker_tile(DangoteDailySalesModel _record) {
     bool isDarkTheme =
         Provider.of<AppData>(context).themeMode == ThemeMode.dark;
 
@@ -551,14 +528,14 @@ class _DailySalesRecordPageState extends State<DailySalesRecordPage> {
     bool isDarkTheme =
         Provider.of<AppData>(context).themeMode == ThemeMode.dark;
 
-    List<DailySalesModel> records = [];
+    List<DangoteDailySalesModel> records = [];
 
     DateTime last_back =
         DateTime(DateTime.now().year, DateTime.now().month - 3, 1);
 
     bool isOffList = true;
 
-    List<DailySalesModel> s_record = all_record;
+    List<DangoteDailySalesModel> s_record = all_record;
 
     if (date != null) {
       if (date.isAfter(last_back) || date == last_back) {
@@ -599,19 +576,21 @@ class _DailySalesRecordPageState extends State<DailySalesRecordPage> {
       return Container();
     }
 
-    return FutureBuilder<List<DailySalesModel>>(
+    return FutureBuilder<List<DangoteDailySalesModel>>(
       initialData: records,
       future: records.isNotEmpty
           ? null
           : (date != null && isOffList)
-              ? SaleHelpers.get_selected_daily_sales_record(
+              ? SaleHelpers.get_selected_dangote_daily_sales_record(
                   context, {'date': UniversalHelpers.get_raw_date(date)})
               : (month != null && isOffList)
-                  ? SaleHelpers.get_selected_daily_sales_record(context, {
+                  ? SaleHelpers.get_selected_dangote_daily_sales_record(
+                      context, {
                       'month': UniversalHelpers.get_raw_month(month),
                     })
                   : (dateRange != null && isOffList)
-                      ? SaleHelpers.get_selected_daily_sales_record(context, {
+                      ? SaleHelpers.get_selected_dangote_daily_sales_record(
+                          context, {
                           'timeFrame': [
                             UniversalHelpers.get_raw_date(dateRange.start),
                             UniversalHelpers.get_raw_date(dateRange.end)
@@ -633,7 +612,7 @@ class _DailySalesRecordPageState extends State<DailySalesRecordPage> {
 
         var rec = records.isNotEmpty ? records : snapshot.data ?? [];
 
-        List<DailySalesProductsModel> s_rec = map_record(recs: rec);
+        List<DangoteDailySalesProductsModel> s_rec = map_record(recs: rec);
 
         return Dialog(
           surfaceTintColor: Colors.transparent,
@@ -663,7 +642,7 @@ class _DailySalesRecordPageState extends State<DailySalesRecordPage> {
                     child: Container(
                       padding:
                           EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                      child: DailySaleRecordView(record: s_rec),
+                      child: DangoteDailySaleRecordView(record: s_rec),
                     ),
                   ),
                 ),
@@ -679,8 +658,8 @@ class _DailySalesRecordPageState extends State<DailySalesRecordPage> {
 
   // FUNCTIONS
   // search products
-  List<DailySalesProductsModel> search(
-      String value, List<DailySalesProductsModel> record) {
+  List<DangoteDailySalesProductsModel> search(
+      String value, List<DangoteDailySalesProductsModel> record) {
     return record
         .where((product) =>
             product.product.name.toLowerCase().contains(value.toLowerCase()) ||
