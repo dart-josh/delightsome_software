@@ -3,7 +3,7 @@ import 'package:delightsome_software/appColors.dart';
 import 'package:delightsome_software/dataModels/productStoreModels/collectionRecord.model.dart';
 import 'package:delightsome_software/helpers/productStoreHelpers.dart';
 import 'package:delightsome_software/helpers/universalHelpers.dart';
-import 'package:delightsome_software/pages/productStorePages/enter_terminalCollection.page.dart';
+import 'package:delightsome_software/pages/productStorePages/enter_outletCollection.page.dart';
 import 'package:delightsome_software/pages/universalPages/record_info_dialog.dart';
 import 'package:delightsome_software/utils/appdata.dart';
 import 'package:flutter/material.dart';
@@ -11,16 +11,16 @@ import 'package:simple_month_year_picker/simple_month_year_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:sticky_grouped_list/sticky_grouped_list.dart';
 
-class TerminalCollectionRecordPage extends StatefulWidget {
-  const TerminalCollectionRecordPage({super.key});
+class OutletCollectionRecordPage extends StatefulWidget {
+  const OutletCollectionRecordPage({super.key});
 
   @override
-  State<TerminalCollectionRecordPage> createState() =>
-      _TerminalCollectionRecordPageState();
+  State<OutletCollectionRecordPage> createState() =>
+      _OutletCollectionRecordPageState();
 }
 
-class _TerminalCollectionRecordPageState
-    extends State<TerminalCollectionRecordPage> {
+class _OutletCollectionRecordPageState
+    extends State<OutletCollectionRecordPage> {
   List<CollectionRecordModel> auth_record = [];
   List<GroupedCollectionRecordModel> grouped_record = [];
   List<CollectionRecordModel> selected_record = [];
@@ -38,7 +38,7 @@ class _TerminalCollectionRecordPageState
 
   get_record() {
     List<CollectionRecordModel> all_record =
-        Provider.of<AppData>(context).terminal_collection_record;
+        Provider.of<AppData>(context).outlet_collection_record;
 
     pending_record = all_record.where((element) => !element.verified!).toList();
     auth_record = all_record.where((element) => element.verified!).toList();
@@ -174,7 +174,7 @@ class _TerminalCollectionRecordPageState
           // title
           Center(
             child: Text(
-              title ?? 'Terminal Collection Record',
+              title ?? 'Outlet Collection Record',
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 16,
@@ -249,12 +249,10 @@ class _TerminalCollectionRecordPageState
                 // lastDate: DateTime.now(),
               );
 
-              if (res != null) {
-                dateM = res;
-                showDialog(
-                    context: context,
-                    builder: (context) => view_record_by_date(month: res));
-              }
+              dateM = res;
+              showDialog(
+                  context: context,
+                  builder: (context) => view_record_by_date(month: res));
             },
             icon: Icon(Icons.calendar_month_outlined),
           ),
@@ -451,7 +449,7 @@ class _TerminalCollectionRecordPageState
                 // staffResponsible
                 Row(
                   children: [
-                    Text('Terminal Staff : ', style: label_style),
+                    Text('Outlet Staff : ', style: label_style),
                     SizedBox(width: 4),
                     Text(record.staffResponsible?.nickName ?? 'No Staff',
                         style: main_style),
@@ -586,7 +584,7 @@ class _TerminalCollectionRecordPageState
                         );
                       }
 
-                      ProductStoreHelpers.verify_terminalCollection_record(
+                      ProductStoreHelpers.verify_outletCollection_record(
                           context,
                           record.verify_toJson(
                               verifiedBy: auth_staff.key ?? ''));
@@ -600,7 +598,7 @@ class _TerminalCollectionRecordPageState
                         showDialog(
                             context: context,
                             barrierDismissible: false,
-                            builder: (context) => EnterTerminalcollectionPage(
+                            builder: (context) => EnterOutletcollectionPage(
                                   editModel: record,
                                   collectionType: record.collectionType,
                                 ));
@@ -608,8 +606,7 @@ class _TerminalCollectionRecordPageState
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) =>
-                                    EnterTerminalcollectionPage(
+                                builder: (context) => EnterOutletcollectionPage(
                                       editModel: record,
                                       collectionType: record.collectionType,
                                     )));
@@ -617,7 +614,7 @@ class _TerminalCollectionRecordPageState
                     }
 
                     if (res == 'delete') {
-                      ProductStoreHelpers.delete_terminalCollection_record(
+                      ProductStoreHelpers.delete_outletCollection_record(
                           context, record.key!);
                     }
                   }
@@ -719,16 +716,16 @@ class _TerminalCollectionRecordPageState
       future: records.isNotEmpty
           ? null
           : (date != null && isOffList)
-              ? ProductStoreHelpers.get_selected_terminalCollection_record(
+              ? ProductStoreHelpers.get_selected_outletCollection_record(
                   context, {'date': UniversalHelpers.get_raw_date(date)})
               : (month != null && isOffList)
-                  ? ProductStoreHelpers.get_selected_terminalCollection_record(
+                  ? ProductStoreHelpers.get_selected_outletCollection_record(
                       context, {
                       'month': UniversalHelpers.get_raw_month(month),
                     })
                   : (dateRange != null && isOffList)
                       ? ProductStoreHelpers
-                          .get_selected_terminalCollection_record(context, {
+                          .get_selected_outletCollection_record(context, {
                           'timeFrame': [
                             UniversalHelpers.get_raw_date(dateRange.start),
                             UniversalHelpers.get_raw_date(dateRange.end)

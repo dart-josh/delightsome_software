@@ -1,14 +1,13 @@
 import 'dart:convert';
 import 'package:delightsome_software/dataModels/category.model.dart';
 import 'package:delightsome_software/dataModels/productStoreModels/badProductRecord.model.dart';
-import 'package:delightsome_software/dataModels/productStoreModels/dangoteCollectionRecord.model.dart';
+import 'package:delightsome_software/dataModels/productStoreModels/collectionRecord.model.dart';
 import 'package:delightsome_software/dataModels/productStoreModels/product.model.dart';
 import 'package:delightsome_software/dataModels/productStoreModels/productReceivedRecord.model.dart';
 import 'package:delightsome_software/dataModels/productStoreModels/productRequestRecord.model.dart';
 import 'package:delightsome_software/dataModels/productStoreModels/productReturnRecord.model.dart';
 import 'package:delightsome_software/dataModels/productStoreModels/productTakeOutRecord.model.dart';
 import 'package:delightsome_software/dataModels/productStoreModels/productionRecord.model.dart';
-import 'package:delightsome_software/dataModels/productStoreModels/terminalCollectionRecord.model.dart';
 import 'package:delightsome_software/utils/appdata.dart';
 import 'package:http/http.dart' as http;
 import 'package:delightsome_software/globalvariables.dart';
@@ -210,6 +209,32 @@ class ProductStoreHelpers {
   static Future<List<ProductModel>> get_products(context) async {
     try {
       var response = await post_getters(context, 'get_products');
+
+      var jsonResponse = jsonDecode(response.body);
+
+      if (response.statusCode != 200) {
+        throw jsonResponse['message'];
+      }
+
+      List<ProductModel> productList = [];
+      List products = jsonResponse['products'];
+      for (var product in products) {
+        ProductModel productModel = ProductModel.fromJson(product);
+
+        productList.add(productModel);
+      }
+
+      return productList;
+    } catch (e) {
+      print(e);
+      return [];
+    }
+  }
+
+  // get outlet products
+  static Future<List<ProductModel>> get_outlet_products(context) async {
+    try {
+      var response = await post_getters(context, 'get_outlet_products');
 
       var jsonResponse = jsonDecode(response.body);
 
@@ -452,9 +477,37 @@ class ProductStoreHelpers {
     }
   }
 
+  // Get Outlet collection record
+  static Future<List<CollectionRecordModel>> get_outletCollection_record(
+      context) async {
+    try {
+      var response = await post_getters(context, 'get_outletCollection_record');
+
+      var jsonResponse = jsonDecode(response.body);
+
+      if (response.statusCode != 200) {
+        throw jsonResponse['message'];
+      }
+
+      List<CollectionRecordModel> recordList = [];
+      List record = jsonResponse['record'];
+      for (var element in record) {
+        CollectionRecordModel recordModel =
+            CollectionRecordModel.fromJson(element);
+
+        recordList.add(recordModel);
+      }
+
+      return recordList;
+    } catch (e) {
+      print(e);
+      return [];
+    }
+  }
+
   // Get Terminal collection record
-  static Future<List<TerminalCollectionRecordModel>>
-      get_terminalCollection_record(context) async {
+  static Future<List<CollectionRecordModel>> get_terminalCollection_record(
+      context) async {
     try {
       var response =
           await post_getters(context, 'get_terminalCollection_record');
@@ -465,11 +518,11 @@ class ProductStoreHelpers {
         throw jsonResponse['message'];
       }
 
-      List<TerminalCollectionRecordModel> recordList = [];
+      List<CollectionRecordModel> recordList = [];
       List record = jsonResponse['record'];
       for (var element in record) {
-        TerminalCollectionRecordModel recordModel =
-            TerminalCollectionRecordModel.fromJson(element);
+        CollectionRecordModel recordModel =
+            CollectionRecordModel.fromJson(element);
 
         recordList.add(recordModel);
       }
@@ -482,8 +535,8 @@ class ProductStoreHelpers {
   }
 
   // Get Dangote collection record
-  static Future<List<DangoteCollectionRecordModel>>
-      get_dangoteCollection_record(context) async {
+  static Future<List<CollectionRecordModel>> get_dangoteCollection_record(
+      context) async {
     try {
       var response =
           await post_getters(context, 'get_dangoteCollection_record');
@@ -494,11 +547,11 @@ class ProductStoreHelpers {
         throw jsonResponse['message'];
       }
 
-      List<DangoteCollectionRecordModel> recordList = [];
+      List<CollectionRecordModel> recordList = [];
       List record = jsonResponse['record'];
       for (var element in record) {
-        DangoteCollectionRecordModel recordModel =
-            DangoteCollectionRecordModel.fromJson(element);
+        CollectionRecordModel recordModel =
+            CollectionRecordModel.fromJson(element);
 
         recordList.add(recordModel);
       }
@@ -661,19 +714,41 @@ class ProductStoreHelpers {
     return recordList;
   }
 
-  // Get selected Terminal collection record
-  static Future<List<TerminalCollectionRecordModel>>
-      get_selected_terminalCollection_record(
+  // Get selected Outlet collection record
+  static Future<List<CollectionRecordModel>>
+      get_selected_outletCollection_record(
           BuildContext context, Map data) async {
     var map = await send_get_dataToServer(context,
-        route: 'get_selected_terminalCollection_record', data: data);
-    List<TerminalCollectionRecordModel> recordList = [];
+        route: 'get_selected_outletCollection_record', data: data);
+    List<CollectionRecordModel> recordList = [];
 
     if (map != null) {
       List record = map['record'] ?? [];
       for (var item in record) {
-        TerminalCollectionRecordModel recordModel =
-            TerminalCollectionRecordModel.fromJson(item);
+        CollectionRecordModel recordModel =
+            CollectionRecordModel.fromJson(item);
+
+        recordList.add(recordModel);
+      }
+    }
+
+    return recordList;
+  }
+
+
+  // Get selected Terminal collection record
+  static Future<List<CollectionRecordModel>>
+      get_selected_terminalCollection_record(
+          BuildContext context, Map data) async {
+    var map = await send_get_dataToServer(context,
+        route: 'get_selected_terminalCollection_record', data: data);
+    List<CollectionRecordModel> recordList = [];
+
+    if (map != null) {
+      List record = map['record'] ?? [];
+      for (var item in record) {
+        CollectionRecordModel recordModel =
+            CollectionRecordModel.fromJson(item);
 
         recordList.add(recordModel);
       }
@@ -683,18 +758,18 @@ class ProductStoreHelpers {
   }
 
   // Get selected Dangote collection record
-  static Future<List<DangoteCollectionRecordModel>>
+  static Future<List<CollectionRecordModel>>
       get_selected_dangoteCollection_record(
           BuildContext context, Map data) async {
     var map = await send_get_dataToServer(context,
         route: 'get_selected_dangoteCollection_record', data: data);
-    List<DangoteCollectionRecordModel> recordList = [];
+    List<CollectionRecordModel> recordList = [];
 
     if (map != null) {
       List record = map['record'] ?? [];
       for (var item in record) {
-        DangoteCollectionRecordModel recordModel =
-            DangoteCollectionRecordModel.fromJson(item);
+        CollectionRecordModel recordModel =
+            CollectionRecordModel.fromJson(item);
 
         recordList.add(recordModel);
       }
@@ -795,6 +870,20 @@ class ProductStoreHelpers {
         route: 'verify_bad_product_record', data: data);
   }
 
+// Enter outlet collection record
+  static Future<bool> enter_outletCollection_record(
+      BuildContext context, Map data) async {
+    return await sendDataToServer(context,
+        route: 'enter_outletCollection_record', data: data);
+  }
+
+// Verify outlet collection record
+  static Future<bool> verify_outletCollection_record(
+      BuildContext context, Map data) async {
+    return await sendDataToServer(context,
+        route: 'verify_outletCollection_record', data: data);
+  }
+
 // Enter terminal collection record
   static Future<bool> enter_terminalCollection_record(
       BuildContext context, Map data) async {
@@ -877,6 +966,13 @@ class ProductStoreHelpers {
       BuildContext context, String id) async {
     return await deleteFromServer(context,
         route: 'delete_bad_product_record', id: id);
+  }
+
+// Delete outlet collection record
+  static Future<bool> delete_outletCollection_record(
+      BuildContext context, String id) async {
+    return await deleteFromServer(context,
+        route: 'delete_outletCollection_record', id: id);
   }
 
 // Delete terminal collection record

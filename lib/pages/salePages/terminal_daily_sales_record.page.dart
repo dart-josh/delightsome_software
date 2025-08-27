@@ -1,5 +1,5 @@
 import 'package:delightsome_software/appColors.dart';
-import 'package:delightsome_software/dataModels/saleModels/terminalDailysales.model.dart';
+import 'package:delightsome_software/dataModels/saleModels/outletDailysales.model.dart';
 import 'package:delightsome_software/helpers/saleHelpers.dart';
 import 'package:delightsome_software/helpers/universalHelpers.dart';
 import 'package:delightsome_software/pages/salePages/widgets/terminal_daily_sale_record_view.dart';
@@ -20,12 +20,12 @@ class _TerminalDailySalesRecordPageState
     extends State<TerminalDailySalesRecordPage> {
   TextEditingController search_controller = TextEditingController();
   FocusNode searchNode = FocusNode();
-  List<TerminalDailySalesModel> all_record = [];
+  List<OutletDailySalesModel> all_record = [];
 
-  List<TerminalDailySalesModel> record = [];
+  List<OutletDailySalesModel> record = [];
 
-  List<TerminalDailySalesProductsModel> selected_record = [];
-  List<TerminalDailySalesProductsModel> search_list = [];
+  List<OutletDailySalesProductsModel> selected_record = [];
+  List<OutletDailySalesProductsModel> search_list = [];
 
   String? selected_date;
 
@@ -45,7 +45,7 @@ class _TerminalDailySalesRecordPageState
 
     for (var r in all_record) {
       // Clone the model to avoid modifying the original `all_record`
-      TerminalDailySalesModel clonedRecord = TerminalDailySalesModel.copy(r);
+      OutletDailySalesModel clonedRecord = OutletDailySalesModel.copy(r);
       if (UniversalHelpers.get_month(DateTime.parse(clonedRecord.date)) !=
           UniversalHelpers.get_month(DateTime.now())) {
         final chk = record
@@ -56,8 +56,8 @@ class _TerminalDailySalesRecordPageState
             .toList();
 
         if (chk.isNotEmpty) {
-          final TerminalDailySalesModel _rec = chk.first;
-          final List<TerminalDailySalesProductsModel> _prods = _rec.products;
+          final OutletDailySalesModel _rec = chk.first;
+          final List<OutletDailySalesProductsModel> _prods = _rec.products;
 
           var rec_int = record.indexWhere((rec) =>
               rec.date ==
@@ -73,7 +73,7 @@ class _TerminalDailySalesRecordPageState
               int prod = _prods
                   .indexWhere((p) => p.product.key == element.product.key);
 
-              var new_p = TerminalDailySalesProductsModel(
+              var new_p = OutletDailySalesProductsModel(
                 key: element.product.key ?? '',
                 product: element.product,
                 openingQuantity:
@@ -92,7 +92,7 @@ class _TerminalDailySalesRecordPageState
             record[rec_int].products = _prods;
           }
         } else {
-          TerminalDailySalesModel new_rec = TerminalDailySalesModel(
+          OutletDailySalesModel new_rec = OutletDailySalesModel(
             key: clonedRecord.key,
             date: UniversalHelpers.get_raw_month(
                 DateTime.parse(clonedRecord.date)),
@@ -120,12 +120,12 @@ class _TerminalDailySalesRecordPageState
     setState(() {});
   }
 
-  List<TerminalDailySalesProductsModel> map_record(
-      {required List<TerminalDailySalesModel> recs}) {
-    List<TerminalDailySalesProductsModel> products = [];
+  List<OutletDailySalesProductsModel> map_record(
+      {required List<OutletDailySalesModel> recs}) {
+    List<OutletDailySalesProductsModel> products = [];
 
     for (var r in recs) {
-      TerminalDailySalesModel clonedRecord = TerminalDailySalesModel.copy(r);
+      OutletDailySalesModel clonedRecord = OutletDailySalesModel.copy(r);
       for (var element in clonedRecord.products) {
         final check =
             products.where((p) => p.product.key == element.product.key);
@@ -134,7 +134,7 @@ class _TerminalDailySalesRecordPageState
           int prod =
               products.indexWhere((p) => p.product.key == element.product.key);
 
-          var new_p = TerminalDailySalesProductsModel(
+          var new_p = OutletDailySalesProductsModel(
             key: element.product.key ?? '',
             product: element.product,
             openingQuantity:
@@ -272,7 +272,7 @@ class _TerminalDailySalesRecordPageState
           // title
           Center(
             child: Text(
-              title ?? 'Terminal Daily Product Record',
+              title ?? 'Terminal Daily Store Record',
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 16,
@@ -465,7 +465,7 @@ class _TerminalDailySalesRecordPageState
   }
 
   // date picker tile
-  Widget date_picker_tile(TerminalDailySalesModel _record) {
+  Widget date_picker_tile(OutletDailySalesModel _record) {
     bool isDarkTheme =
         Provider.of<AppData>(context).themeMode == ThemeMode.dark;
 
@@ -528,14 +528,14 @@ class _TerminalDailySalesRecordPageState
     bool isDarkTheme =
         Provider.of<AppData>(context).themeMode == ThemeMode.dark;
 
-    List<TerminalDailySalesModel> records = [];
+    List<OutletDailySalesModel> records = [];
 
     DateTime last_back =
         DateTime(DateTime.now().year, DateTime.now().month - 3, 1);
 
     bool isOffList = true;
 
-    List<TerminalDailySalesModel> s_record = all_record;
+    List<OutletDailySalesModel> s_record = all_record;
 
     if (date != null) {
       if (date.isAfter(last_back) || date == last_back) {
@@ -576,7 +576,7 @@ class _TerminalDailySalesRecordPageState
       return Container();
     }
 
-    return FutureBuilder<List<TerminalDailySalesModel>>(
+    return FutureBuilder<List<OutletDailySalesModel>>(
       initialData: records,
       future: records.isNotEmpty
           ? null
@@ -612,7 +612,7 @@ class _TerminalDailySalesRecordPageState
 
         var rec = records.isNotEmpty ? records : snapshot.data ?? [];
 
-        List<TerminalDailySalesProductsModel> s_rec = map_record(recs: rec);
+        List<OutletDailySalesProductsModel> s_rec = map_record(recs: rec);
 
         return Dialog(
           surfaceTintColor: Colors.transparent,
@@ -658,8 +658,8 @@ class _TerminalDailySalesRecordPageState
 
   // FUNCTIONS
   // search products
-  List<TerminalDailySalesProductsModel> search(
-      String value, List<TerminalDailySalesProductsModel> record) {
+  List<OutletDailySalesProductsModel> search(
+      String value, List<OutletDailySalesProductsModel> record) {
     return record
         .where((product) =>
             product.product.name.toLowerCase().contains(value.toLowerCase()) ||

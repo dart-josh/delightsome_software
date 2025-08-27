@@ -1,45 +1,38 @@
 import 'package:collection/collection.dart';
 import 'package:delightsome_software/appColors.dart';
-import 'package:delightsome_software/dataModels/productStoreModels/productItem.model.dart';
+import 'package:delightsome_software/dataModels/saleModels/paymentMethod.model.dart';
 import 'package:delightsome_software/dataModels/saleModels/sales.model.dart';
 import 'package:delightsome_software/helpers/saleHelpers.dart';
 import 'package:delightsome_software/helpers/universalHelpers.dart';
+import 'package:delightsome_software/pages/salePages/print.page.dart';
+import 'package:delightsome_software/pages/salePages/widgets/sale_info_dialog.dart';
 import 'package:delightsome_software/utils/appdata.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:simple_month_year_picker/simple_month_year_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:sticky_grouped_list/sticky_grouped_list.dart';
 
-class SalesReportPage extends StatefulWidget {
-  const SalesReportPage({super.key});
+class StoreSalesRecordPage extends StatefulWidget {
+  const StoreSalesRecordPage({super.key});
 
   @override
-  State<SalesReportPage> createState() => _SalesReportPageState();
+  State<StoreSalesRecordPage> createState() => _StoreSalesRecordPageState();
 }
 
-class _SalesReportPageState extends State<SalesReportPage> {
+class _StoreSalesRecordPageState extends State<StoreSalesRecordPage> {
   List<GroupedSalesModel> store_record = [];
   List<GroupedSalesModel> online_record = [];
-  List<GroupedSalesModel> outlet_record = [];
-  List<GroupedSalesModel> terminal_record = [];
-  List<GroupedSalesModel> dangote_record = [];
 
+  List<SalesModel> today_record = [];
   List<SalesModel> main_store_record = [];
   List<SalesModel> main_online_record = [];
-  List<SalesModel> main_outlet_record = [];
-  List<SalesModel> main_terminal_record = [];
-  List<SalesModel> main_dangote_record = [];
 
   List<SalesModel> store_selected_record = [];
   List<SalesModel> online_selected_record = [];
-  List<SalesModel> outlet_selected_record = [];
-  List<SalesModel> terminal_selected_record = [];
-  List<SalesModel> dangote_selected_record = [];
 
   DateTime? store_selected_date;
   DateTime? online_selected_date;
-  DateTime? outlet_selected_date;
-  DateTime? terminal_selected_date;
-  DateTime? dangote_selected_date;
 
   int index = 0;
 
@@ -53,28 +46,24 @@ class _SalesReportPageState extends State<SalesReportPage> {
   DateTime? online_dateD;
   DateTime? online_dateM;
 
-  DateTimeRange? outlet_dateR;
-  DateTime? outlet_dateD;
-  DateTime? outlet_dateM;
-
-  DateTimeRange? terminal_dateR;
-  DateTime? terminal_dateD;
-  DateTime? terminal_dateM;
-
-  DateTimeRange? dangote_dateR;
-  DateTime? dangote_dateD;
-  DateTime? dangote_dateM;
-
   get_record() {
-    List<SalesModel> all_record =
-        Provider.of<AppData>(context).store_sales_record;
-    main_outlet_record = Provider.of<AppData>(context).outlet_sales_record;
-    main_terminal_record = Provider.of<AppData>(context).terminal_sales_record;
-    main_dangote_record = Provider.of<AppData>(context).dangote_sales_record;
+    List<SalesModel> all_record = Provider.of<AppData>(context).store_sales_record;
+
+    today_record = all_record
+        .where(
+          (element) =>
+              UniversalHelpers.get_date(element.recordDate!) ==
+                  UniversalHelpers.get_date(DateTime.now()) &&
+              element.saleType.toLowerCase() != 'online',
+        )
+        .toList();
 
     main_store_record = all_record
         .where(
-          (element) => element.saleType.toLowerCase() != 'online',
+          (element) =>
+              UniversalHelpers.get_date(element.recordDate!) !=
+                  UniversalHelpers.get_date(DateTime.now()) &&
+              element.saleType.toLowerCase() != 'online',
         )
         .toList();
 
@@ -106,42 +95,6 @@ class _SalesReportPageState extends State<SalesReportPage> {
       },
     );
 
-    // group outlet by month/day
-    final outlet_groups = groupBy(
-      main_outlet_record,
-      (e) {
-        if (UniversalHelpers.get_month(e.recordDate!) !=
-            UniversalHelpers.get_month(DateTime.now()))
-          return UniversalHelpers.get_month(e.recordDate!);
-        else
-          return UniversalHelpers.get_date(e.recordDate!);
-      },
-    );
-
-    // group terminal by month/day
-    final terminal_groups = groupBy(
-      main_terminal_record,
-      (e) {
-        if (UniversalHelpers.get_month(e.recordDate!) !=
-            UniversalHelpers.get_month(DateTime.now()))
-          return UniversalHelpers.get_month(e.recordDate!);
-        else
-          return UniversalHelpers.get_date(e.recordDate!);
-      },
-    );
-
-    // group dangote by month/day
-    final dangote_groups = groupBy(
-      main_dangote_record,
-      (e) {
-        if (UniversalHelpers.get_month(e.recordDate!) !=
-            UniversalHelpers.get_month(DateTime.now()))
-          return UniversalHelpers.get_month(e.recordDate!);
-        else
-          return UniversalHelpers.get_date(e.recordDate!);
-      },
-    );
-
     store_record.clear();
     store_groups.forEach((key, value) {
       GroupedSalesModel val = GroupedSalesModel(date: key, record: value);
@@ -152,24 +105,6 @@ class _SalesReportPageState extends State<SalesReportPage> {
     online_groups.forEach((key, value) {
       GroupedSalesModel val = GroupedSalesModel(date: key, record: value);
       online_record.add(val);
-    });
-
-    outlet_record.clear();
-    outlet_groups.forEach((key, value) {
-      GroupedSalesModel val = GroupedSalesModel(date: key, record: value);
-      outlet_record.add(val);
-    });
-
-    terminal_record.clear();
-    terminal_groups.forEach((key, value) {
-      GroupedSalesModel val = GroupedSalesModel(date: key, record: value);
-      terminal_record.add(val);
-    });
-
-    dangote_record.clear();
-    dangote_groups.forEach((key, value) {
-      GroupedSalesModel val = GroupedSalesModel(date: key, record: value);
-      dangote_record.add(val);
     });
 
     if (store_selected_date != null) {
@@ -194,46 +129,12 @@ class _SalesReportPageState extends State<SalesReportPage> {
       }
     }
 
-    if (outlet_selected_date != null) {
-      var data = outlet_record.where((e) => e.date == outlet_selected_date);
-
-      if (data.isNotEmpty)
-        outlet_selected_record = data.first.record;
-      else {
-        outlet_selected_date = null;
-        outlet_selected_record.clear();
-      }
-    }
-
-    if (terminal_selected_date != null) {
-      var data = terminal_record.where((e) => e.date == terminal_selected_date);
-
-      if (data.isNotEmpty)
-        terminal_selected_record = data.first.record;
-      else {
-        terminal_selected_date = null;
-        terminal_selected_record.clear();
-      }
-    }
-
-    if (dangote_selected_date != null) {
-      var data = dangote_record.where((e) => e.date == dangote_selected_date);
-
-      if (data.isNotEmpty)
-        dangote_selected_record = data.first.record;
-      else {
-        dangote_selected_date = null;
-        dangote_selected_record.clear();
-      }
-    }
-
     set_initial_record();
     setState(() {});
   }
 
   set_initial_record() {
     if (is_set) return;
-
     if (store_record.isNotEmpty) {
       store_record.sort((a, b) => b.date.compareTo(a.date));
       var store_list = store_record.first;
@@ -250,30 +151,7 @@ class _SalesReportPageState extends State<SalesReportPage> {
       online_selected_date = online_list.date;
     }
 
-    if (outlet_record.isNotEmpty) {
-      outlet_record.sort((a, b) => b.date.compareTo(a.date));
-      var outlet_list = outlet_record.first;
-
-      outlet_selected_record = outlet_list.record;
-      outlet_selected_date = outlet_list.date;
-    }
-
-    if (terminal_record.isNotEmpty) {
-      terminal_record.sort((a, b) => b.date.compareTo(a.date));
-      var terminal_list = terminal_record.first;
-
-      terminal_selected_record = terminal_list.record;
-      terminal_selected_date = terminal_list.date;
-    }
-
-    if (dangote_record.isNotEmpty) {
-      dangote_record.sort((a, b) => b.date.compareTo(a.date));
-      var dangote_list = dangote_record.first;
-
-      dangote_selected_record = dangote_list.record;
-      dangote_selected_date = dangote_list.date;
-    }
-
+    if (today_record.isEmpty) index = 1;
     is_set = true;
   }
 
@@ -284,7 +162,7 @@ class _SalesReportPageState extends State<SalesReportPage> {
         Provider.of<AppData>(context).themeMode == ThemeMode.dark;
 
     return DefaultTabController(
-      length: 5,
+      length: 3,
       initialIndex: index,
       child: Scaffold(
         backgroundColor: isDarkTheme
@@ -310,33 +188,23 @@ class _SalesReportPageState extends State<SalesReportPage> {
                   ? AppColors.dark_secondaryTextColor
                   : AppColors.light_secondaryTextColor,
               tabs: [
-                Tab(text: 'Outlet Sales'),
-                Tab(text: 'Terminal Sales'),
-                Tab(text: 'Dangote Sales'),
-                Tab(text: 'Store Sales'),
+                Tab(text: 'Today Sales'),
+                Tab(text: 'General Sales'),
                 Tab(text: 'Online Sales'),
               ],
             ),
 
             // date selector
-            if (index == 0)
-              date_selector_area(sale_type: 'outlet')
-            else if (index == 1)
-              date_selector_area(sale_type: 'terminal')
-            else if (index == 2)
-              date_selector_area(sale_type: 'dangote')
-            else if (index == 3)
+            if (index == 1)
               date_selector_area(sale_type: 'store')
-            else if (index == 4)
+            else if (index == 2)
               date_selector_area(sale_type: 'online'),
 
             // content
             Expanded(
               child: TabBarView(
                 children: [
-                  record_view(outlet_selected_record),
-                  record_view(terminal_selected_record),
-                  record_view(dangote_selected_record),
+                  record_view(today_record),
                   record_view(store_selected_record),
                   record_view(online_selected_record),
                 ],
@@ -382,7 +250,7 @@ class _SalesReportPageState extends State<SalesReportPage> {
           // title
           Center(
             child: Text(
-              title ?? 'Sales Report',
+              title ?? 'Store Sales Record',
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 16,
@@ -397,17 +265,8 @@ class _SalesReportPageState extends State<SalesReportPage> {
 
   // date selector area
   Widget date_selector_area({required String sale_type}) {
-    List<GroupedSalesModel> g_sales = (sale_type == 'store')
-        ? store_record
-        : (sale_type == 'online')
-            ? online_record
-            : (sale_type == 'outlet')
-                ? outlet_record
-                : (sale_type == 'terminal')
-                    ? terminal_record
-                    : (sale_type == 'dangote')
-                        ? dangote_record
-                        : [];
+    List<GroupedSalesModel> g_sales =
+        (sale_type == 'online') ? online_record : store_record;
 
     g_sales.sort((a, b) => b.date.compareTo(a.date));
     bool isDarkTheme =
@@ -445,34 +304,17 @@ class _SalesReportPageState extends State<SalesReportPage> {
             onPressed: () async {
               var res = await showDatePicker(
                 context: context,
-                initialDate: (sale_type == 'store')
-                    ? store_dateD
-                    : (sale_type == 'online')
-                        ? online_dateD
-                        : (sale_type == 'outlet')
-                            ? outlet_dateD
-                            : (sale_type == 'terminal')
-                                ? terminal_dateD
-                                : (sale_type == 'dangote')
-                                    ? dangote_dateD
-                                    : null,
+                initialDate:
+                    (sale_type == 'online') ? online_dateD : store_dateD,
                 firstDate: DateTime(2020),
                 lastDate: DateTime.now(),
               );
 
               if (res != null) {
-                if (sale_type == 'store')
-                  store_dateD = res;
-                else if (sale_type == 'online')
+                if (sale_type == 'online')
                   online_dateD = res;
-                else if (sale_type == 'outlet')
-                  outlet_dateD = res;
-                else if (sale_type == 'terminal')
-                  terminal_dateD = res;
-                else if (sale_type == 'dangote')
-                  dangote_dateD = res;
                 else
-                  null;
+                  store_dateD = res;
 
                 showDialog(
                     context: context,
@@ -488,31 +330,18 @@ class _SalesReportPageState extends State<SalesReportPage> {
             onPressed: () async {
               final res = await SimpleMonthYearPicker.showMonthYearPickerDialog(
                 context: context,
-                // initialDate: (sale_type == 'store')
-                //     ? store_dateM ?? DateTime.now()
-                //     : (sale_type == 'online')
-                //         ? online_dateM ?? DateTime.now(): (sale_type == 'outlet')
-                //         ? outlet_dateM ?? DateTime.now(): (sale_type == 'terminal')
-                //         ? terminal_dateM ?? DateTime.now(): (sale_type == 'dangote')
-                //         ? dangote_dateM ?? DateTime.now()
-                //         : DateTime.now(),
+                // initialDate: (sale_type == 'online')
+                //     ? online_dateM ?? DateTime.now()
+                //     : store_dateM ?? DateTime.now(),
                 // firstDate: DateTime(2020),
                 // lastDate: DateTime.now(),
               );
 
               if (res != null) {
-                if (sale_type == 'store')
-                  store_dateM = res;
-                else if (sale_type == 'online')
+                if (sale_type == 'online')
                   online_dateM = res;
-                else if (sale_type == 'outlet')
-                  outlet_dateM = res;
-                else if (sale_type == 'terminal')
-                  terminal_dateM = res;
-                else if (sale_type == 'dangote')
-                  dangote_dateM = res;
                 else
-                  null;
+                  store_dateM = res;
 
                 showDialog(
                     context: context,
@@ -530,32 +359,15 @@ class _SalesReportPageState extends State<SalesReportPage> {
                 context: context,
                 firstDate: DateTime(2020),
                 lastDate: DateTime.now(),
-                initialDateRange: (sale_type == 'store')
-                    ? store_dateR
-                    : (sale_type == 'online')
-                        ? online_dateR
-                        : (sale_type == 'outlet')
-                            ? outlet_dateR
-                            : (sale_type == 'terminal')
-                                ? terminal_dateR
-                                : (sale_type == 'dangote')
-                                    ? dangote_dateR
-                                    : null,
+                initialDateRange:
+                    (sale_type == 'online') ? online_dateR : store_dateR,
               );
 
               if (res != null) {
-                if (sale_type == 'store')
-                  store_dateR = res;
-                else if (sale_type == 'online')
+                if (sale_type == 'online')
                   online_dateR = res;
-                else if (sale_type == 'outlet')
-                  outlet_dateR = res;
-                else if (sale_type == 'terminal')
-                  terminal_dateR = res;
-                else if (sale_type == 'dangote')
-                  dangote_dateR = res;
                 else
-                  null;
+                  store_dateR = res;
 
                 showDialog(
                     context: context,
@@ -576,47 +388,27 @@ class _SalesReportPageState extends State<SalesReportPage> {
     bool isDarkTheme =
         Provider.of<AppData>(context).themeMode == ThemeMode.dark;
 
-    bool active = (sale_type == 'store')
-        ? (store_selected_date == record.date)
-        : (sale_type == 'online')
-            ? (online_selected_date == record.date)
-            : (sale_type == 'outlet')
-                ? (outlet_selected_date == record.date)
-                : (sale_type == 'terminal')
-                    ? (terminal_selected_date == record.date)
-                    : (sale_type == 'dangote')
-                        ? (dangote_selected_date == record.date)
-                        : false;
+    bool active = (sale_type == 'online')
+        ? (online_selected_date == record.date)
+        : (store_selected_date == record.date);
 
     String title = (UniversalHelpers.get_month(record.date) !=
             UniversalHelpers.get_month(DateTime.now()))
         ? UniversalHelpers.format_month_to_string(record.date, full: true)
-        : (UniversalHelpers.get_date(record.date) ==
-                UniversalHelpers.get_date(DateTime.now()))
-            ? 'Today'
-            : UniversalHelpers.format_date_to_string(
-                record.date,
-              );
+        : UniversalHelpers.format_date_to_string(
+            record.date,
+          );
 
     return InkWell(
       key: Key('${sale_type}-${record.date.toString()}'),
       onTap: () {
-        if (sale_type == 'store') {
-          store_selected_record = record.record;
-          store_selected_date = record.date;
-        } else if (sale_type == 'online') {
+        if (sale_type == 'online') {
           online_selected_record = record.record;
           online_selected_date = record.date;
-        } else if (sale_type == 'outlet') {
-          outlet_selected_record = record.record;
-          outlet_selected_date = record.date;
-        } else if (sale_type == 'terminal') {
-          terminal_selected_record = record.record;
-          terminal_selected_date = record.date;
-        } else if (sale_type == 'dangote') {
-          dangote_selected_record = record.record;
-          dangote_selected_date = record.date;
-        } else {}
+        } else {
+          store_selected_record = record.record;
+          store_selected_date = record.date;
+        }
 
         setState(() {});
       },
@@ -658,9 +450,9 @@ class _SalesReportPageState extends State<SalesReportPage> {
 
     _record.sort((a, b) => b.recordDate!.compareTo(a.recordDate!));
 
-    int total_qty = _record.fold(0, (int previousValue, element) {
-      return previousValue + element.totalQuantity!;
-    });
+    // int total_qty = _record.fold(0, (int previousValue, element) {
+    //   return previousValue + element.totalQuantity!;
+    // });
 
     int total_amount = _record.fold(0, (int previousValue, element) {
       return previousValue + element.discountPrice!;
@@ -726,13 +518,30 @@ class _SalesReportPageState extends State<SalesReportPage> {
         return previousValue + 0;
     });
 
-    bool is_online = index == 4;
+    bool is_online = index == 2;
     return Container(
       child: _record.isNotEmpty
           ? Column(
               children: [
                 Expanded(
-                  child: record_list(_record),
+                  child: StickyGroupedListView(
+                    physics: BouncingScrollPhysics(),
+                    padding: EdgeInsets.symmetric(horizontal: 15, vertical: 0),
+                    elements: _record,
+                    groupBy: (SalesModel element) =>
+                        UniversalHelpers.get_date(element.recordDate!),
+                    groupComparator: (DateTime value1, DateTime value2) =>
+                        value2.compareTo(value1),
+                    groupSeparatorBuilder: (SalesModel element) =>
+                        group_separator(element.recordDate!),
+                    itemBuilder: (context, SalesModel element) =>
+                        record_tile(element),
+                    itemComparator: (e1, e2) =>
+                        e2.recordDate!.compareTo(e1.recordDate!),
+                    elementIdentifier: (element) => element.key,
+                    order: StickyGroupedListOrder.ASC,
+                    stickyHeaderBackgroundColor: Colors.transparent,
+                  ),
                 ),
 
                 // totals
@@ -753,10 +562,6 @@ class _SalesReportPageState extends State<SalesReportPage> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        // total quantity
-                        if (is_online)
-                          totals_tile(label: 'Quantity', value: total_qty),
-
                         // total amount
                         totals_tile(label: 'Total Amount', value: total_amount),
 
@@ -793,176 +598,378 @@ class _SalesReportPageState extends State<SalesReportPage> {
     );
   }
 
-  // record list
-  Widget record_list(List<SalesModel> _record) {
-    bool isDarkTheme =
-        Provider.of<AppData>(context).themeMode == ThemeMode.dark;
-
-    List<ProductItemModel> products = [];
-
-    for (var _r in _record) {
-      SalesModel rec = SalesModel.copy(_r);
-      for (var product in rec.products) {
-        final chk = products.indexWhere(
-            (element) => element.product.key == product.product.key);
-        if (chk != -1) {
-          products[chk].quantity += product.quantity;
-        } else
-          products.add(ProductItemModel.copy(product));
-      }
-    }
-
-    products.sort((a, b) =>
-        ((b.price != 0 ? b.price : b.product.storePrice) * b.quantity)
-            .compareTo(
-                (a.price != 0 ? a.price : a.product.storePrice) * a.quantity));
-
-    TextStyle head_style = TextStyle(fontWeight: FontWeight.bold, fontSize: 16);
-
-    return Column(
-      children: [
-        // head
-        Container(
-          height: 40,
-          child: Center(
-            child: Row(
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    border: Border(
-                      right: BorderSide(
-                        color: isDarkTheme
-                            ? AppColors.dark_dimTextColor
-                            : AppColors.light_dimTextColor,
-                      ),
-                    ),
-                  ),
-                  width: 40,
-                  padding: EdgeInsets.symmetric(vertical: 6),
-                  child: Center(
-                    child: Text('S/N', style: head_style),
-                  ),
-                ),
-
-                // name
-                Expanded(
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: Text(
-                      'Product',
-                      style: head_style,
-                    ),
-                  ),
-                ),
-
-                // quantity
-                Container(
-                  width: 120,
-                  child: Center(
-                    child: Text('Quantity', style: head_style),
-                  ),
-                ),
-
-                // amount
-                Container(
-                  width: 120,
-                  child: Center(
-                    child: Text('Amount', style: head_style),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-
-        // list
-        Expanded(
-          child: ListView.builder(
-            itemCount: products.length,
-            physics: BouncingScrollPhysics(),
-            itemBuilder: (context, index) {
-              ProductItemModel product = products[index];
-              return product_tile(product, index);
-            },
-          ),
-        ),
-      ],
-    );
-  }
-
   // record tile
-  Widget product_tile(ProductItemModel product, int index) {
+  Widget record_tile(SalesModel record) {
     bool isDarkTheme =
         Provider.of<AppData>(context).themeMode == ThemeMode.dark;
 
-    int amount =
-        (product.price != 0 ? product.price : product.product.storePrice) *
-            product.quantity;
+    var auth_staff = Provider.of<AppData>(context).active_staff;
+
+    TextStyle label_style = TextStyle(
+      color: isDarkTheme
+          ? AppColors.dark_secondaryTextColor
+          : AppColors.light_secondaryTextColor,
+      fontSize: 13,
+    );
+
+    TextStyle date_style = TextStyle(
+      color: isDarkTheme
+          ? AppColors.dark_secondaryTextColor
+          : AppColors.light_secondaryTextColor,
+      fontStyle: FontStyle.italic,
+      fontSize: 13,
+    );
+
+    TextStyle main_style = TextStyle(
+      color: isDarkTheme
+          ? AppColors.dark_primaryTextColor
+          : AppColors.light_primaryTextColor,
+      fontWeight: FontWeight.w700,
+      fontSize: 14,
+    );
+
+    TextStyle note_style = TextStyle(
+      color: isDarkTheme
+          ? AppColors.dark_secondaryTextColor
+          : AppColors.light_secondaryTextColor,
+      fontWeight: FontWeight.w600,
+      fontSize: 14,
+    );
+
+    bool is_dicounted = (record.discountPrice != null &&
+        (record.discountPrice != record.orderPrice));
 
     return Container(
       decoration: BoxDecoration(
-        color: index.isEven
-            ? Color.fromARGB(89, 123, 117, 117)
-            : Color.fromARGB(90, 211, 202, 202),
+        color: isDarkTheme
+            ? AppColors.dark_primaryBackgroundColor
+            : AppColors.light_dialogBackground_1,
+        border: Border.all(
+          color: isDarkTheme
+              ? AppColors.dark_dimTextColor
+              : AppColors.light_dimTextColor,
+        ),
+        borderRadius: BorderRadius.circular(1),
       ),
-      // height: 40,
-
-      child: Row(
+      margin: EdgeInsets.symmetric(vertical: 5, horizontal: 8),
+      child: Stack(
         children: [
-          // s/n
           Container(
-            width: 40,
-            padding: EdgeInsets.symmetric(vertical: 8),
-            decoration: BoxDecoration(
-              border: Border(
-                right: BorderSide(
-                  color: isDarkTheme
-                      ? AppColors.dark_dimTextColor
-                      : AppColors.light_dimTextColor,
+            padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // order Id
+                Text(
+                  record.orderId ?? 'No Id',
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    fontStyle: FontStyle.italic,
+                    color: isDarkTheme
+                        ? AppColors.dark_secondaryTextColor
+                        : AppColors.light_secondaryTextColor,
+                  ),
                 ),
-              ),
-            ),
-            child: Center(
-              child: Text((index + 1).toString(),
-                  style: TextStyle(fontWeight: FontWeight.w400, fontSize: 14)),
+
+                SizedBox(height: 10),
+
+                // recordDate
+                Text(
+                    UniversalHelpers.format_time_to_string(
+                        record.recordDate ?? record.createdAt),
+                    style: date_style),
+
+                SizedBox(height: 1),
+
+                // total & customer
+                Row(
+                  children: [
+                    Text('Total : ', style: label_style),
+                    SizedBox(width: 4),
+                    Text(
+                        UniversalHelpers.format_number(
+                            record.totalQuantity ?? 0),
+                        style: main_style),
+
+                    Expanded(child: Container()),
+
+                    // customer
+                    if (record.customer != null &&
+                        record.customer!.nickName.isNotEmpty)
+                      Row(
+                        children: [
+                          Text('Customer : ', style: label_style),
+                          SizedBox(width: 4),
+                          Text(record.customer!.nickName, style: note_style),
+                        ],
+                      )
+                    else
+                      Text('Random customer', style: label_style),
+                  ],
+                ),
+
+                // products
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 4, horizontal: 4),
+                  child: Wrap(
+                    runSpacing: 5,
+                    spacing: 5,
+                    children: record.products.map(
+                      (e) {
+                        bool long = e.product.name.length > 20;
+                        bool very_long = e.product.name.length > 30;
+                        return ConstrainedBox(
+                          constraints:
+                              BoxConstraints(maxWidth: very_long ? 300 : 200),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: isDarkTheme
+                                  ? AppColors.dark_dimTextColor
+                                  : AppColors.light_dimTextColor,
+                              borderRadius: BorderRadius.circular(3),
+                            ),
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 5),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                if (long)
+                                  Expanded(
+                                    child: Text(e.product.name,
+                                        overflow: TextOverflow.ellipsis),
+                                  )
+                                else
+                                  Text(e.product.name,
+                                      overflow: TextOverflow.ellipsis),
+                                Text(' - '),
+                                Text(e.quantity.toString()),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ).toList(),
+                  ),
+                ),
+
+                SizedBox(height: 2),
+
+                // amount & payment method
+                Row(
+                  children: [
+                    // amount
+                    Text(
+                      UniversalHelpers.format_number(record.orderPrice,
+                          currency: true),
+                      style: TextStyle(
+                        color: isDarkTheme
+                            ? is_dicounted
+                                ? AppColors.dark_secondaryTextColor
+                                : AppColors.dark_primaryTextColor
+                            : is_dicounted
+                                ? AppColors.light_secondaryTextColor
+                                : AppColors.light_primaryTextColor,
+                        fontWeight:
+                            is_dicounted ? FontWeight.w400 : FontWeight.w700,
+                        fontSize: is_dicounted ? 13 : 16,
+                        decoration:
+                            is_dicounted ? TextDecoration.lineThrough : null,
+                      ),
+                    ),
+
+                    if (is_dicounted) SizedBox(width: 8),
+
+                    // discount
+                    if (is_dicounted)
+                      Text(
+                        UniversalHelpers.format_number(record.discountPrice!,
+                            currency: true),
+                        style: TextStyle(
+                          color: isDarkTheme
+                              ? AppColors.dark_primaryTextColor
+                              : AppColors.light_primaryTextColor,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 16,
+                        ),
+                      ),
+
+                    SizedBox(width: 5),
+
+                    Expanded(child: Container()),
+
+                    // payment method
+                    Text(record.paymentMethod, style: main_style),
+                  ],
+                ),
+
+                // split payment
+                if (record.splitPaymentMethod != null &&
+                    record.splitPaymentMethod!.isNotEmpty)
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: record.splitPaymentMethod!
+                          .map(
+                            (e) => Row(
+                              children: [
+                                if (record.splitPaymentMethod!.indexOf(e) != 0)
+                                  Padding(
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 4),
+                                    child: Text('|', style: label_style),
+                                  ),
+
+                                // payment method
+                                Text(e.paymentMethod ?? '', style: label_style),
+
+                                SizedBox(width: 2),
+
+                                Text(' - ', style: label_style),
+                                SizedBox(width: 2),
+
+                                // amount
+                                Text(
+                                    UniversalHelpers.format_number(e.amount,
+                                        currency: true),
+                                    style: main_style),
+                              ],
+                            ),
+                          )
+                          .toList()),
+
+                SizedBox(height: 2),
+
+                // shortNote
+                if (record.shortNote != null && record.shortNote!.isNotEmpty)
+                  Row(
+                    children: [
+                      Text('Short note : ', style: label_style),
+                      SizedBox(width: 4),
+                      Expanded(
+                          child: Text(record.shortNote!, style: note_style)),
+                    ],
+                  ),
+              ],
             ),
           ),
 
-          // name
-          Expanded(
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 12),
-              child: Text(
-                product.product.name,
-                overflow: TextOverflow.ellipsis,
-                maxLines: 1,
-                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
-              ),
-            ),
-          ),
+          // others
+          Positioned(
+            top: 2,
+            right: 2,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                // receipt
+                IconButton(
+                  onPressed: () async {
+                    List<PrintItemModel> items = record.products
+                        .map((e) => PrintItemModel(
+                            name: e.product.name,
+                            qty: e.quantity,
+                            price: e.price,
+                            total_price: (e.price * e.quantity)))
+                        .toList();
 
-          // quantity
-          Container(
-            width: 120,
-            child: Center(
-              child: Text(
-                UniversalHelpers.format_number(product.quantity),
-                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
-              ),
-            ),
-          ),
+                    List<PaymentMethodModel> pmts =
+                        (record.splitPaymentMethod != null &&
+                                record.splitPaymentMethod!.isNotEmpty)
+                            ? record.splitPaymentMethod ?? []
+                            : [
+                                PaymentMethodModel(
+                                  paymentMethod: record.paymentMethod,
+                                  amount: (is_dicounted
+                                      ? record.discountPrice ?? 0
+                                      : record.orderPrice),
+                                ),
+                              ];
 
-          // amount
-          Container(
-            width: 120,
-            child: Center(
-              child: Text(
-                UniversalHelpers.format_number(amount, currency: amount != 0),
-                style: TextStyle(fontWeight: FontWeight.w700, fontSize: 15),
-              ),
+                    PrintModel printModel = PrintModel(
+                      date: DateFormat('dd/MM/yyyy').format(record.recordDate ??
+                          record.createdAt ??
+                          DateTime.now()),
+                      time: DateFormat.jm().format(record.recordDate ??
+                          record.createdAt ??
+                          DateTime.now()),
+                      receipt_id: record.orderId ?? 'null',
+                      store: (record.saleType.toLowerCase() == 'online'
+                          ? 'Online'
+                          : 'Store'),
+                      seller: record.soldBy?.nickName ?? 'User',
+                      customer: record.customer?.nickName ?? 'Walk-in',
+                      items: items,
+                      sub_total: record.orderPrice,
+                      discount: (is_dicounted
+                          ? record.orderPrice - (record.discountPrice ?? 0)
+                          : 0),
+                      total: (is_dicounted
+                          ? record.discountPrice ?? 0
+                          : record.orderPrice),
+                      pmts: pmts,
+                    );
+
+                    return showDialog(
+                        context: context,
+                        builder: (context) => PrintPage(print: printModel));
+                  },
+                  icon: Icon(Icons.receipt),
+                ),
+
+                // more button
+                if (auth_staff!.fullaccess)
+                  IconButton(
+                      onPressed: () async {
+                        var res = await showDialog(
+                            context: context,
+                            builder: (context) =>
+                                SaleInfoDialog(order_id: record.orderId!));
+
+                        if (res != null) {
+                          if (res == 'delete') {
+                            SaleHelpers.delete_store_sale_record(
+                                context, record.key!);
+                          }
+
+                          // change_pmt
+                        }
+                      },
+                      icon: Icon(Icons.more_vert)),
+              ],
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  // group separator
+  Widget group_separator(DateTime date) {
+    bool isDarkTheme =
+        Provider.of<AppData>(context).themeMode == ThemeMode.dark;
+
+    return Container(
+      decoration: BoxDecoration(
+        color: isDarkTheme
+            ? AppColors.dark_primaryBackgroundColor
+            : AppColors.light_dialogBackground_3,
+        border: Border.all(
+          color: isDarkTheme
+              ? AppColors.dark_dimTextColor
+              : AppColors.light_dimTextColor,
+        ),
+        borderRadius: BorderRadius.circular(1),
+      ),
+      // margin: EdgeInsets.symmetric(vertical: 5),
+      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      child: Text(
+        UniversalHelpers.format_date_to_string(date, full: true),
+        style: TextStyle(
+          color: isDarkTheme
+              ? AppColors.dark_secondaryTextColor
+              : AppColors.light_secondaryTextColor,
+          fontSize: 14,
+          fontWeight: FontWeight.w400,
+        ),
       ),
     );
   }
@@ -984,17 +991,8 @@ class _SalesReportPageState extends State<SalesReportPage> {
 
     bool isOffList = true;
 
-    List<SalesModel> s_record = (sale_type == 'store')
-        ? main_store_record
-        : (sale_type == 'online')
-            ? main_online_record
-            : (sale_type == 'outlet')
-                ? main_outlet_record
-                : (sale_type == 'terminal')
-                    ? main_terminal_record
-                    : (sale_type == 'dangote')
-                        ? main_dangote_record
-                        : [];
+    List<SalesModel> s_record =
+        (sale_type == 'online') ? main_online_record : main_store_record;
 
     if (date != null) {
       if (date.isAfter(last_back) || date == last_back) {
@@ -1040,76 +1038,19 @@ class _SalesReportPageState extends State<SalesReportPage> {
       future: records.isNotEmpty
           ? null
           : (date != null && isOffList)
-              ? ((sale_type == 'store') || (sale_type == 'online'))
-                  ? SaleHelpers.get_selected_store_sales_record(
-                      context, {'date': UniversalHelpers.get_raw_date(date)})
-                  : (sale_type == 'outlet')
-                      ? SaleHelpers.get_selected_outlet_sales_record(context,
-                          {'date': UniversalHelpers.get_raw_date(date)})
-                      : (sale_type == 'terminal')
-                          ? SaleHelpers.get_selected_terminal_sales_record(
-                              context,
-                              {'date': UniversalHelpers.get_raw_date(date)})
-                          : (sale_type == 'dangote')
-                              ? SaleHelpers.get_selected_dangote_sales_record(
-                                  context,
-                                  {'date': UniversalHelpers.get_raw_date(date)})
-                              : null
+              ? SaleHelpers.get_selected_store_sales_record(
+                  context, {'date': UniversalHelpers.get_raw_date(date)})
               : (month != null && isOffList)
-                  ? ((sale_type == 'store') || (sale_type == 'online'))
-                      ? SaleHelpers.get_selected_store_sales_record(context,
-                          {'month': UniversalHelpers.get_raw_month(month)})
-                      : (sale_type == 'outlet')
-                          ? SaleHelpers.get_selected_outlet_sales_record(
-                              context,
-                              {'month': UniversalHelpers.get_raw_month(month)})
-                          : (sale_type == 'terminal')
-                              ? SaleHelpers.get_selected_terminal_sales_record(
-                                  context, {
-                                  'month': UniversalHelpers.get_raw_month(month)
-                                })
-                              : (sale_type == 'dangote')
-                                  ? SaleHelpers.get_selected_dangote_sales_record(
-                                      context, {
-                                      'month':
-                                          UniversalHelpers.get_raw_month(month)
-                                    })
-                                  : null
+                  ? SaleHelpers.get_selected_store_sales_record(context, {
+                      'month': UniversalHelpers.get_raw_month(month),
+                    })
                   : (dateRange != null && isOffList)
-                      ? ((sale_type == 'store') || (sale_type == 'online'))
-                          ? SaleHelpers.get_selected_store_sales_record(context, {
-                              'timeFrame': [
-                                UniversalHelpers.get_raw_date(dateRange.start),
-                                UniversalHelpers.get_raw_date(dateRange.end)
-                              ]
-                            })
-                          : (sale_type == 'outlet')
-                              ? SaleHelpers.get_selected_outlet_sales_record(context, {
-                                  'timeFrame': [
-                                    UniversalHelpers.get_raw_date(
-                                        dateRange.start),
-                                    UniversalHelpers.get_raw_date(dateRange.end)
-                                  ]
-                                })
-                              : (sale_type == 'terminal')
-                                  ? SaleHelpers.get_selected_terminal_sales_record(context, {
-                                      'timeFrame': [
-                                        UniversalHelpers.get_raw_date(
-                                            dateRange.start),
-                                        UniversalHelpers.get_raw_date(
-                                            dateRange.end)
-                                      ]
-                                    })
-                                  : (sale_type == 'dangote')
-                                      ? SaleHelpers.get_selected_dangote_sales_record(context, {
-                                          'timeFrame': [
-                                            UniversalHelpers.get_raw_date(
-                                                dateRange.start),
-                                            UniversalHelpers.get_raw_date(
-                                                dateRange.end)
-                                          ]
-                                        })
-                                      : null
+                      ? SaleHelpers.get_selected_store_sales_record(context, {
+                          'timeFrame': [
+                            UniversalHelpers.get_raw_date(dateRange.start),
+                            UniversalHelpers.get_raw_date(dateRange.end)
+                          ]
+                        })
                       : null,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {

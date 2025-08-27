@@ -4,17 +4,16 @@ import 'package:delightsome_software/dataModels/materialStoreModels/rawMaterials
 import 'package:delightsome_software/dataModels/materialStoreModels/restockProductMaterial.model.dart';
 import 'package:delightsome_software/dataModels/materialStoreModels/restockRawMaterial.model.dart';
 import 'package:delightsome_software/dataModels/productStoreModels/badProductRecord.model.dart';
-import 'package:delightsome_software/dataModels/productStoreModels/dangoteCollectionRecord.model.dart';
+import 'package:delightsome_software/dataModels/productStoreModels/collectionRecord.model.dart';
 import 'package:delightsome_software/dataModels/productStoreModels/productReceivedRecord.model.dart';
 import 'package:delightsome_software/dataModels/productStoreModels/productRequestRecord.model.dart';
 import 'package:delightsome_software/dataModels/productStoreModels/productReturnRecord.model.dart';
 import 'package:delightsome_software/dataModels/productStoreModels/productTakeOutRecord.model.dart';
 import 'package:delightsome_software/dataModels/productStoreModels/productionRecord.model.dart';
-import 'package:delightsome_software/dataModels/productStoreModels/terminalCollectionRecord.model.dart';
 import 'package:flutter/material.dart';
 
-String server_url = 'http://192.168.0.111:5000';
-// String server_url = 'http://localhost:5000';
+// String server_url = 'http://192.168.0.111:5000';
+String server_url = 'http://localhost:5000';
 
 //? APP RESTART
 final ValueNotifier<UniqueKey> appRestartNotifier = ValueNotifier(UniqueKey());
@@ -32,10 +31,12 @@ ProductRequestRecordModel? saved_product_request_model;
 ProductTakeOutRecordModel? saved_product_takeOut_model;
 ProductReturnRecordModel? saved_product_return_model;
 ProductionRecordModel? saved_production_model;
-TerminalCollectionRecordModel? saved_terminal_collected_model;
-TerminalCollectionRecordModel? saved_terminal_returned_model;
-DangoteCollectionRecordModel? saved_dangote_collected_model;
-DangoteCollectionRecordModel? saved_dangote_returned_model;
+CollectionRecordModel? saved_outlet_collected_model;
+CollectionRecordModel? saved_outlet_returned_model;
+CollectionRecordModel? saved_terminal_collected_model;
+CollectionRecordModel? saved_terminal_returned_model;
+CollectionRecordModel? saved_dangote_collected_model;
+CollectionRecordModel? saved_dangote_returned_model;
 
 // category type
 List<String> category_type_list = [
@@ -43,7 +44,6 @@ List<String> category_type_list = [
   'Raw Material Store',
   'Product Store'
 ];
-
 
 // ? Home Defaults
 bool inventories_expanded = true;

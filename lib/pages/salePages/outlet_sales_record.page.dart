@@ -13,26 +13,23 @@ import 'package:simple_month_year_picker/simple_month_year_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:sticky_grouped_list/sticky_grouped_list.dart';
 
-class SalesRecordPage extends StatefulWidget {
-  const SalesRecordPage({super.key});
+class OutletSalesRecordPage extends StatefulWidget {
+  const OutletSalesRecordPage({super.key});
 
   @override
-  State<SalesRecordPage> createState() => _SalesRecordPageState();
+  State<OutletSalesRecordPage> createState() =>
+      _OutletSalesRecordPageState();
 }
 
-class _SalesRecordPageState extends State<SalesRecordPage> {
+class _OutletSalesRecordPageState extends State<OutletSalesRecordPage> {
   List<GroupedSalesModel> store_record = [];
-  List<GroupedSalesModel> online_record = [];
 
   List<SalesModel> today_record = [];
   List<SalesModel> main_store_record = [];
-  List<SalesModel> main_online_record = [];
 
   List<SalesModel> store_selected_record = [];
-  List<SalesModel> online_selected_record = [];
 
   DateTime? store_selected_date;
-  DateTime? online_selected_date;
 
   int index = 0;
 
@@ -42,12 +39,9 @@ class _SalesRecordPageState extends State<SalesRecordPage> {
   DateTime? store_dateD;
   DateTime? store_dateM;
 
-  DateTimeRange? online_dateR;
-  DateTime? online_dateD;
-  DateTime? online_dateM;
-
   get_record() {
-    List<SalesModel> all_record = Provider.of<AppData>(context).sales_record;
+    List<SalesModel> all_record =
+        Provider.of<AppData>(context).outlet_sales_record;
 
     today_record = all_record
         .where(
@@ -67,25 +61,9 @@ class _SalesRecordPageState extends State<SalesRecordPage> {
         )
         .toList();
 
-    main_online_record = all_record
-        .where((element) => element.saleType.toLowerCase() == 'online')
-        .toList();
-
     // group store by month/day
     final store_groups = groupBy(
       main_store_record,
-      (e) {
-        if (UniversalHelpers.get_month(e.recordDate!) !=
-            UniversalHelpers.get_month(DateTime.now()))
-          return UniversalHelpers.get_month(e.recordDate!);
-        else
-          return UniversalHelpers.get_date(e.recordDate!);
-      },
-    );
-
-    // group online by month/day
-    final online_groups = groupBy(
-      main_online_record,
       (e) {
         if (UniversalHelpers.get_month(e.recordDate!) !=
             UniversalHelpers.get_month(DateTime.now()))
@@ -101,12 +79,6 @@ class _SalesRecordPageState extends State<SalesRecordPage> {
       store_record.add(val);
     });
 
-    online_record.clear();
-    online_groups.forEach((key, value) {
-      GroupedSalesModel val = GroupedSalesModel(date: key, record: value);
-      online_record.add(val);
-    });
-
     if (store_selected_date != null) {
       var data = store_record.where((e) => e.date == store_selected_date);
 
@@ -118,38 +90,19 @@ class _SalesRecordPageState extends State<SalesRecordPage> {
       }
     }
 
-    if (online_selected_date != null) {
-      var data = online_record.where((e) => e.date == online_selected_date);
-
-      if (data.isNotEmpty)
-        online_selected_record = data.first.record;
-      else {
-        online_selected_date = null;
-        online_selected_record.clear();
-      }
-    }
-
     set_initial_record();
     setState(() {});
   }
 
   set_initial_record() {
     if (is_set) return;
-    if (store_record.isNotEmpty) {
-      store_record.sort((a, b) => b.date.compareTo(a.date));
-      var store_list = store_record.first;
+    if (store_record.isEmpty) return;
 
-      store_selected_record = store_list.record;
-      store_selected_date = store_list.date;
-    }
+    store_record.sort((a, b) => b.date.compareTo(a.date));
+    var store_list = store_record.first;
 
-    if (online_record.isNotEmpty) {
-      online_record.sort((a, b) => b.date.compareTo(a.date));
-      var online_list = online_record.first;
-
-      online_selected_record = online_list.record;
-      online_selected_date = online_list.date;
-    }
+    store_selected_record = store_list.record;
+    store_selected_date = store_list.date;
 
     if (today_record.isEmpty) index = 1;
     is_set = true;
@@ -162,7 +115,7 @@ class _SalesRecordPageState extends State<SalesRecordPage> {
         Provider.of<AppData>(context).themeMode == ThemeMode.dark;
 
     return DefaultTabController(
-      length: 3,
+      length: 2,
       initialIndex: index,
       child: Scaffold(
         backgroundColor: isDarkTheme
@@ -190,15 +143,11 @@ class _SalesRecordPageState extends State<SalesRecordPage> {
               tabs: [
                 Tab(text: 'Today Sales'),
                 Tab(text: 'General Sales'),
-                Tab(text: 'Online Sales'),
               ],
             ),
 
             // date selector
-            if (index == 1)
-              date_selector_area(sale_type: 'store')
-            else if (index == 2)
-              date_selector_area(sale_type: 'online'),
+            if (index == 1) date_selector_area(sale_type: 'store'),
 
             // content
             Expanded(
@@ -206,7 +155,6 @@ class _SalesRecordPageState extends State<SalesRecordPage> {
                 children: [
                   record_view(today_record),
                   record_view(store_selected_record),
-                  record_view(online_selected_record),
                 ],
               ),
             ),
@@ -250,7 +198,7 @@ class _SalesRecordPageState extends State<SalesRecordPage> {
           // title
           Center(
             child: Text(
-              title ?? 'Sales Record',
+              title ?? 'Outlet Sales Record',
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 16,
@@ -265,8 +213,7 @@ class _SalesRecordPageState extends State<SalesRecordPage> {
 
   // date selector area
   Widget date_selector_area({required String sale_type}) {
-    List<GroupedSalesModel> g_sales =
-        (sale_type == 'online') ? online_record : store_record;
+    List<GroupedSalesModel> g_sales = store_record;
 
     g_sales.sort((a, b) => b.date.compareTo(a.date));
     bool isDarkTheme =
@@ -304,17 +251,13 @@ class _SalesRecordPageState extends State<SalesRecordPage> {
             onPressed: () async {
               var res = await showDatePicker(
                 context: context,
-                initialDate:
-                    (sale_type == 'online') ? online_dateD : store_dateD,
+                initialDate: store_dateD,
                 firstDate: DateTime(2020),
                 lastDate: DateTime.now(),
               );
 
               if (res != null) {
-                if (sale_type == 'online')
-                  online_dateD = res;
-                else
-                  store_dateD = res;
+                store_dateD = res;
 
                 showDialog(
                     context: context,
@@ -330,18 +273,13 @@ class _SalesRecordPageState extends State<SalesRecordPage> {
             onPressed: () async {
               final res = await SimpleMonthYearPicker.showMonthYearPickerDialog(
                 context: context,
-                // initialDate: (sale_type == 'online')
-                //     ? online_dateM ?? DateTime.now()
-                //     : store_dateM ?? DateTime.now(),
+                // initialDate: store_dateM ?? DateTime.now(),
                 // firstDate: DateTime(2020),
                 // lastDate: DateTime.now(),
               );
 
               if (res != null) {
-                if (sale_type == 'online')
-                  online_dateM = res;
-                else
-                  store_dateM = res;
+                store_dateM = res;
 
                 showDialog(
                     context: context,
@@ -359,15 +297,11 @@ class _SalesRecordPageState extends State<SalesRecordPage> {
                 context: context,
                 firstDate: DateTime(2020),
                 lastDate: DateTime.now(),
-                initialDateRange:
-                    (sale_type == 'online') ? online_dateR : store_dateR,
+                initialDateRange: store_dateR,
               );
 
               if (res != null) {
-                if (sale_type == 'online')
-                  online_dateR = res;
-                else
-                  store_dateR = res;
+                store_dateR = res;
 
                 showDialog(
                     context: context,
@@ -388,9 +322,7 @@ class _SalesRecordPageState extends State<SalesRecordPage> {
     bool isDarkTheme =
         Provider.of<AppData>(context).themeMode == ThemeMode.dark;
 
-    bool active = (sale_type == 'online')
-        ? (online_selected_date == record.date)
-        : (store_selected_date == record.date);
+    bool active = (store_selected_date == record.date);
 
     String title = (UniversalHelpers.get_month(record.date) !=
             UniversalHelpers.get_month(DateTime.now()))
@@ -402,13 +334,8 @@ class _SalesRecordPageState extends State<SalesRecordPage> {
     return InkWell(
       key: Key('${sale_type}-${record.date.toString()}'),
       onTap: () {
-        if (sale_type == 'online') {
-          online_selected_record = record.record;
-          online_selected_date = record.date;
-        } else {
-          store_selected_record = record.record;
-          store_selected_date = record.date;
-        }
+        store_selected_record = record.record;
+        store_selected_date = record.date;
 
         setState(() {});
       },
@@ -449,10 +376,6 @@ class _SalesRecordPageState extends State<SalesRecordPage> {
     double width = MediaQuery.of(context).size.width;
 
     _record.sort((a, b) => b.recordDate!.compareTo(a.recordDate!));
-
-    // int total_qty = _record.fold(0, (int previousValue, element) {
-    //   return previousValue + element.totalQuantity!;
-    // });
 
     int total_amount = _record.fold(0, (int previousValue, element) {
       return previousValue + element.discountPrice!;
@@ -518,7 +441,6 @@ class _SalesRecordPageState extends State<SalesRecordPage> {
         return previousValue + 0;
     });
 
-    bool is_online = index == 2;
     return Container(
       child: _record.isNotEmpty
           ? Column(
@@ -566,16 +488,13 @@ class _SalesRecordPageState extends State<SalesRecordPage> {
                         totals_tile(label: 'Total Amount', value: total_amount),
 
                         // total cash
-                        if (!is_online)
-                          totals_tile(label: 'Cash', value: total_cash),
+                        totals_tile(label: 'Cash', value: total_cash),
 
                         // total transfer
-                        if (!is_online)
-                          totals_tile(label: 'Transfer', value: total_transfer),
+                        totals_tile(label: 'Transfer', value: total_transfer),
 
                         // total pos
-                        if (!is_online)
-                          totals_tile(label: 'POS', value: total_pos),
+                        totals_tile(label: 'POS', value: total_pos),
 
                         // total discount
                         if (width > 600)
@@ -603,7 +522,7 @@ class _SalesRecordPageState extends State<SalesRecordPage> {
     bool isDarkTheme =
         Provider.of<AppData>(context).themeMode == ThemeMode.dark;
 
-    var auth_staff = Provider.of<AppData>(context).active_staff;
+        var auth_staff = Provider.of<AppData>(context).active_staff;
 
     TextStyle label_style = TextStyle(
       color: isDarkTheme
@@ -853,16 +772,14 @@ class _SalesRecordPageState extends State<SalesRecordPage> {
             ),
           ),
 
-          
           // others
-          Positioned(
-            top: 2,
-            right: 2,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                // receipt
-                IconButton(
+            Positioned(
+              top: 2,
+              right: 2,
+              child: Row(
+                children: [
+                  // receipt
+                  IconButton(
                   onPressed: () async {
                     List<PrintItemModel> items = record.products
                         .map((e) => PrintItemModel(
@@ -893,7 +810,7 @@ class _SalesRecordPageState extends State<SalesRecordPage> {
                           record.createdAt ??
                           DateTime.now()),
                       receipt_id: record.orderId ?? 'null',
-                      store: (record.saleType.toLowerCase() == 'online' ? 'Online' : 'Outlet'),
+                      store: 'Outlet',
                       seller: record.soldBy?.nickName ?? 'User',
                       customer: record.customer?.nickName ?? 'Walk-in',
                       items: items,
@@ -913,8 +830,8 @@ class _SalesRecordPageState extends State<SalesRecordPage> {
                   },
                   icon: Icon(Icons.receipt),
                 ),
-                
-                // more button
+
+                  // more button
                 if (auth_staff!.fullaccess)
                   IconButton(
                       onPressed: () async {
@@ -922,20 +839,20 @@ class _SalesRecordPageState extends State<SalesRecordPage> {
                             context: context,
                             builder: (context) =>
                                 SaleInfoDialog(order_id: record.orderId!));
-
+                  
                         if (res != null) {
                           if (res == 'delete') {
-                            SaleHelpers.delete_sale_record(
+                            SaleHelpers.delete_outlet_sale_record(
                                 context, record.key!);
                           }
-
+                  
                           // change_pmt
                         }
                       },
                       icon: Icon(Icons.more_vert)),
-              ],
+                ],
+              ),
             ),
-          ),
         ],
       ),
     );
@@ -990,8 +907,7 @@ class _SalesRecordPageState extends State<SalesRecordPage> {
 
     bool isOffList = true;
 
-    List<SalesModel> s_record =
-        (sale_type == 'online') ? main_online_record : main_store_record;
+    List<SalesModel> s_record = main_store_record;
 
     if (date != null) {
       if (date.isAfter(last_back) || date == last_back) {
@@ -1037,14 +953,15 @@ class _SalesRecordPageState extends State<SalesRecordPage> {
       future: records.isNotEmpty
           ? null
           : (date != null && isOffList)
-              ? SaleHelpers.get_selected_sales_record(
+              ? SaleHelpers.get_selected_outlet_sales_record(
                   context, {'date': UniversalHelpers.get_raw_date(date)})
               : (month != null && isOffList)
-                  ? SaleHelpers.get_selected_sales_record(context, {
+                  ? SaleHelpers.get_selected_outlet_sales_record(context, {
                       'month': UniversalHelpers.get_raw_month(month),
                     })
                   : (dateRange != null && isOffList)
-                      ? SaleHelpers.get_selected_sales_record(context, {
+                      ? SaleHelpers.get_selected_outlet_sales_record(
+                          context, {
                           'timeFrame': [
                             UniversalHelpers.get_raw_date(dateRange.start),
                             UniversalHelpers.get_raw_date(dateRange.end)
@@ -1066,16 +983,7 @@ class _SalesRecordPageState extends State<SalesRecordPage> {
 
         var rec = records.isNotEmpty ? records : snapshot.data!;
 
-        var _store_record = rec
-            .where((element) => element.saleType.toLowerCase() != 'online')
-            .toList();
-
-        var _online_record = rec
-            .where((element) => element.saleType.toLowerCase() == 'online')
-            .toList();
-
-        List<SalesModel> s_rec =
-            (sale_type == 'online') ? _online_record : _store_record;
+        List<SalesModel> s_rec = rec;
 
         return Dialog(
           surfaceTintColor: Colors.transparent,

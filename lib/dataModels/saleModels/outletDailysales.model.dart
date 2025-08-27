@@ -1,36 +1,36 @@
 import 'package:delightsome_software/dataModels/productStoreModels/product.model.dart';
 
-class TerminalDailySalesModel {
+class OutletDailySalesModel {
   String key;
   String date;
-  List<TerminalDailySalesProductsModel> products;
+  List<OutletDailySalesProductsModel> products;
 
-  TerminalDailySalesModel({
+  OutletDailySalesModel({
     required this.key,
     required this.date,
     required this.products,
   });
 
   // get model from json
-  factory TerminalDailySalesModel.fromJson(Map json) {
-    return TerminalDailySalesModel(
+  factory OutletDailySalesModel.fromJson(Map json) {
+    return OutletDailySalesModel(
       key: json['_id'],
       date: json['date'],
       products: (json['products'] as List)
-          .map((x) => TerminalDailySalesProductsModel.fromJson(x))
+          .map((x) => OutletDailySalesProductsModel.fromJson(x))
           .toList(),
     );
   }
 
   // Copy constructor
-  TerminalDailySalesModel.copy(TerminalDailySalesModel other)
+  OutletDailySalesModel.copy(OutletDailySalesModel other)
       : key = other.key,
         date = other.date,
-        products = List<TerminalDailySalesProductsModel>.from(
-            other.products.map((p) => TerminalDailySalesProductsModel.copy(p)));
+        products = List<OutletDailySalesProductsModel>.from(
+            other.products.map((p) => OutletDailySalesProductsModel.copy(p)));
 }
 
-class TerminalDailySalesProductsModel {
+class OutletDailySalesProductsModel {
   String key;
   ProductModel product;
   int storePrice;
@@ -39,7 +39,7 @@ class TerminalDailySalesProductsModel {
   int returned;
   int sold;
 
-  TerminalDailySalesProductsModel({
+  OutletDailySalesProductsModel({
     required this.key,
     required this.product,
     required this.storePrice,
@@ -50,13 +50,13 @@ class TerminalDailySalesProductsModel {
   });
 
   // get model from json
-  factory TerminalDailySalesProductsModel.fromJson(Map json) {
-    return TerminalDailySalesProductsModel(
+  factory OutletDailySalesProductsModel.fromJson(Map json) {
+    return OutletDailySalesProductsModel(
       key: json['_id'],
       product: json['product'] != null
           ? ProductModel.fromJson(json['product'])
           : ProductModel(
-            key: 'null',
+              key: 'null',
               name: 'Deleted',
               code: '',
               category: '',
@@ -76,7 +76,7 @@ class TerminalDailySalesProductsModel {
   }
 
   // Copy constructor
-  TerminalDailySalesProductsModel.copy(TerminalDailySalesProductsModel other)
+  OutletDailySalesProductsModel.copy(OutletDailySalesProductsModel other)
       : key = other.key,
         product = other.product,
         storePrice = other.storePrice,

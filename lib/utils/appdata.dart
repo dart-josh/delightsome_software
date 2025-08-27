@@ -9,20 +9,18 @@ import 'package:delightsome_software/dataModels/materialStoreModels/restockProdu
 import 'package:delightsome_software/dataModels/materialStoreModels/restockRawMaterial.model.dart';
 
 import 'package:delightsome_software/dataModels/productStoreModels/badProductRecord.model.dart';
-import 'package:delightsome_software/dataModels/productStoreModels/dangoteCollectionRecord.model.dart';
+import 'package:delightsome_software/dataModels/productStoreModels/collectionRecord.model.dart';
 import 'package:delightsome_software/dataModels/productStoreModels/product.model.dart';
 import 'package:delightsome_software/dataModels/productStoreModels/productReceivedRecord.model.dart';
 import 'package:delightsome_software/dataModels/productStoreModels/productRequestRecord.model.dart';
 import 'package:delightsome_software/dataModels/productStoreModels/productReturnRecord.model.dart';
 import 'package:delightsome_software/dataModels/productStoreModels/productTakeOutRecord.model.dart';
 import 'package:delightsome_software/dataModels/productStoreModels/productionRecord.model.dart';
-import 'package:delightsome_software/dataModels/productStoreModels/terminalCollectionRecord.model.dart';
 
-import 'package:delightsome_software/dataModels/saleModels/dailysales.model.dart';
-import 'package:delightsome_software/dataModels/saleModels/dangoteDailysales.model.dart';
+import 'package:delightsome_software/dataModels/saleModels/dailystore.model.dart';
+import 'package:delightsome_software/dataModels/saleModels/outletDailysales.model.dart';
 import 'package:delightsome_software/dataModels/saleModels/sales.model.dart';
 import 'package:delightsome_software/dataModels/saleModels/shop.model.dart';
-import 'package:delightsome_software/dataModels/saleModels/terminalDailysales.model.dart';
 
 import 'package:delightsome_software/dataModels/userModels/customer.model.dart';
 import 'package:delightsome_software/dataModels/userModels/staff.model.dart';
@@ -40,6 +38,7 @@ class AppData extends ChangeNotifier {
   bool drawer_expanded = false;
 
   // variables
+  List<ShopModel> store_shops = [];
   List<ShopModel> outlet_shops = [];
   List<ShopModel> terminal_shops = [];
   List<ShopModel> dangote_shops = [];
@@ -62,6 +61,7 @@ class AppData extends ChangeNotifier {
 
   // ! Product Store
   List<ProductModel> product_list = [];
+  List<ProductModel> outlet_product_list = [];
   List<ProductModel> terminal_product_list = [];
   List<ProductModel> dangote_product_list = [];
 
@@ -71,20 +71,23 @@ class AppData extends ChangeNotifier {
   List<ProductTakeOutRecordModel> product_takeOut_record = [];
   List<ProductReturnRecordModel> product_return_record = [];
   List<BadProductRecordModel> bad_product_record = [];
-  List<TerminalCollectionRecordModel> terminal_collection_record = [];
-  List<DangoteCollectionRecordModel> dangote_collection_record = [];
+  List<CollectionRecordModel> outlet_collection_record = [];
+  List<CollectionRecordModel> terminal_collection_record = [];
+  List<CollectionRecordModel> dangote_collection_record = [];
 
   List<CategoryModel> product_categories = [];
 
   // ! Sales
 
-  List<SalesModel> sales_record = [];
+  List<SalesModel> store_sales_record = [];
+  List<SalesModel> outlet_sales_record = [];
   List<SalesModel> terminal_sales_record = [];
   List<SalesModel> dangote_sales_record = [];
 
-  List<DailySalesModel> daily_sales_record = [];
-  List<TerminalDailySalesModel> terminal_daily_sales_record = [];
-  List<DangoteDailySalesModel> dangote_daily_sales_record = [];
+  List<DailyStoreModel> daily_store_record = [];
+  List<OutletDailySalesModel> outlet_daily_sales_record = [];
+  List<OutletDailySalesModel> terminal_daily_sales_record = [];
+  List<OutletDailySalesModel> dangote_daily_sales_record = [];
 
   // ! Users
 
@@ -118,6 +121,27 @@ class AppData extends ChangeNotifier {
 
   void toggle_drawer_expanded() {
     drawer_expanded = !drawer_expanded;
+    notifyListeners();
+  }
+
+  //?
+  void new_store_shop(ShopModel value) {
+    store_shops.add(value);
+    notifyListeners();
+  }
+
+  void update_store_shop(ShopModel value) {
+    var index = store_shops.indexWhere((e) => e.key == value.key);
+    if (index != -1) {
+      store_shops[index] = value;
+    }
+
+    notifyListeners();
+  }
+
+  void delete_store_shop(ShopModel value) {
+    store_shops.remove(value);
+
     notifyListeners();
   }
 
@@ -248,6 +272,12 @@ class AppData extends ChangeNotifier {
     notifyListeners();
   }
 
+  // outlet_product_list
+  void update_outlet_product_list(List<ProductModel> value) {
+    outlet_product_list = value;
+    notifyListeners();
+  }
+
   // terminal_product_list
   void update_terminal_product_list(List<ProductModel> value) {
     terminal_product_list = value;
@@ -260,6 +290,7 @@ class AppData extends ChangeNotifier {
     notifyListeners();
   }
 
+  //?
   // production_record
   void update_production_record(List<ProductionRecordModel> value) {
     production_record = value;
@@ -296,20 +327,25 @@ class AppData extends ChangeNotifier {
     notifyListeners();
   }
 
+  // outlet_collection_record
+  void update_outlet_collection_record(List<CollectionRecordModel> value) {
+    outlet_collection_record = value;
+    notifyListeners();
+  }
+
   // terminal_collection_record
-  void update_terminal_collection_record(
-      List<TerminalCollectionRecordModel> value) {
+  void update_terminal_collection_record(List<CollectionRecordModel> value) {
     terminal_collection_record = value;
     notifyListeners();
   }
 
   // dangote_collection_record
-  void update_dangote_collection_record(
-      List<DangoteCollectionRecordModel> value) {
+  void update_dangote_collection_record(List<CollectionRecordModel> value) {
     dangote_collection_record = value;
     notifyListeners();
   }
 
+  //?
   // product_categories
   void update_product_categories(List<CategoryModel> value) {
     product_categories = value;
@@ -318,9 +354,15 @@ class AppData extends ChangeNotifier {
 
   // ! Sales
 
-  // sales_record
-  void update_sales_record(List<SalesModel> value) {
-    sales_record = value;
+  // store_sales_record
+  void update_store_sales_record(List<SalesModel> value) {
+    store_sales_record = value;
+    notifyListeners();
+  }
+
+  // outlet_sales_record
+  void update_outlet_sales_record(List<SalesModel> value) {
+    outlet_sales_record = value;
     notifyListeners();
   }
 
@@ -336,20 +378,28 @@ class AppData extends ChangeNotifier {
     notifyListeners();
   }
 
-  // daily_sales_record
-  void update_daily_sales_record(List<DailySalesModel> value) {
-    daily_sales_record = value;
+  //?
+  
+  // daily_store_record
+  void update_daily_store_record(List<DailyStoreModel> value) {
+    daily_store_record = value;
+    notifyListeners();
+  }
+
+  // outlet_daily_sales_record
+  void update_outlet_daily_sales_record(List<OutletDailySalesModel> value) {
+    outlet_daily_sales_record = value;
     notifyListeners();
   }
 
   // terminal_daily_sales_record
-  void update_terminal_daily_sales_record(List<TerminalDailySalesModel> value) {
+  void update_terminal_daily_sales_record(List<OutletDailySalesModel> value) {
     terminal_daily_sales_record = value;
     notifyListeners();
   }
 
   // dangote_daily_sales_record
-  void update_dangote_daily_sales_record(List<DangoteDailySalesModel> value) {
+  void update_dangote_daily_sales_record(List<OutletDailySalesModel> value) {
     dangote_daily_sales_record = value;
     notifyListeners();
   }

@@ -6,17 +6,17 @@ import 'package:flutter/material.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 import 'package:provider/provider.dart';
 
-class DangoteDailySaleRecordView extends StatefulWidget {
+class OutletDailySaleRecordView extends StatefulWidget {
   final List<OutletDailySalesProductsModel> record;
-  const DangoteDailySaleRecordView({super.key, required this.record});
+  const OutletDailySaleRecordView({super.key, required this.record});
 
   @override
-  State<DangoteDailySaleRecordView> createState() =>
-      _DangoteDailySaleRecordViewState();
+  State<OutletDailySaleRecordView> createState() =>
+      _OutletDailySaleRecordViewState();
 }
 
-class _DangoteDailySaleRecordViewState
-    extends State<DangoteDailySaleRecordView> {
+class _OutletDailySaleRecordViewState
+    extends State<OutletDailySaleRecordView> {
   late LinkedScrollControllerGroup _horizontalControllersGroup;
   late ScrollController _horizontalController1;
   late ScrollController _horizontalController2;

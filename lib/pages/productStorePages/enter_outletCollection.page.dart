@@ -13,22 +13,21 @@ import 'package:delightsome_software/widgets/enter_qty_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class EnterTerminalcollectionPage extends StatefulWidget {
+class EnterOutletcollectionPage extends StatefulWidget {
   final CollectionRecordModel? editModel;
   final String collectionType; // ['Collected', 'Returned']
-  const EnterTerminalcollectionPage({
+  const EnterOutletcollectionPage({
     super.key,
     this.editModel,
     required this.collectionType,
   });
 
   @override
-  State<EnterTerminalcollectionPage> createState() =>
-      _EnterTerminalcollectionPageState();
+  State<EnterOutletcollectionPage> createState() =>
+      _EnterOutletcollectionPageState();
 }
 
-class _EnterTerminalcollectionPageState
-    extends State<EnterTerminalcollectionPage> {
+class _EnterOutletcollectionPageState extends State<EnterOutletcollectionPage> {
   TextEditingController search_controller = TextEditingController();
   FocusNode searchNode = FocusNode();
 
@@ -51,7 +50,7 @@ class _EnterTerminalcollectionPageState
   get_products() {
     products = widget.collectionType == 'Collected'
         ? Provider.of<AppData>(context).product_list
-        : Provider.of<AppData>(context).terminal_product_list;
+        : Provider.of<AppData>(context).outlet_product_list;
   }
 
   void get_edit_values() {
@@ -318,7 +317,7 @@ class _EnterTerminalcollectionPageState
                 onTap: () {
                   // save model
                   if (selected_products.isNotEmpty) {
-                    var tcrm = CollectionRecordModel(
+                    var ocrm = CollectionRecordModel(
                       products: selected_products,
                       shortNote: shortNote,
                       staffResponsible: staff,
@@ -327,16 +326,16 @@ class _EnterTerminalcollectionPageState
 
                     if (widget.editModel?.key == null) {
                       if (widget.collectionType == 'Collected') {
-                        saved_terminal_collected_model = tcrm;
+                        saved_outlet_collected_model = ocrm;
                       } else {
-                        saved_terminal_returned_model = tcrm;
+                        saved_outlet_returned_model = ocrm;
                       }
                     }
                   } else {
                     if (widget.collectionType == 'Collected') {
-                      saved_terminal_collected_model = null;
+                      saved_outlet_collected_model = null;
                     } else {
-                      saved_terminal_returned_model = null;
+                      saved_outlet_returned_model = null;
                     }
                   }
 
@@ -387,7 +386,7 @@ class _EnterTerminalcollectionPageState
           // title
           Center(
             child: Text(
-              'Enter Terminal ${widget.collectionType} Record',
+              'Enter Outlet ${widget.collectionType} Record',
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 16,
@@ -923,12 +922,12 @@ class _EnterTerminalcollectionPageState
                     var res = await showDialog(
                       context: context,
                       builder: (context) => SelectStaffDialog(
-                        staff_label: 'Select terminal staff',
+                        staff_label: 'Select outlet staff',
                         note_label: 'Short note',
                         staff: staff,
                         note: shortNote,
                         date: widget.editModel?.recordDate,
-                        staff_list_type: 'Terminal',
+                        staff_list_type: 'Sales',
                       ),
                     );
 
@@ -937,7 +936,7 @@ class _EnterTerminalcollectionPageState
                       shortNote = res[1];
                       DateTime dt = res[2] ?? DateTime.now();
 
-                      var tcrm = CollectionRecordModel(
+                      var ocrm = CollectionRecordModel(
                         key: widget.editModel?.key,
                         products: selected_products,
                         shortNote: shortNote,
@@ -947,7 +946,7 @@ class _EnterTerminalcollectionPageState
                       );
 
                       if (widget.editModel?.key == null) {
-                        var tcrm_s = CollectionRecordModel(
+                        var ocrm_s = CollectionRecordModel(
                           products: selected_products,
                           shortNote: shortNote,
                           staffResponsible: staff,
@@ -955,9 +954,9 @@ class _EnterTerminalcollectionPageState
                         );
 
                         if (widget.collectionType == 'Collected') {
-                          saved_terminal_collected_model = tcrm_s;
+                          saved_outlet_collected_model = ocrm_s;
                         } else {
-                          saved_terminal_returned_model = tcrm_s;
+                          saved_outlet_returned_model = ocrm_s;
                         }
                       }
 
@@ -974,20 +973,20 @@ class _EnterTerminalcollectionPageState
                         );
                       }
 
-                      Map map = tcrm.enter_toJson(
+                      Map map = ocrm.enter_toJson(
                           staffResponsible: staff!.key!,
                           editedBy: auth_staff.key ?? '');
 
                       bool done = await ProductStoreHelpers
-                          .enter_terminalCollection_record(context, map);
+                          .enter_outletCollection_record(context, map);
 
                       if (widget.editModel?.key != null) {
                         Navigator.pop(context);
                       } else if (done) {
                         if (widget.collectionType == 'Collected') {
-                          saved_terminal_collected_model = null;
+                          saved_outlet_collected_model = null;
                         } else {
-                          saved_terminal_returned_model = null;
+                          saved_outlet_returned_model = null;
                         }
                         selected_products.clear();
                         shortNote = null;

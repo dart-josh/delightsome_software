@@ -10,6 +10,7 @@ import 'package:delightsome_software/pages/materialStorePages/raw_material_reque
 import 'package:delightsome_software/pages/materialStorePages/restock_product_material_record.page.dart';
 import 'package:delightsome_software/pages/materialStorePages/restock_raw_material_record.page.dart';
 import 'package:delightsome_software/pages/productStorePages/bad_product_record.page.dart';
+import 'package:delightsome_software/pages/productStorePages/outlet_collection_record.page.dart';
 import 'package:delightsome_software/pages/productStorePages/product_received_record.page.dart';
 import 'package:delightsome_software/pages/productStorePages/product_request_record.page.dart';
 import 'package:delightsome_software/pages/productStorePages/product_return_record.page.dart';
@@ -36,6 +37,7 @@ class _SideBarState extends State<SideBar> {
   int productRequest_rec = 0;
   int productTakeOut_rec = 0;
   int productReturn_rec = 0;
+  int outletCollection_rec = 0;
   int terminalCollection_rec = 0;
   int dangoteCollection_rec = 0;
   int badProduct_rec = 0;
@@ -56,8 +58,8 @@ class _SideBarState extends State<SideBar> {
 
     StaffModel? auth_staff = Provider.of<AppData>(context).active_staff;
 
-    if (auth_staff!.role != 'Terminal')
-      // production record
+    // production record
+    if (auth_staff!.role != 'Terminal' && auth_staff.role != 'Dangote')
       product_store_items.add(
         SidebarItemModel(
           title: 'Production Record',
@@ -66,8 +68,8 @@ class _SideBarState extends State<SideBar> {
         ),
       );
 
-    if (auth_staff.role != 'Terminal' && auth_staff.role != 'Production')
-      // product received
+    // product received
+    if (auth_staff.role == 'Management' || auth_staff.role == 'Admin')
       product_store_items.add(
         SidebarItemModel(
           title: 'Product Received',
@@ -76,8 +78,8 @@ class _SideBarState extends State<SideBar> {
         ),
       );
 
-    if (auth_staff.role != 'Terminal')
-      // product request
+    // product request
+    if (auth_staff.role != 'Terminal' && auth_staff.role != 'Dangote')
       product_store_items.add(
         SidebarItemModel(
           title: 'Product Request',
@@ -86,8 +88,20 @@ class _SideBarState extends State<SideBar> {
         ),
       );
 
+    // outlet collection
+    if (auth_staff.role == 'Management' ||
+        auth_staff.role == 'Sales' ||
+        auth_staff.role == 'Admin')
+      product_store_items.add(
+        SidebarItemModel(
+          title: 'Outlet Collection',
+          icon: FontAwesomeIcons.store,
+          key: 13,
+        ),
+      );
+
+    // terminal collection
     if (auth_staff.role != 'Production')
-      // terminal collection
       product_store_items.add(
         SidebarItemModel(
           title: 'Terminal Collection',
@@ -96,8 +110,8 @@ class _SideBarState extends State<SideBar> {
         ),
       );
 
+    // dangote collection
     if (auth_staff.role != 'Production')
-      // dangote collection
       product_store_items.add(
         SidebarItemModel(
           title: 'Dangote Collection',
@@ -106,8 +120,8 @@ class _SideBarState extends State<SideBar> {
         ),
       );
 
-    if (auth_staff.role != 'Terminal' && auth_staff.role != 'Production')
-      // product takeOut
+    // product takeOut
+    if (auth_staff.role == 'Management' || auth_staff.role == 'Admin')
       product_store_items.add(
         SidebarItemModel(
           title: 'Product TakeOut',
@@ -116,8 +130,8 @@ class _SideBarState extends State<SideBar> {
         ),
       );
 
-    if (auth_staff.role != 'Terminal' && auth_staff.role != 'Production')
-      // product return
+    // product return
+    if (auth_staff.role == 'Management' || auth_staff.role == 'Admin')
       product_store_items.add(
         SidebarItemModel(
           title: 'Product Return',
@@ -126,20 +140,21 @@ class _SideBarState extends State<SideBar> {
         ),
       );
 
-    if (auth_staff.role != 'Terminal')
-      // bad product
-      product_store_items.add(
-        SidebarItemModel(
-          title: 'Bad Product Record',
-          icon: FontAwesomeIcons.trashArrowUp,
-          key: 4,
-        ),
-      );
+    // bad product
+    product_store_items.add(
+      SidebarItemModel(
+        title: 'Bad Product Record',
+        icon: FontAwesomeIcons.trashArrowUp,
+        key: 4,
+      ),
+    );
 
     //?
 
-    if (auth_staff.role != 'Terminal' && auth_staff.role != 'Sales')
-      // restock product material
+    // restock product material
+    if (auth_staff.role == 'Management' ||
+        auth_staff.role == 'Admin' ||
+        auth_staff.role == 'Production')
       material_store_items.add(
         SidebarItemModel(
           title: 'Restock Product Material',
@@ -148,8 +163,10 @@ class _SideBarState extends State<SideBar> {
         ),
       );
 
-    if (auth_staff.role != 'Terminal' && auth_staff.role != 'Sales')
-      // restock raw material
+    // restock raw material
+    if (auth_staff.role == 'Management' ||
+        auth_staff.role == 'Admin' ||
+        auth_staff.role == 'Production')
       material_store_items.add(
         SidebarItemModel(
           title: 'Restock Raw Material',
@@ -158,8 +175,8 @@ class _SideBarState extends State<SideBar> {
         ),
       );
 
-    if (auth_staff.role != 'Terminal')
-      // product material request
+    // product material request
+    if (auth_staff.role != 'Terminal' && auth_staff.role != 'Dangote')
       material_store_items.add(
         SidebarItemModel(
           title: 'Product Material Request',
@@ -168,8 +185,10 @@ class _SideBarState extends State<SideBar> {
         ),
       );
 
-    if (auth_staff.role != 'Terminal')
-      // raw material request
+    // raw material request
+    if (auth_staff.role != 'Terminal' &&
+        auth_staff.role != 'Dangote' &&
+        auth_staff.role != 'Sales')
       material_store_items.add(
         SidebarItemModel(
           title: 'Raw Material Request',
@@ -178,8 +197,10 @@ class _SideBarState extends State<SideBar> {
         ),
       );
 
-    if (auth_staff.role != 'Terminal')
-      // product material return
+    // product material return
+    if (auth_staff.role != 'Terminal' &&
+        auth_staff.role != 'Dangote' &&
+        auth_staff.role != 'Sales')
       material_store_items.add(
         SidebarItemModel(
           title: 'Product Material Return',
@@ -204,6 +225,11 @@ class _SideBarState extends State<SideBar> {
 
     productRequest_rec = Provider.of<AppData>(context)
         .product_request_record
+        .where((rec) => !rec.verified!)
+        .length;
+
+    outletCollection_rec = Provider.of<AppData>(context)
+        .outlet_collection_record
         .where((rec) => !rec.verified!)
         .length;
 
@@ -288,6 +314,8 @@ class _SideBarState extends State<SideBar> {
         return productReturn_rec;
       case 12:
         return dangoteCollection_rec;
+      case 13:
+        return outletCollection_rec;
       default:
         return 0;
     }
@@ -873,6 +901,9 @@ class _SideBarState extends State<SideBar> {
         break;
       case 12:
         navigateTo(DangoteCollectionRecordPage());
+        break;
+      case 13:
+        navigateTo(OutletCollectionRecordPage());
         break;
     }
   }

@@ -1,7 +1,7 @@
 import 'package:delightsome_software/appColors.dart';
 import 'package:delightsome_software/dataModels/productStoreModels/product.model.dart';
 import 'package:delightsome_software/dataModels/productStoreModels/productItem.model.dart';
-import 'package:delightsome_software/dataModels/productStoreModels/dangoteCollectionRecord.model.dart';
+import 'package:delightsome_software/dataModels/productStoreModels/collectionRecord.model.dart';
 import 'package:delightsome_software/dataModels/userModels/staff.model.dart';
 import 'package:delightsome_software/globalvariables.dart';
 import 'package:delightsome_software/helpers/productStoreHelpers.dart';
@@ -14,7 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class EnterDangotecollectionPage extends StatefulWidget {
-  final DangoteCollectionRecordModel? editModel;
+  final CollectionRecordModel? editModel;
   final String collectionType; // ['Collected', 'Returned']
   const EnterDangotecollectionPage({
     super.key,
@@ -318,7 +318,7 @@ class _EnterDangotecollectionPageState
                 onTap: () {
                   // save model
                   if (selected_products.isNotEmpty) {
-                    var tcrm = DangoteCollectionRecordModel(
+                    var dcrm = CollectionRecordModel(
                       products: selected_products,
                       shortNote: shortNote,
                       staffResponsible: staff,
@@ -327,9 +327,9 @@ class _EnterDangotecollectionPageState
 
                     if (widget.editModel?.key == null) {
                       if (widget.collectionType == 'Collected') {
-                        saved_dangote_collected_model = tcrm;
+                        saved_dangote_collected_model = dcrm;
                       } else {
-                        saved_dangote_returned_model = tcrm;
+                        saved_dangote_returned_model = dcrm;
                       }
                     }
                   } else {
@@ -937,7 +937,7 @@ class _EnterDangotecollectionPageState
                       shortNote = res[1];
                       DateTime dt = res[2] ?? DateTime.now();
 
-                      var tcrm = DangoteCollectionRecordModel(
+                      var dcrm = CollectionRecordModel(
                         key: widget.editModel?.key,
                         products: selected_products,
                         shortNote: shortNote,
@@ -947,7 +947,7 @@ class _EnterDangotecollectionPageState
                       );
 
                       if (widget.editModel?.key == null) {
-                        var tcrm_s = DangoteCollectionRecordModel(
+                        var dcrm_s = CollectionRecordModel(
                           products: selected_products,
                           shortNote: shortNote,
                           staffResponsible: staff,
@@ -955,9 +955,9 @@ class _EnterDangotecollectionPageState
                         );
 
                         if (widget.collectionType == 'Collected') {
-                          saved_dangote_collected_model = tcrm_s;
+                          saved_dangote_collected_model = dcrm_s;
                         } else {
-                          saved_dangote_returned_model = tcrm_s;
+                          saved_dangote_returned_model = dcrm_s;
                         }
                       }
 
@@ -974,7 +974,7 @@ class _EnterDangotecollectionPageState
                         );
                       }
 
-                      Map map = tcrm.enter_toJson(
+                      Map map = dcrm.enter_toJson(
                           staffResponsible: staff!.key!,
                           editedBy: auth_staff.key ?? '');
 

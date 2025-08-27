@@ -128,7 +128,10 @@ class _ShopBoxState extends State<ShopBox> {
                     );
 
                     if (conf != null && conf) {
-                      if (widget.shop_type == 'outlet') {
+                      if (widget.shop_type == 'store') {
+                        Provider.of<AppData>(context, listen: false)
+                            .delete_store_shop(shop);
+                      } else if (widget.shop_type == 'outlet') {
                         Provider.of<AppData>(context, listen: false)
                             .delete_outlet_shop(shop);
                       } else if (widget.shop_type == 'terminal') {
@@ -152,13 +155,13 @@ class _ShopBoxState extends State<ShopBox> {
                 // shop type
                 if (shop.isExpanded &&
                     !shop.done &&
-                    (widget.shop_type == 'outlet'))
+                    (widget.shop_type == 'store'))
                   TextButton(
                     onPressed: () {
                       shop.is_online = !shop.is_online;
-                      if (widget.shop_type == 'outlet') {
+                      if (widget.shop_type == 'store') {
                         Provider.of<AppData>(context, listen: false)
-                            .update_outlet_shop(shop);
+                            .update_store_shop(shop);
                       } else {}
                     },
                     child: Text(
@@ -176,7 +179,10 @@ class _ShopBoxState extends State<ShopBox> {
                 InkWell(
                   onTap: () {
                     shop.isExpanded = !shop.isExpanded;
-                    if (widget.shop_type == 'outlet') {
+                    if (widget.shop_type == 'store') {
+                      Provider.of<AppData>(context, listen: false)
+                          .update_store_shop(shop);
+                    } else if (widget.shop_type == 'outlet') {
                       Provider.of<AppData>(context, listen: false)
                           .update_outlet_shop(shop);
                     } else if (widget.shop_type == 'terminal') {
@@ -531,7 +537,10 @@ class _ShopBoxState extends State<ShopBox> {
                       onTap: () {
                         shop.key = UniqueKey().toString();
                         shop.done = false;
-                        if (widget.shop_type == 'outlet') {
+                        if (widget.shop_type == 'store') {
+                          Provider.of<AppData>(context, listen: false)
+                              .update_store_shop(shop);
+                        } else if (widget.shop_type == 'outlet') {
                           Provider.of<AppData>(context, listen: false)
                               .update_outlet_shop(shop);
                         } else if (widget.shop_type == 'terminal') {
@@ -589,7 +598,10 @@ class _ShopBoxState extends State<ShopBox> {
               shop.customer = null;
               shop.products = [];
               shop.done = false;
-              if (widget.shop_type == 'outlet') {
+              if (widget.shop_type == 'store') {
+                Provider.of<AppData>(context, listen: false)
+                    .update_store_shop(shop);
+              } else if (widget.shop_type == 'outlet') {
                 Provider.of<AppData>(context, listen: false)
                     .update_outlet_shop(shop);
               } else if (widget.shop_type == 'terminal') {
@@ -725,7 +737,10 @@ class _ShopBoxState extends State<ShopBox> {
 
                                 if (conf != null && conf) {
                                   shop.products.clear();
-                                  if (widget.shop_type == 'outlet') {
+                                  if (widget.shop_type == 'store') {
+                                    Provider.of<AppData>(context, listen: false)
+                                        .update_store_shop(shop);
+                                  } else if (widget.shop_type == 'outlet') {
                                     Provider.of<AppData>(context, listen: false)
                                         .update_outlet_shop(shop);
                                   } else if (widget.shop_type == 'terminal') {
@@ -917,7 +932,10 @@ class _ShopBoxState extends State<ShopBox> {
           InkWell(
             onTap: () {
               shop.products.remove(product);
-              if (widget.shop_type == 'outlet') {
+              if (widget.shop_type == 'store') {
+                Provider.of<AppData>(context, listen: false)
+                    .update_store_shop(shop);
+              } else if (widget.shop_type == 'outlet') {
                 Provider.of<AppData>(context, listen: false)
                     .update_outlet_shop(shop);
               } else if (widget.shop_type == 'terminal') {
@@ -1108,9 +1126,14 @@ class _ShopBoxState extends State<ShopBox> {
 
                       Map data = sale.toJson(soldBy: auth_staff.key ?? '');
 
-                      if (widget.shop_type == 'outlet') {
-                        var shop_data =
-                            await SaleHelpers.enter_new_sale(context, data);
+                      if (widget.shop_type == 'store') {
+                        var shop_data = await SaleHelpers.enter_new_store_sale(
+                            context, data);
+                        shop.done = shop_data[0];
+                        shop.orderId = shop_data[1];
+                      } else if (widget.shop_type == 'outlet') {
+                        var shop_data = await SaleHelpers.enter_new_outlet_sale(
+                            context, data);
                         shop.done = shop_data[0];
                         shop.orderId = shop_data[1];
                       } else if (widget.shop_type == 'terminal') {
@@ -1160,11 +1183,13 @@ class _ShopBoxState extends State<ShopBox> {
                           time: DateFormat.jm()
                               .format(sale.recordDate ?? DateTime.now()),
                           receipt_id: shop.orderId ?? 'null',
-                          store: (widget.shop_type == 'outlet')
+                          store: (widget.shop_type == 'store')
                               ? shop.is_online
                                   ? 'Online'
-                                  : 'Outlet'
-                              : (widget.shop_type == 'terminal')
+                                  : 'Store'
+                              : (widget.shop_type == 'outlet')
+                                  ? 'Outlet'
+                                  : (widget.shop_type == 'terminal')
                                   ? 'Terminal'
                                   : (widget.shop_type == 'dangote')
                                       ? 'Dangote'
@@ -1185,7 +1210,10 @@ class _ShopBoxState extends State<ShopBox> {
                         shop.printModel = null;
                       }
 
-                      if (widget.shop_type == 'outlet') {
+                      if (widget.shop_type == 'store') {
+                        Provider.of<AppData>(context, listen: false)
+                            .update_store_shop(shop);
+                      } else if (widget.shop_type == 'outlet') {
                         Provider.of<AppData>(context, listen: false)
                             .update_outlet_shop(shop);
                       } else if (widget.shop_type == 'terminal') {
@@ -1306,7 +1334,10 @@ class _ShopBoxState extends State<ShopBox> {
                   shop.customer = null;
                   customer_controller.clear();
                   setState(() {});
-                  if (widget.shop_type == 'outlet') {
+                  if (widget.shop_type == 'store') {
+                    Provider.of<AppData>(context, listen: false)
+                        .update_store_shop(shop);
+                  } else if (widget.shop_type == 'outlet') {
                     Provider.of<AppData>(context, listen: false)
                         .update_outlet_shop(shop);
                   } else if (widget.shop_type == 'terminal') {
@@ -1340,7 +1371,7 @@ class _ShopBoxState extends State<ShopBox> {
       context: context,
       builder: (context) => CustomerListPage(
           selector: true,
-          initial_index: (widget.shop_type == 'outlet')
+          initial_index: (widget.shop_type == 'store')
               ? shop.is_online
                   ? 1
                   : 0
@@ -1349,7 +1380,9 @@ class _ShopBoxState extends State<ShopBox> {
 
     if (cus != null) {
       shop.customer = cus;
-      if (widget.shop_type == 'outlet') {
+      if (widget.shop_type == 'store') {
+        Provider.of<AppData>(context, listen: false).update_store_shop(shop);
+      } else if (widget.shop_type == 'outlet') {
         Provider.of<AppData>(context, listen: false).update_outlet_shop(shop);
       } else if (widget.shop_type == 'terminal') {
         Provider.of<AppData>(context, listen: false).update_terminal_shop(shop);
@@ -1362,8 +1395,10 @@ class _ShopBoxState extends State<ShopBox> {
   bool check_products_qty() {
     List<ProductModel> prods = [];
 
-    if (widget.shop_type == 'outlet') {
+    if (widget.shop_type == 'store') {
       prods = Provider.of<AppData>(context, listen: false).product_list;
+    } else if (widget.shop_type == 'outlet') {
+      prods = Provider.of<AppData>(context, listen: false).outlet_product_list;
     } else if (widget.shop_type == 'terminal') {
       prods =
           Provider.of<AppData>(context, listen: false).terminal_product_list;

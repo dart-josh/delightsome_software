@@ -27,6 +27,7 @@ class _ManageStaffPageState extends State<ManageStaffPage> {
     'Production',
     'Sales',
     'Terminal',
+    'Dangote',
     'Admin'
   ];
 
@@ -474,7 +475,7 @@ class _ManageStaffPageState extends State<ManageStaffPage> {
             context,
             title: 'Save Staff',
             subtitle:
-                'This would save this staff to the database!\Would you like to proceed?',
+                'This would save this staff to the database!\nWould you like to proceed?',
           );
 
           if (res != null && res) {

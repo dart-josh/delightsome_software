@@ -1,5 +1,5 @@
 import 'package:delightsome_software/appColors.dart';
-import 'package:delightsome_software/dataModels/saleModels/terminalDailysales.model.dart';
+import 'package:delightsome_software/dataModels/saleModels/outletDailysales.model.dart';
 import 'package:delightsome_software/helpers/universalHelpers.dart';
 import 'package:delightsome_software/utils/appdata.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +7,7 @@ import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 import 'package:provider/provider.dart';
 
 class TerminalDailySaleRecordView extends StatefulWidget {
-  final List<TerminalDailySalesProductsModel> record;
+  final List<OutletDailySalesProductsModel> record;
   const TerminalDailySaleRecordView({super.key, required this.record});
 
   @override
@@ -126,7 +126,7 @@ class _TerminalDailySaleRecordViewState
 
   // WIDGETS
   // selected page
-  Widget selected_page(List<TerminalDailySalesProductsModel> _record) {
+  Widget selected_page(List<OutletDailySalesProductsModel> _record) {
     return Column(
       children: [
         product_head(),
@@ -205,7 +205,7 @@ class _TerminalDailySaleRecordViewState
   }
 
   // product list
-  Widget product_list(List<TerminalDailySalesProductsModel> _record) {
+  Widget product_list(List<OutletDailySalesProductsModel> _record) {
     double width = MediaQuery.of(context).size.width;
     double space_left = width - 610;
     return Row(
@@ -275,8 +275,7 @@ class _TerminalDailySaleRecordViewState
   }
 
   // product tile
-  Widget product_detail_tile(
-      TerminalDailySalesProductsModel product, int index) {
+  Widget product_detail_tile(OutletDailySalesProductsModel product, int index) {
     int total = product.openingQuantity + product.collected;
     int amount = product.sold *
         (product.storePrice != 0

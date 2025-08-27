@@ -26,7 +26,8 @@ class DataGetters {
 
   // get restock product materials record
   static get_restock_product_materials_record(context) async {
-    var rec = await MaterialStoreHelpers.get_restock_product_materials_record(context);
+    var rec = await MaterialStoreHelpers.get_restock_product_materials_record(
+        context);
 
     Provider.of<AppData>(context, listen: false)
         .update_restock_product_material_record(rec);
@@ -34,7 +35,8 @@ class DataGetters {
 
   // get restock raw materials record
   static get_restock_raw_materials_record(context) async {
-    var rec = await MaterialStoreHelpers.get_restock_raw_materials_record(context);
+    var rec =
+        await MaterialStoreHelpers.get_restock_raw_materials_record(context);
 
     Provider.of<AppData>(context, listen: false)
         .update_restock_raw_material_record(rec);
@@ -42,7 +44,8 @@ class DataGetters {
 
   // get product materials request record
   static get_product_materials_request_record(context) async {
-    var rec = await MaterialStoreHelpers.get_product_materials_request_record(context);
+    var rec = await MaterialStoreHelpers.get_product_materials_request_record(
+        context);
 
     Provider.of<AppData>(context, listen: false)
         .update_product_material_request_record(rec);
@@ -50,7 +53,8 @@ class DataGetters {
 
   // get raw materials request record
   static get_raw_materials_request_record(context) async {
-    var rec = await MaterialStoreHelpers.get_raw_materials_request_record(context);
+    var rec =
+        await MaterialStoreHelpers.get_raw_materials_request_record(context);
 
     Provider.of<AppData>(context, listen: false)
         .update_raw_material_request_record(rec);
@@ -58,7 +62,8 @@ class DataGetters {
 
   // get product materials return record
   static get_product_materials_return_record(context) async {
-    var rec = await MaterialStoreHelpers.get_product_materials_return_record(context);
+    var rec =
+        await MaterialStoreHelpers.get_product_materials_return_record(context);
 
     Provider.of<AppData>(context, listen: false)
         .update_product_material_return_record(rec);
@@ -66,7 +71,8 @@ class DataGetters {
 
   // get product materials category
   static get_product_materials_categories(context) async {
-    var rec = await MaterialStoreHelpers.get_product_materials_categories(context);
+    var rec =
+        await MaterialStoreHelpers.get_product_materials_categories(context);
 
     Provider.of<AppData>(context, listen: false)
         .update_product_material_categories(rec);
@@ -89,6 +95,14 @@ class DataGetters {
     Provider.of<AppData>(context, listen: false).update_product_list(rec);
   }
 
+  // get outlet products
+  static get_outlet_products(context) async {
+    var rec = await ProductStoreHelpers.get_outlet_products(context);
+
+    Provider.of<AppData>(context, listen: false)
+        .update_outlet_product_list(rec);
+  }
+
   // get terminal products
   static get_terminal_products(context) async {
     var rec = await ProductStoreHelpers.get_terminal_products(context);
@@ -104,6 +118,8 @@ class DataGetters {
     Provider.of<AppData>(context, listen: false)
         .update_dangote_product_list(rec);
   }
+
+  //?
 
   // get production record
   static get_production_record(context) async {
@@ -151,6 +167,14 @@ class DataGetters {
     Provider.of<AppData>(context, listen: false).update_bad_product_record(rec);
   }
 
+  // Get Outlet collection record
+  static get_outletCollection_record(context) async {
+    var rec = await ProductStoreHelpers.get_outletCollection_record(context);
+
+    Provider.of<AppData>(context, listen: false)
+        .update_outlet_collection_record(rec);
+  }
+
   // Get Terminal collection record
   static get_terminalCollection_record(context) async {
     var rec = await ProductStoreHelpers.get_terminalCollection_record(context);
@@ -167,6 +191,8 @@ class DataGetters {
         .update_dangote_collection_record(rec);
   }
 
+  //?
+
   // get product categories
   static get_product_categories(context) async {
     var rec = await ProductStoreHelpers.get_product_categories(context);
@@ -175,18 +201,34 @@ class DataGetters {
   }
 
   // ? SALES
-  // get sales record
-  static get_sales_record(context) async {
-    var rec = await SaleHelpers.get_sales_record(context);
+  // get store sales record
+  static get_store_sales_record(context) async {
+    var rec = await SaleHelpers.get_store_sales_record(context);
 
-    Provider.of<AppData>(context, listen: false).update_sales_record(rec);
+    Provider.of<AppData>(context, listen: false).update_store_sales_record(rec);
   }
 
   // get daily sales record
-  static get_daily_sales_record(context) async {
-    var rec = await SaleHelpers.get_daily_sales_record(context);
+  static get_daily_store_record(context) async {
+    var rec = await SaleHelpers.get_daily_store_record(context);
 
-    Provider.of<AppData>(context, listen: false).update_daily_sales_record(rec);
+    Provider.of<AppData>(context, listen: false).update_daily_store_record(rec);
+  }
+
+  // get outlet_sales record
+  static get_outlet_sales_record(context) async {
+    var rec = await SaleHelpers.get_outlet_sales_record(context);
+
+    Provider.of<AppData>(context, listen: false)
+        .update_outlet_sales_record(rec);
+  }
+
+  // get outlet daily sales record
+  static get_outlet_daily_sales_record(context) async {
+    var rec = await SaleHelpers.get_outlet_daily_sales_record(context);
+
+    Provider.of<AppData>(context, listen: false)
+        .update_outlet_daily_sales_record(rec);
   }
 
   // get terminal_sales record

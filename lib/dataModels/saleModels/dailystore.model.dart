@@ -1,36 +1,36 @@
 import 'package:delightsome_software/dataModels/productStoreModels/product.model.dart';
 
-class DailySalesModel {
+class DailyStoreModel {
   String key;
   String date;
-  List<DailySalesProductsModel> products;
+  List<DailyStoreProductsModel> products;
 
-  DailySalesModel({
+  DailyStoreModel({
     required this.key,
     required this.date,
     required this.products,
   });
 
   // get model from json
-  factory DailySalesModel.fromJson(Map json) {
-    return DailySalesModel(
+  factory DailyStoreModel.fromJson(Map json) {
+    return DailyStoreModel(
       key: json['_id'],
       date: json['date'] ?? '',
       products: (json['products'] as List)
-          .map((x) => DailySalesProductsModel.fromJson(x))
+          .map((x) => DailyStoreProductsModel.fromJson(x))
           .toList(),
     );
   }
 
   // Copy constructor
-  DailySalesModel.copy(DailySalesModel other)
+  DailyStoreModel.copy(DailyStoreModel other)
       : key = other.key,
         date = other.date,
-        products = List<DailySalesProductsModel>.from(
-            other.products.map((p) => DailySalesProductsModel.copy(p)));
+        products = List<DailyStoreProductsModel>.from(
+            other.products.map((p) => DailyStoreProductsModel.copy(p)));
 }
 
-class DailySalesProductsModel {
+class DailyStoreProductsModel {
   String key;
   ProductModel product;
   int storePrice;
@@ -40,6 +40,8 @@ class DailySalesProductsModel {
   int request;
   int takeOut;
   int returnn;
+  int outletCollected;
+  int outletReturn;
   int terminalCollected;
   int terminalReturn;
   int dangoteCollected;
@@ -48,7 +50,7 @@ class DailySalesProductsModel {
   int online;
   int quantitySold;
 
-  DailySalesProductsModel({
+  DailyStoreProductsModel({
     required this.key,
     required this.product,
     required this.storePrice,
@@ -58,6 +60,8 @@ class DailySalesProductsModel {
     required this.request,
     required this.takeOut,
     required this.returnn,
+    required this.outletCollected,
+    required this.outletReturn,
     required this.terminalCollected,
     required this.terminalReturn,
     required this.dangoteCollected,
@@ -68,8 +72,8 @@ class DailySalesProductsModel {
   });
 
   // get model from json
-  factory DailySalesProductsModel.fromJson(Map json) {
-    return DailySalesProductsModel(
+  factory DailyStoreProductsModel.fromJson(Map json) {
+    return DailyStoreProductsModel(
       key: json['_id'],
       product: json['product'] != null
           ? ProductModel.fromJson(json['product'])
@@ -93,6 +97,8 @@ class DailySalesProductsModel {
       request: json['request'] ?? 0,
       takeOut: json['takeOut'] ?? 0,
       returnn: json['return'] ?? 0,
+      outletCollected: json['outletCollected'] ?? 0,
+      outletReturn: json['outletReturn'] ?? 0,
       terminalCollected: json['terminalCollected'] ?? 0,
       terminalReturn: json['terminalReturn'] ?? 0,
       dangoteCollected: json['dangoteCollected'] ?? 0,
@@ -104,7 +110,7 @@ class DailySalesProductsModel {
   }
 
   // Copy constructor
-  DailySalesProductsModel.copy(DailySalesProductsModel other)
+  DailyStoreProductsModel.copy(DailyStoreProductsModel other)
       : key = other.key,
         product = other.product,
         storePrice = other.storePrice,
@@ -114,6 +120,8 @@ class DailySalesProductsModel {
         request = other.request,
         takeOut = other.takeOut,
         returnn = other.returnn,
+        outletCollected = other.outletCollected,
+        outletReturn = other.outletReturn,
         terminalCollected = other.terminalCollected,
         terminalReturn = other.terminalReturn,
         dangoteCollected = other.dangoteCollected,

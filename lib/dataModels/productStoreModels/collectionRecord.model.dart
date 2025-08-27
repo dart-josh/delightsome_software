@@ -2,7 +2,7 @@ import 'package:delightsome_software/dataModels/productStoreModels/productItem.m
 import 'package:delightsome_software/dataModels/userModels/editedBy.model.dart';
 import 'package:delightsome_software/dataModels/userModels/staff.model.dart';
 
-class DangoteCollectionRecordModel {
+class CollectionRecordModel {
   String? key;
   String? recordId;
   DateTime? recordDate;
@@ -18,7 +18,7 @@ class DangoteCollectionRecordModel {
   String collectionType;
   DateTime? createdAt;
 
-  DangoteCollectionRecordModel({
+  CollectionRecordModel({
     this.key,
     this.recordId,
     this.recordDate,
@@ -36,8 +36,8 @@ class DangoteCollectionRecordModel {
   });
 
   // get model from json
-  factory DangoteCollectionRecordModel.fromJson(Map json) {
-    return DangoteCollectionRecordModel(
+  factory CollectionRecordModel.fromJson(Map json) {
+    return CollectionRecordModel(
       key: json['_id'],
       recordId: json['recordId'] ?? '',
       recordDate: (json['recordDate'] != null)
@@ -46,7 +46,9 @@ class DangoteCollectionRecordModel {
       verifiedDate: json['verifiedDate'] != null
           ? DateTime.parse(json['verifiedDate'])
           : null,
-      staffResponsible: json['staffResponsible'] != null ? StaffModel.fromJson(json['staffResponsible']) : null,
+      staffResponsible: json['staffResponsible'] != null
+          ? StaffModel.fromJson(json['staffResponsible'])
+          : null,
       products: (json['products'] as List)
           .map((x) => ProductItemModel.fromJson(x))
           .toList(),

@@ -22,7 +22,7 @@ class _StaffListPageState extends State<StaffListPage> {
 
   List<StaffModel> production_list = [];
   List<StaffModel> sales_list = [];
-  List<StaffModel> terminal_list = [];
+  List<StaffModel> outlet_list = [];
 
   List<StaffModel> search_list = [];
   bool search_on = false;
@@ -36,8 +36,8 @@ class _StaffListPageState extends State<StaffListPage> {
     production_list =
         all_list.where((element) => element.role == 'Production').toList();
     sales_list = all_list.where((element) => element.role == 'Sales').toList();
-    terminal_list =
-        all_list.where((element) => element.role == 'Terminal').toList();
+    outlet_list =
+        all_list.where((element) => element.role == 'Terminal' || element.role == 'Dangote').toList();
   }
 
   @override
@@ -52,7 +52,7 @@ class _StaffListPageState extends State<StaffListPage> {
     get_list();
     production_list.sort((a, b) => a.nickName.compareTo(b.nickName));
     sales_list.sort((a, b) => a.nickName.compareTo(b.nickName));
-    terminal_list.sort((a, b) => a.nickName.compareTo(b.nickName));
+    outlet_list.sort((a, b) => a.nickName.compareTo(b.nickName));
 
     bool isDarkTheme =
         Provider.of<AppData>(context).themeMode == ThemeMode.dark;
@@ -105,7 +105,7 @@ class _StaffListPageState extends State<StaffListPage> {
                                 staff_list_area(all_list),
                                 staff_list_area(production_list),
                                 staff_list_area(sales_list),
-                                staff_list_area(terminal_list),
+                                staff_list_area(outlet_list),
                               ],
                             ),
                           ),
@@ -274,7 +274,7 @@ class _StaffListPageState extends State<StaffListPage> {
         Tab(text: 'All'),
         Tab(text: 'Production'),
         Tab(text: 'Sales'),
-        Tab(text: 'Terminal'),
+        Tab(text: 'Outlets'),
       ],
     );
   }

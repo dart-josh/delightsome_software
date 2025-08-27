@@ -81,6 +81,11 @@ class ServerHelpers {
       DataGetters.get_products(context);
     });
 
+    // OutletProduct
+    socket!.on('OutletProduct', (data) {
+      DataGetters.get_outlet_products(context);
+    });
+
     // TerminalProduct
     socket!.on('TerminalProduct', (data) {
       DataGetters.get_terminal_products(context);
@@ -90,6 +95,8 @@ class ServerHelpers {
     socket!.on('DangoteProduct', (data) {
       DataGetters.get_dangote_products(context);
     });
+
+    //?
 
     // ProductionRecord
     socket!.on('ProductionRecord', (data) {
@@ -121,6 +128,11 @@ class ServerHelpers {
       DataGetters.get_bad_product_record(context);
     });
 
+    // OutletCollectionRecord
+    socket!.on('OutletCollectionRecord', (data) {
+      DataGetters.get_outletCollection_record(context);
+    });
+
     // TerminalCollectionRecord
     socket!.on('TerminalCollectionRecord', (data) {
       DataGetters.get_terminalCollection_record(context);
@@ -131,6 +143,8 @@ class ServerHelpers {
       DataGetters.get_dangoteCollection_record(context);
     });
 
+    //?
+
     // ProductCategory
     socket!.on('ProductCategory', (data) {
       DataGetters.get_product_categories(context);
@@ -138,14 +152,24 @@ class ServerHelpers {
 
     // ? SALES
 
-    // SalesRecord
-    socket!.on('SalesRecord', (data) {
-      DataGetters.get_sales_record(context);
+    // StoreSalesRecord
+    socket!.on('StoreSalesRecord', (data) {
+      DataGetters.get_store_sales_record(context);
     });
 
-    // DailySalesRecord
-    socket!.on('DailySalesRecord', (data) {
-      DataGetters.get_daily_sales_record(context);
+    // DailyStoreRecord
+    socket!.on('DailyStoreRecord', (data) {
+      DataGetters.get_daily_store_record(context);
+    });
+
+    // OutletSalesRecord
+    socket!.on('OutletSalesRecord', (data) {
+      DataGetters.get_outlet_sales_record(context);
+    });
+
+    // OutletDailySalesRecord
+    socket!.on('OutletDailySalesRecord', (data) {
+      DataGetters.get_outlet_daily_sales_record(context);
     });
 
     // TerminalSalesRecord
@@ -188,66 +212,70 @@ class ServerHelpers {
 
   // get all data
   static void get_all_data(context, {bool refresh = false}) {
-      if (!refresh) {
-        UniversalHelpers.canLogout(context, value: false);
-        UniversalHelpers.canRefresh(context, value: false);
-      } else {
-        Provider.of<AppData>(context, listen: false).update_can_logout(false);
-        Provider.of<AppData>(context, listen: false).update_can_refresh(false);
-      }
+    if (!refresh) {
+      UniversalHelpers.canLogout(context, value: false);
+      UniversalHelpers.canRefresh(context, value: false);
+    } else {
+      Provider.of<AppData>(context, listen: false).update_can_logout(false);
+      Provider.of<AppData>(context, listen: false).update_can_refresh(false);
+    }
 
-      // ? MATERIALS STORE
-      DataGetters.get_product_materials(context);
-      DataGetters.get_raw_materials(context);
+    // ? MATERIALS STORE
+    DataGetters.get_product_materials(context);
+    DataGetters.get_raw_materials(context);
 
-      DataGetters.get_restock_product_materials_record(context);
-      DataGetters.get_restock_raw_materials_record(context);
-      DataGetters.get_product_materials_request_record(context);
-      DataGetters.get_raw_materials_request_record(context);
-      DataGetters.get_product_materials_return_record(context);
+    DataGetters.get_restock_product_materials_record(context);
+    DataGetters.get_restock_raw_materials_record(context);
+    DataGetters.get_product_materials_request_record(context);
+    DataGetters.get_raw_materials_request_record(context);
+    DataGetters.get_product_materials_return_record(context);
 
-      DataGetters.get_product_materials_categories(context);
-      DataGetters.get_raw_materials_categories(context);
+    DataGetters.get_product_materials_categories(context);
+    DataGetters.get_raw_materials_categories(context);
 
-      //? PRODUCTS STORE
-      DataGetters.get_products(context);
-      DataGetters.get_terminal_products(context);
-      DataGetters.get_dangote_products(context);
+    //? PRODUCTS STORE
+    DataGetters.get_products(context);
+    DataGetters.get_outlet_products(context);
+    DataGetters.get_terminal_products(context);
+    DataGetters.get_dangote_products(context);
 
-      DataGetters.get_product_categories(context);
+    DataGetters.get_product_categories(context);
 
-      DataGetters.get_production_record(context);
-      DataGetters.get_product_received_record(context);
-      DataGetters.get_product_request_record(context);
-      DataGetters.get_product_takeOut_record(context);
-      DataGetters.get_product_return_record(context);
-      DataGetters.get_bad_product_record(context);
-      DataGetters.get_terminalCollection_record(context);
-      DataGetters.get_dangoteCollection_record(context);
+    DataGetters.get_production_record(context);
+    DataGetters.get_product_received_record(context);
+    DataGetters.get_product_request_record(context);
+    DataGetters.get_product_takeOut_record(context);
+    DataGetters.get_product_return_record(context);
+    DataGetters.get_bad_product_record(context);
+    DataGetters.get_outletCollection_record(context);
+    DataGetters.get_terminalCollection_record(context);
+    DataGetters.get_dangoteCollection_record(context);
 
-      // ? SALES
-      DataGetters.get_sales_record(context);
-      DataGetters.get_daily_sales_record(context);
+    // ? SALES
+    DataGetters.get_store_sales_record(context);
+    DataGetters.get_daily_store_record(context);
 
-      DataGetters.get_terminal_sales_record(context);
-      DataGetters.get_terminal_daily_sales_record(context);
+    DataGetters.get_outlet_sales_record(context);
+    DataGetters.get_outlet_daily_sales_record(context);
 
-      DataGetters.get_dangote_sales_record(context);
-      DataGetters.get_dangote_daily_sales_record(context);
+    DataGetters.get_terminal_sales_record(context);
+    DataGetters.get_terminal_daily_sales_record(context);
 
-      // ? USER
-      DataGetters.get_all_staff(context);
-      DataGetters.get_all_customer(context);
+    DataGetters.get_dangote_sales_record(context);
+    DataGetters.get_dangote_daily_sales_record(context);
 
-      // start db socket listeners
-      if (!is_socket_connected) {
-        start_socket_listerners(context);
-        is_socket_connected = true;
-      }
+    // ? USER
+    DataGetters.get_all_staff(context);
+    DataGetters.get_all_customer(context);
 
-      UniversalHelpers.canLogout(context, value: true);
-      UniversalHelpers.canRefresh(context, value: true);
-    
+    // start db socket listeners
+    if (!is_socket_connected) {
+      start_socket_listerners(context);
+      is_socket_connected = true;
+    }
+
+    UniversalHelpers.canLogout(context, value: true);
+    UniversalHelpers.canRefresh(context, value: true);
   }
 
   // disconnect socket

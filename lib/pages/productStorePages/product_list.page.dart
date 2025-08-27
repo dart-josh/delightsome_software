@@ -33,7 +33,14 @@ class _ProductListPageState extends State<ProductListPage> {
   bool restock_page = false;
 
   get_products() {
-    if (widget.page == 'terminal_product') {
+    if (widget.page == 'outlet_product') {
+      all_product = (restock_page)
+          ? Provider.of<AppData>(context)
+              .outlet_product_list
+              .where((e) => e.quantity <= e.restockLimit)
+              .toList()
+          : Provider.of<AppData>(context).outlet_product_list;
+    } else if (widget.page == 'terminal_product') {
       all_product = (restock_page)
           ? Provider.of<AppData>(context)
               .terminal_product_list
@@ -236,6 +243,7 @@ class _ProductListPageState extends State<ProductListPage> {
               Expanded(child: Container()),
 
               if (!restock_page &&
+                  (widget.page != 'outlet_product') &&
                   (widget.page != 'terminal_product') &&
                   (widget.page != 'dangote_product'))
                 if (auth_staff!.fullaccess)
@@ -281,13 +289,15 @@ class _ProductListPageState extends State<ProductListPage> {
           // title
           Center(
             child: Text(
-              (widget.page == 'terminal_product')
-                  ? 'Terminal Products'
-                  : (widget.page == 'dangote_product')
-                      ? 'Dangote Products'
-                      : restock_page
-                          ? 'Products to Restock'
-                          : 'Product List',
+              (widget.page == 'outlet_product')
+                  ? 'Outlet Products'
+                  : (widget.page == 'terminal_product')
+                      ? 'Terminal Products'
+                      : (widget.page == 'dangote_product')
+                          ? 'Dangote Products'
+                          : restock_page
+                              ? 'Products to Restock'
+                              : 'Product List',
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 16,
@@ -602,7 +612,10 @@ class _ProductListPageState extends State<ProductListPage> {
                 ),
 
                 // delete
-                if (!restock_page && (widget.page != 'terminal_product') && (widget.page != 'dangote_product'))
+                if (!restock_page &&
+                    (widget.page != 'outlet_product') &&
+                    (widget.page != 'terminal_product') &&
+                    (widget.page != 'dangote_product'))
                   if (auth_staff.fullaccess)
                     InkWell(
                       onTap: () async {

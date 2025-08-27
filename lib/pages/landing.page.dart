@@ -9,6 +9,7 @@ import 'package:delightsome_software/pages/materialStorePages/enter_restock_raw_
 import 'package:delightsome_software/pages/materialStorePages/product_material_list.page.dart';
 import 'package:delightsome_software/pages/materialStorePages/raw_material_list.page.dart';
 import 'package:delightsome_software/pages/productStorePages/enter_bad_product.page.dart';
+import 'package:delightsome_software/pages/productStorePages/enter_outletCollection.page.dart';
 import 'package:delightsome_software/pages/productStorePages/enter_product_received.page.dart';
 import 'package:delightsome_software/pages/productStorePages/enter_product_request.page.dart';
 import 'package:delightsome_software/pages/productStorePages/enter_product_return.page.dart';
@@ -18,11 +19,14 @@ import 'package:delightsome_software/pages/productStorePages/enter_terminalColle
 import 'package:delightsome_software/pages/productStorePages/enter_dangoteCollection.page.dart';
 import 'package:delightsome_software/pages/productStorePages/product_list.page.dart';
 import 'package:delightsome_software/pages/productStorePages/production_summary.page.dart';
-import 'package:delightsome_software/pages/salePages/daily_sales_record.page.dart';
-import 'package:delightsome_software/pages/salePages/enter_new_sale.page.dart';
+import 'package:delightsome_software/pages/salePages/daily_store_record.page.dart';
+import 'package:delightsome_software/pages/salePages/enter_new_outlet_sale.page.dart';
+import 'package:delightsome_software/pages/salePages/enter_new_store_sale.page.dart';
 import 'package:delightsome_software/pages/salePages/enter_new_terminal_sale.page.dart';
 import 'package:delightsome_software/pages/salePages/enter_new_dangote_sale.page.dart';
-import 'package:delightsome_software/pages/salePages/sales_record.page.dart';
+import 'package:delightsome_software/pages/salePages/outlet_daily_sales_record.page.dart';
+import 'package:delightsome_software/pages/salePages/outlet_sales_record.page.dart';
+import 'package:delightsome_software/pages/salePages/store_sales_record.page.dart';
 import 'package:delightsome_software/pages/salePages/sales_report.page.dart';
 import 'package:delightsome_software/pages/salePages/terminal_daily_sales_record.page.dart';
 import 'package:delightsome_software/pages/salePages/terminal_sales_record.page.dart';
@@ -217,7 +221,8 @@ class _LandingPageState extends State<LandingPage> {
                 scrollDirection: Axis.horizontal,
                 children: [
                   // product list
-                  if (auth_staff!.role != 'Terminal')
+                  if (auth_staff!.role != 'Terminal' &&
+                      auth_staff!.role != 'Dangote')
                     menu_tile(
                       icon: FontAwesomeIcons.productHunt,
                       title: 'Products',
@@ -227,6 +232,24 @@ class _LandingPageState extends State<LandingPage> {
                           dialog: null,
                           page: ProductListPage(
                             page: 'product',
+                          ),
+                        );
+                      },
+                    ),
+
+                  // outlet product list
+                  if (auth_staff!.role == 'Management' ||
+                      auth_staff!.role == 'Admin' ||
+                      auth_staff!.role == 'Sales')
+                    menu_tile(
+                      icon: FontAwesomeIcons.productHunt,
+                      title: 'Outlet Products',
+                      color: terminal_color,
+                      onClicked: () {
+                        goto_page(
+                          dialog: null,
+                          page: ProductListPage(
+                            page: 'outlet_product',
                           ),
                         );
                       },
@@ -248,7 +271,7 @@ class _LandingPageState extends State<LandingPage> {
                       },
                     ),
 
-                    // dangote product list
+                  // dangote product list
                   if (auth_staff!.role != 'Production')
                     menu_tile(
                       icon: FontAwesomeIcons.productHunt,
@@ -265,7 +288,9 @@ class _LandingPageState extends State<LandingPage> {
                     ),
 
                   // product material list
-                  if (auth_staff!.role != 'Terminal')
+                  if (auth_staff!.role == 'Management' ||
+                      auth_staff!.role == 'Admin' ||
+                      auth_staff!.role != 'Production')
                     menu_tile(
                       icon: FontAwesomeIcons.toolbox,
                       title: 'Product Materials',
@@ -277,7 +302,9 @@ class _LandingPageState extends State<LandingPage> {
                     ),
 
                   // raw material list
-                  if (auth_staff!.role != 'Terminal')
+                  if (auth_staff!.role == 'Management' ||
+                      auth_staff!.role == 'Admin' ||
+                      auth_staff!.role != 'Production')
                     menu_tile(
                       icon: FontAwesomeIcons.leaf,
                       title: 'Raw Materials',
@@ -331,35 +358,65 @@ class _LandingPageState extends State<LandingPage> {
                 shrinkWrap: true,
                 scrollDirection: Axis.horizontal,
                 children: [
-                  // outlet shop
-                  if (auth_staff!.role != 'Production' &&
-                      auth_staff!.role != 'Terminal')
+                  // store shop
+                  if (auth_staff!.role == 'Management' ||
+                      auth_staff!.role == 'Admin')
                     menu_tile(
                       icon: FontAwesomeIcons.shop,
-                      title: 'Outlet Store',
+                      title: 'Online Store',
                       color: outlet_color,
                       show_not:
-                          Provider.of<AppData>(context).outlet_shops.isNotEmpty,
+                          Provider.of<AppData>(context).store_shops.isNotEmpty,
                       onClicked: () {
-                        goto_page(dialog: false, page: SalesPage());
+                        goto_page(dialog: false, page: StoreSalesPage());
+                      },
+                    ),
+
+                  // store sales record
+                  if (auth_staff!.role == 'Management' ||
+                      auth_staff!.role == 'Admin')
+                    menu_tile(
+                      icon: FontAwesomeIcons.solidRectangleList,
+                      title: 'Online Store Record',
+                      color: outlet_color,
+                      onClicked: () {
+                        goto_page(dialog: false, page: StoreSalesRecordPage());
+                      },
+                    ),
+
+                  // outlet shop
+                  if (auth_staff!.role != 'Production' &&
+                      auth_staff!.role != 'Terminal' &&
+                      auth_staff!.role != 'Dangote')
+                    menu_tile(
+                      icon: FontAwesomeIcons.store,
+                      title: 'Outlet Store',
+                      color: terminal_color,
+                      show_not: Provider.of<AppData>(context)
+                          .outlet_shops
+                          .isNotEmpty,
+                      onClicked: () {
+                        goto_page(dialog: false, page: OutletSalesPage());
                       },
                     ),
 
                   // outlet sales record
                   if (auth_staff!.role != 'Production' &&
-                      auth_staff!.role != 'Terminal')
+                      auth_staff!.role != 'Terminal' &&
+                      auth_staff!.role != 'Dangote')
                     menu_tile(
-                      icon: FontAwesomeIcons.solidRectangleList,
+                      icon: FontAwesomeIcons.rectangleList,
                       title: 'Outlet Store Record',
-                      color: outlet_color,
+                      color: terminal_color,
                       onClicked: () {
-                        goto_page(dialog: false, page: SalesRecordPage());
+                        goto_page(dialog: false, page: OutletSalesRecordPage());
                       },
                     ),
 
                   // terminal shop
                   if (auth_staff!.role != 'Production' &&
-                      auth_staff!.role != 'Sales')
+                      auth_staff!.role != 'Sales' &&
+                      auth_staff!.role != 'Dangote')
                     menu_tile(
                       icon: FontAwesomeIcons.store,
                       title: 'Terminal Store',
@@ -374,7 +431,8 @@ class _LandingPageState extends State<LandingPage> {
 
                   // terminal sales record
                   if (auth_staff!.role != 'Production' &&
-                      auth_staff!.role != 'Sales')
+                      auth_staff!.role != 'Sales' &&
+                      auth_staff!.role != 'Dangote')
                     menu_tile(
                       icon: FontAwesomeIcons.rectangleList,
                       title: 'Terminal Store Record',
@@ -385,7 +443,7 @@ class _LandingPageState extends State<LandingPage> {
                       },
                     ),
 
-                    // dangote shop
+                  // dangote shop
                   if (auth_staff!.role != 'Production' &&
                       auth_staff!.role != 'Sales')
                     menu_tile(
@@ -454,7 +512,8 @@ class _LandingPageState extends State<LandingPage> {
                 scrollDirection: Axis.horizontal,
                 children: [
                   // production form
-                  if (auth_staff!.role != 'Terminal')
+                  if (auth_staff!.role != 'Terminal' &&
+                      auth_staff!.role != 'Dangote')
                     menu_tile(
                       icon: FontAwesomeIcons.blender,
                       title: 'Enter Production',
@@ -471,8 +530,8 @@ class _LandingPageState extends State<LandingPage> {
                     ),
 
                   // product received form
-                  if (auth_staff!.role != 'Terminal' &&
-                      auth_staff!.role != 'Production')
+                  if (auth_staff!.role == 'Management' ||
+                      auth_staff!.role == 'Admin')
                     menu_tile(
                       icon: FontAwesomeIcons.appleWhole,
                       title: 'Enter Product Received',
@@ -489,7 +548,8 @@ class _LandingPageState extends State<LandingPage> {
                     ),
 
                   // product request form
-                  if (auth_staff!.role != 'Terminal')
+                  if (auth_staff!.role != 'Terminal' &&
+                      auth_staff!.role != 'Dangote')
                     menu_tile(
                       icon: FontAwesomeIcons.basketShopping,
                       title: 'Enter Product Request',
@@ -504,10 +564,10 @@ class _LandingPageState extends State<LandingPage> {
                         );
                       },
                     ),
-                  
+
                   // product takeOut form
-                  if (auth_staff!.role != 'Terminal' &&
-                      auth_staff!.role != 'Production')
+                  if (auth_staff!.role == 'Management' ||
+                      auth_staff!.role == 'Admin')
                     menu_tile(
                       icon: FontAwesomeIcons.appleWhole,
                       title: 'Enter TakeOut Product',
@@ -523,9 +583,9 @@ class _LandingPageState extends State<LandingPage> {
                       },
                     ),
 
-                    // product return form
-                  if (auth_staff!.role != 'Terminal' &&
-                      auth_staff!.role != 'Production')
+                  // product return form
+                  if (auth_staff!.role == 'Management' ||
+                      auth_staff!.role == 'Admin')
                     menu_tile(
                       icon: FontAwesomeIcons.appleWhole,
                       title: 'Enter Return Product',
@@ -541,9 +601,62 @@ class _LandingPageState extends State<LandingPage> {
                       },
                     ),
 
+                  // outlet collection form
+                  if (auth_staff!.role != 'Production' &&
+                      auth_staff!.role != 'Dangote' &&
+                      auth_staff!.role != 'Terminal')
+                    menu_tile(
+                      icon: FontAwesomeIcons.store,
+                      title: 'Enter Outlet Collection',
+                      color: terminal_color,
+                      show_not: (saved_outlet_collected_model != null ||
+                          saved_outlet_returned_model != null),
+                      onClicked: () async {
+                        var collectionType = await showDialog(
+                          context: context,
+                          builder: (context) => Dialog(
+                            child: Container(
+                              width: 300,
+                              padding: EdgeInsets.all(20),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text('Select Collection Type'),
+                                  SizedBox(height: 20),
+                                  Row(
+                                    children: ['Collected', 'Returned']
+                                        .map(
+                                          (e) => TextButton(
+                                              onPressed: () {
+                                                Navigator.pop(context, e);
+                                              },
+                                              child: Text(e)),
+                                        )
+                                        .toList(),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+
+                        if (collectionType != null) {
+                          goto_page(
+                            dialog: null,
+                            page: EnterOutletcollectionPage(
+                              editModel: (collectionType == 'Collected')
+                                  ? saved_outlet_collected_model
+                                  : saved_outlet_returned_model,
+                              collectionType: collectionType,
+                            ),
+                          );
+                        }
+                      },
+                    ),
 
                   // terminal collection form
-                  if (auth_staff!.role != 'Production')
+                  if (auth_staff!.role != 'Production' &&
+                      auth_staff!.role != 'Dangote')
                     menu_tile(
                       icon: FontAwesomeIcons.store,
                       title: 'Enter Terminal Collection',
@@ -592,7 +705,7 @@ class _LandingPageState extends State<LandingPage> {
                         }
                       },
                     ),
-                  
+
                   // dangote collection form
                   if (auth_staff!.role != 'Production')
                     menu_tile(
@@ -645,21 +758,20 @@ class _LandingPageState extends State<LandingPage> {
                     ),
 
                   // bad product form
-                  if (auth_staff!.role != 'Terminal')
-                    menu_tile(
-                      icon: FontAwesomeIcons.trashArrowUp,
-                      title: 'Enter Bad Product',
-                      color: bad_product_color,
-                      show_not: saved_bad_product_model != null,
-                      onClicked: () {
-                        goto_page(
-                          dialog: null,
-                          page: EnterBadProductPage(
-                            editModel: saved_bad_product_model,
-                          ),
-                        );
-                      },
-                    ),
+                  menu_tile(
+                    icon: FontAwesomeIcons.trashArrowUp,
+                    title: 'Enter Bad Product',
+                    color: bad_product_color,
+                    show_not: saved_bad_product_model != null,
+                    onClicked: () {
+                      goto_page(
+                        dialog: null,
+                        page: EnterBadProductPage(
+                          editModel: saved_bad_product_model,
+                        ),
+                      );
+                    },
+                  ),
                 ],
               ),
             ),
@@ -673,7 +785,8 @@ class _LandingPageState extends State<LandingPage> {
     Color p_material_store_color = Color.fromARGB(57, 227, 222, 151);
     Color r_material_store_color = Color.fromARGB(57, 148, 126, 69);
 
-    if (auth_staff!.role == 'Terminal') return Container();
+    if (auth_staff!.role == 'Terminal' || auth_staff!.role == 'Dangote')
+      return Container();
 
     return Container(
       margin: EdgeInsets.only(bottom: 10),
@@ -702,8 +815,7 @@ class _LandingPageState extends State<LandingPage> {
                 scrollDirection: Axis.horizontal,
                 children: [
                   // restock product material
-                  if (auth_staff!.role != 'Sales' &&
-                      auth_staff!.role != 'Terminal')
+                  if (auth_staff!.role != 'Sales')
                     menu_tile(
                       icon: FontAwesomeIcons.codeCompare,
                       title: 'Restock Product Material',
@@ -720,8 +832,7 @@ class _LandingPageState extends State<LandingPage> {
                     ),
 
                   // restock raw material
-                  if (auth_staff!.role != 'Sales' &&
-                      auth_staff!.role != 'Terminal')
+                  if (auth_staff!.role != 'Sales')
                     menu_tile(
                       icon: FontAwesomeIcons.repeat,
                       title: 'Restock Raw Material',
@@ -738,24 +849,23 @@ class _LandingPageState extends State<LandingPage> {
                     ),
 
                   // product material request
-                  if (auth_staff!.role != 'Terminal')
-                    menu_tile(
-                      icon: FontAwesomeIcons.toolbox,
-                      title: 'Product Material Request',
-                      color: p_material_store_color,
-                      show_not: saved_product_material_request_model != null,
-                      onClicked: () {
-                        goto_page(
-                          dialog: null,
-                          page: EnterProductMaterialRequest(
-                            editModel: saved_product_material_request_model,
-                          ),
-                        );
-                      },
-                    ),
+                  menu_tile(
+                    icon: FontAwesomeIcons.toolbox,
+                    title: 'Product Material Request',
+                    color: p_material_store_color,
+                    show_not: saved_product_material_request_model != null,
+                    onClicked: () {
+                      goto_page(
+                        dialog: null,
+                        page: EnterProductMaterialRequest(
+                          editModel: saved_product_material_request_model,
+                        ),
+                      );
+                    },
+                  ),
 
                   // raw material request
-                  if (auth_staff!.role != 'Terminal')
+                  if (auth_staff!.role != 'Sales')
                     menu_tile(
                       icon: FontAwesomeIcons.leaf,
                       title: 'Raw Material Request',
@@ -772,7 +882,7 @@ class _LandingPageState extends State<LandingPage> {
                     ),
 
                   // product material return
-                  if (auth_staff!.role != 'Terminal')
+                  if (auth_staff!.role != 'Sales')
                     menu_tile(
                       icon: FontAwesomeIcons.toolbox,
                       title: 'Product Material Return',
@@ -802,7 +912,7 @@ class _LandingPageState extends State<LandingPage> {
     Color terminal_color = Color.fromARGB(57, 151, 186, 227);
     Color dangote_color = Color.fromARGB(57, 151, 186, 227);
 
-    if (auth_staff!.role == 'Production') return Container();
+    // if (auth_staff!.role == 'Production') return Container();
 
     return Container(
       margin: EdgeInsets.only(bottom: 10),
@@ -831,8 +941,8 @@ class _LandingPageState extends State<LandingPage> {
                 scrollDirection: Axis.horizontal,
                 children: [
                   // sales report
-                  if (auth_staff!.role != 'Production' &&
-                      auth_staff!.role != 'Terminal')
+                  if (auth_staff!.role == 'Management' ||
+                      auth_staff!.role == 'Admin')
                     menu_tile(
                       icon: FontAwesomeIcons.cashRegister,
                       title: 'Sales Report',
@@ -846,8 +956,9 @@ class _LandingPageState extends State<LandingPage> {
                     ),
 
                   // production summary
-                  if (auth_staff!.role != 'Production' &&
-                      auth_staff!.role != 'Terminal')
+                  if (auth_staff!.role == 'Production' ||
+                      auth_staff!.role == 'Management' ||
+                      auth_staff!.role == 'Admin')
                     menu_tile(
                       icon: FontAwesomeIcons.microchip,
                       title: 'Production Report',
@@ -860,21 +971,39 @@ class _LandingPageState extends State<LandingPage> {
                       },
                     ),
 
+                  // daily store record
+                  if (auth_staff!.role == 'Management' ||
+                      auth_staff!.role == 'Admin' ||
+                      auth_staff!.role == 'Sales')
+                    menu_tile(
+                      icon: FontAwesomeIcons.book,
+                      title: 'Daily Store Record',
+                      color: outlet_color,
+                      onClicked: () {
+                        goto_page(dialog: false, page: DailyStoreRecordPage());
+                      },
+                    ),
+
                   // outlet product record
-                  if (auth_staff!.role != 'Production' &&
-                      auth_staff!.role != 'Terminal')
+                  if (auth_staff!.role == 'Management' ||
+                      auth_staff!.role == 'Admin' ||
+                      auth_staff!.role == 'Sales')
                     menu_tile(
                       icon: FontAwesomeIcons.book,
                       title: 'Outlet Daily Record',
-                      color: outlet_color,
+                      color: terminal_color,
                       onClicked: () {
-                        goto_page(dialog: false, page: DailySalesRecordPage());
+                        goto_page(
+                          dialog: false,
+                          page: OutletDailySalesRecordPage(),
+                        );
                       },
                     ),
 
                   // terminal product record
-                  if (auth_staff!.role != 'Production' &&
-                      auth_staff!.role != 'Sales')
+                  if (auth_staff!.role == 'Management' ||
+                      auth_staff!.role == 'Admin' ||
+                      auth_staff!.role == 'Terminal')
                     menu_tile(
                       icon: FontAwesomeIcons.book,
                       title: 'Terminal Daily Record',
@@ -887,9 +1016,11 @@ class _LandingPageState extends State<LandingPage> {
                       },
                     ),
 
-                    // dangote product record
-                  if (auth_staff!.role != 'Production' &&
-                      auth_staff!.role != 'Sales')
+                  // dangote product record
+                  if (auth_staff!.role == 'Management' ||
+                      auth_staff!.role == 'Admin' ||
+                      auth_staff!.role == 'Terminal' ||
+                      auth_staff!.role == 'Dangote')
                     menu_tile(
                       icon: FontAwesomeIcons.book,
                       title: 'Dangote Daily Record',
@@ -944,9 +1075,8 @@ class _LandingPageState extends State<LandingPage> {
                 scrollDirection: Axis.horizontal,
                 children: [
                   // staff list
-                  if (auth_staff!.role != 'Production' &&
-                      auth_staff!.role != 'Sales' &&
-                      auth_staff!.role != 'Terminal')
+                  if (auth_staff!.role == 'Management' ||
+                      auth_staff!.role == 'Admin')
                     menu_tile(
                       icon: FontAwesomeIcons.userTie,
                       title: 'Staffs',
@@ -974,9 +1104,8 @@ class _LandingPageState extends State<LandingPage> {
                     ),
 
                   // categories
-                  if (auth_staff!.role != 'Production' &&
-                      auth_staff!.role != 'Sales' &&
-                      auth_staff!.role != 'Terminal')
+                  if (auth_staff!.role == 'Management' ||
+                      auth_staff!.role == 'Admin')
                     menu_tile(
                       icon: FontAwesomeIcons.layerGroup,
                       title: 'Store Categories',

@@ -1,20 +1,20 @@
 import 'package:delightsome_software/appColors.dart';
-import 'package:delightsome_software/dataModels/saleModels/dailysales.model.dart';
+import 'package:delightsome_software/dataModels/saleModels/dailystore.model.dart';
 import 'package:delightsome_software/helpers/universalHelpers.dart';
 import 'package:delightsome_software/utils/appdata.dart';
 import 'package:flutter/material.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 import 'package:provider/provider.dart';
 
-class DailySaleRecordView extends StatefulWidget {
-  final List<DailySalesProductsModel> record;
-  const DailySaleRecordView({super.key, required this.record});
+class DailyStoreRecordView extends StatefulWidget {
+  final List<DailyStoreProductsModel> record;
+  const DailyStoreRecordView({super.key, required this.record});
 
   @override
-  State<DailySaleRecordView> createState() => _DailySaleRecordViewState();
+  State<DailyStoreRecordView> createState() => _DailyStoreRecordViewState();
 }
 
-class _DailySaleRecordViewState extends State<DailySaleRecordView> {
+class _DailyStoreRecordViewState extends State<DailyStoreRecordView> {
   late LinkedScrollControllerGroup _horizontalControllersGroup;
   late ScrollController _horizontalController1;
   late ScrollController _horizontalController2;
@@ -121,7 +121,7 @@ class _DailySaleRecordViewState extends State<DailySaleRecordView> {
 
   // WIDGETS
   // selected page
-  Widget selected_page(List<DailySalesProductsModel> _record) {
+  Widget selected_page(List<DailyStoreProductsModel> _record) {
     return Column(
       children: [
         product_head(),
@@ -135,7 +135,7 @@ class _DailySaleRecordViewState extends State<DailySaleRecordView> {
     bool isDarkTheme =
         Provider.of<AppData>(context).themeMode == ThemeMode.dark;
     double width = MediaQuery.of(context).size.width;
-    double space_left = width - 1220;
+    double space_left = width - 1380;
     return Container(
       decoration: BoxDecoration(
         border: Border(
@@ -256,6 +256,80 @@ class _DailySaleRecordViewState extends State<DailySaleRecordView> {
                     ),
                   ),
 
+                  // outlet collection
+                  Container(
+                    width: 160,
+                    decoration: BoxDecoration(
+                      border: Border(
+                          right: BorderSide(
+                        color: isDarkTheme
+                            ? AppColors.dark_dimTextColor
+                            : AppColors.light_dimTextColor,
+                      )),
+                    ),
+                    child: Column(
+                      children: [
+                        SizedBox(height: 2),
+
+                        // head
+                        Text(
+                          'Outlet',
+                          style: TextStyle(
+                            height: 1,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+
+                        SizedBox(height: 3),
+
+                        // bottom
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            // outlet collected
+                            Container(
+                              width: 80,
+                              padding: EdgeInsets.only(bottom: 3),
+                              decoration: BoxDecoration(
+                                border: Border(
+                                    right: BorderSide(
+                                  color: isDarkTheme
+                                      ? AppColors.dark_dimTextColor
+                                      : AppColors.light_dimTextColor,
+                                )),
+                              ),
+                              alignment: Alignment.center,
+                              child: Text(
+                                'Collected',
+                                style: TextStyle(
+                                  height: 1,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+
+                            // outlet return
+                            Container(
+                              width: 79,
+                              padding: EdgeInsets.only(bottom: 3),
+                              alignment: Alignment.center,
+                              child: Text(
+                                'Return',
+                                style: TextStyle(
+                                  height: 1,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+
                   // terminal collection
                   Container(
                     width: 160,
@@ -329,7 +403,7 @@ class _DailySaleRecordViewState extends State<DailySaleRecordView> {
                       ],
                     ),
                   ),
-                  
+
                   // dangote collection
                   Container(
                     width: 160,
@@ -428,9 +502,9 @@ class _DailySaleRecordViewState extends State<DailySaleRecordView> {
   }
 
   // product list
-  Widget product_list(List<DailySalesProductsModel> _record) {
+  Widget product_list(List<DailyStoreProductsModel> _record) {
     double width = MediaQuery.of(context).size.width;
-    double space_left = width - 1230;
+    double space_left = width - 1390;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -502,7 +576,7 @@ class _DailySaleRecordViewState extends State<DailySaleRecordView> {
 
   // product tile
   Widget product_detail_tile(
-      DailySalesProductsModel product, int index, int line) {
+      DailyStoreProductsModel product, int index, int line) {
     int total = product.openingQuantity + product.added;
     int amount = product.quantitySold *
         (product.storePrice != 0
@@ -511,6 +585,7 @@ class _DailySaleRecordViewState extends State<DailySaleRecordView> {
     int balance = total -
         (product.request +
             (product.takeOut - product.returnn) +
+            (product.outletCollected - product.outletReturn) +
             (product.terminalCollected - product.terminalReturn) +
             (product.dangoteCollected - product.dangoteReturn) +
             product.badProduct +
@@ -541,6 +616,12 @@ class _DailySaleRecordViewState extends State<DailySaleRecordView> {
           // return
           _tile_detail(
               value: product.returnn.toString(), line: line, width: 70),
+
+          // outlet collected
+          _tile_detail(value: product.outletCollected.toString(), line: line),
+
+          // outlet return
+          _tile_detail(value: product.outletReturn.toString(), line: line),
 
           // terminal collected
           _tile_detail(value: product.terminalCollected.toString(), line: line),

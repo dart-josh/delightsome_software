@@ -60,7 +60,7 @@ class _SelectStaffDialogState extends State<SelectStaffDialog> {
   DateTime? date;
 
   get_staffs() {
-    // ['Management', 'Production', 'Sales', 'Terminal', 'Admin'];
+    // ['Management', 'Production', 'Sales', 'Terminal', 'Dangote', 'Admin'];
 
     var all_staff = Provider.of<AppData>(context).staff_list;
 

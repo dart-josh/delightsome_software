@@ -1,6 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:delightsome_software/appColors.dart';
-import 'package:delightsome_software/dataModels/productStoreModels/dangoteCollectionRecord.model.dart';
+import 'package:delightsome_software/dataModels/productStoreModels/collectionRecord.model.dart';
 import 'package:delightsome_software/helpers/productStoreHelpers.dart';
 import 'package:delightsome_software/helpers/universalHelpers.dart';
 import 'package:delightsome_software/pages/productStorePages/enter_dangoteCollection.page.dart';
@@ -21,10 +21,10 @@ class DangoteCollectionRecordPage extends StatefulWidget {
 
 class _DangoteCollectionRecordPageState
     extends State<DangoteCollectionRecordPage> {
-  List<DangoteCollectionRecordModel> auth_record = [];
-  List<GroupedDangoteCollectionRecordModel> grouped_record = [];
-  List<DangoteCollectionRecordModel> selected_record = [];
-  List<DangoteCollectionRecordModel> pending_record = [];
+  List<CollectionRecordModel> auth_record = [];
+  List<GroupedCollectionRecordModel> grouped_record = [];
+  List<CollectionRecordModel> selected_record = [];
+  List<CollectionRecordModel> pending_record = [];
 
   DateTime? selected_date;
 
@@ -37,7 +37,7 @@ class _DangoteCollectionRecordPageState
   DateTime? dateM;
 
   get_record() {
-    List<DangoteCollectionRecordModel> all_record =
+    List<CollectionRecordModel> all_record =
         Provider.of<AppData>(context).dangote_collection_record;
 
     pending_record = all_record.where((element) => !element.verified!).toList();
@@ -50,8 +50,8 @@ class _DangoteCollectionRecordPageState
 
     grouped_record.clear();
     groups.forEach((key, value) {
-      GroupedDangoteCollectionRecordModel val =
-          GroupedDangoteCollectionRecordModel(date: key, record: value);
+      GroupedCollectionRecordModel val =
+          GroupedCollectionRecordModel(date: key, record: value);
       grouped_record.add(val);
     });
 
@@ -285,7 +285,7 @@ class _DangoteCollectionRecordPageState
   }
 
   // date picker tile
-  Widget date_picker_tile(GroupedDangoteCollectionRecordModel record) {
+  Widget date_picker_tile(GroupedCollectionRecordModel record) {
     bool isDarkTheme =
         Provider.of<AppData>(context).themeMode == ThemeMode.dark;
 
@@ -328,7 +328,7 @@ class _DangoteCollectionRecordPageState
   }
 
   // record view
-  Widget record_view(List<DangoteCollectionRecordModel> _record) {
+  Widget record_view(List<CollectionRecordModel> _record) {
     _record.sort((a, b) => b.recordDate!.compareTo(a.recordDate!));
 
     return Container(
@@ -337,13 +337,13 @@ class _DangoteCollectionRecordPageState
               physics: BouncingScrollPhysics(),
               padding: EdgeInsets.symmetric(horizontal: 15, vertical: 0),
               elements: _record,
-              groupBy: (DangoteCollectionRecordModel element) =>
+              groupBy: (CollectionRecordModel element) =>
                   UniversalHelpers.get_date(element.recordDate!),
               groupComparator: (DateTime value1, DateTime value2) =>
                   value2.compareTo(value1),
-              groupSeparatorBuilder: (DangoteCollectionRecordModel element) =>
+              groupSeparatorBuilder: (CollectionRecordModel element) =>
                   group_separator(element.recordDate!),
-              itemBuilder: (context, DangoteCollectionRecordModel element) =>
+              itemBuilder: (context, CollectionRecordModel element) =>
                   record_tile(element),
               itemComparator: (e1, e2) =>
                   e2.recordDate!.compareTo(e1.recordDate!),
@@ -358,7 +358,7 @@ class _DangoteCollectionRecordPageState
   }
 
   // record tile
-  Widget record_tile(DangoteCollectionRecordModel record) {
+  Widget record_tile(CollectionRecordModel record) {
     bool isDarkTheme =
         Provider.of<AppData>(context).themeMode == ThemeMode.dark;
 
@@ -668,7 +668,7 @@ class _DangoteCollectionRecordPageState
     bool isDarkTheme =
         Provider.of<AppData>(context).themeMode == ThemeMode.dark;
 
-    List<DangoteCollectionRecordModel> records = [];
+    List<CollectionRecordModel> records = [];
 
     DateTime last_back =
         DateTime(DateTime.now().year, DateTime.now().month - 3, 1);
@@ -714,7 +714,7 @@ class _DangoteCollectionRecordPageState
       return Container();
     }
 
-    return FutureBuilder<List<DangoteCollectionRecordModel>>(
+    return FutureBuilder<List<CollectionRecordModel>>(
       initialData: records,
       future: records.isNotEmpty
           ? null
@@ -797,11 +797,11 @@ class _DangoteCollectionRecordPageState
   //
 }
 
-class GroupedDangoteCollectionRecordModel {
-  List<DangoteCollectionRecordModel> record;
+class GroupedCollectionRecordModel {
+  List<CollectionRecordModel> record;
   DateTime date;
 
-  GroupedDangoteCollectionRecordModel({
+  GroupedCollectionRecordModel({
     required this.record,
     required this.date,
   });

@@ -1,31 +1,29 @@
 import 'package:delightsome_software/appColors.dart';
-import 'package:delightsome_software/dataModels/saleModels/outletDailysales.model.dart';
+import 'package:delightsome_software/dataModels/saleModels/dailystore.model.dart';
 import 'package:delightsome_software/helpers/saleHelpers.dart';
 import 'package:delightsome_software/helpers/universalHelpers.dart';
-import 'package:delightsome_software/pages/salePages/widgets/dangote_daily_sale_record_view.dart';
+import 'package:delightsome_software/pages/salePages/widgets/daily_store_record_view.dart';
 import 'package:delightsome_software/utils/appdata.dart';
 import 'package:flutter/material.dart';
 import 'package:simple_month_year_picker/simple_month_year_picker.dart';
 import 'package:provider/provider.dart';
 
-class DangoteDailySalesRecordPage extends StatefulWidget {
-  const DangoteDailySalesRecordPage({super.key});
+class DailyStoreRecordPage extends StatefulWidget {
+  const DailyStoreRecordPage({super.key});
 
   @override
-  State<DangoteDailySalesRecordPage> createState() =>
-      _DangoteDailySalesRecordPageState();
+  State<DailyStoreRecordPage> createState() => _DailyStoreRecordPageState();
 }
 
-class _DangoteDailySalesRecordPageState
-    extends State<DangoteDailySalesRecordPage> {
+class _DailyStoreRecordPageState extends State<DailyStoreRecordPage> {
   TextEditingController search_controller = TextEditingController();
   FocusNode searchNode = FocusNode();
-  List<OutletDailySalesModel> all_record = [];
+  List<DailyStoreModel> all_record = [];
 
-  List<OutletDailySalesModel> record = [];
+  List<DailyStoreModel> record = [];
 
-  List<OutletDailySalesProductsModel> selected_record = [];
-  List<OutletDailySalesProductsModel> search_list = [];
+  List<DailyStoreProductsModel> selected_record = [];
+  List<DailyStoreProductsModel> search_list = [];
 
   String? selected_date;
 
@@ -39,13 +37,13 @@ class _DangoteDailySalesRecordPageState
   bool search_open = false;
 
   get_record() {
-    all_record = Provider.of<AppData>(context).dangote_daily_sales_record;
+    all_record = Provider.of<AppData>(context).daily_store_record;
 
     record.clear();
 
     for (var r in all_record) {
       // Clone the model to avoid modifying the original `all_record`
-      OutletDailySalesModel clonedRecord = OutletDailySalesModel.copy(r);
+      DailyStoreModel clonedRecord = DailyStoreModel.copy(r);
       if (UniversalHelpers.get_month(DateTime.parse(clonedRecord.date)) !=
           UniversalHelpers.get_month(DateTime.now())) {
         final chk = record
@@ -56,8 +54,8 @@ class _DangoteDailySalesRecordPageState
             .toList();
 
         if (chk.isNotEmpty) {
-          final OutletDailySalesModel _rec = chk.first;
-          final List<OutletDailySalesProductsModel> _prods = _rec.products;
+          final DailyStoreModel _rec = chk.first;
+          final List<DailyStoreProductsModel> _prods = _rec.products;
 
           var rec_int = record.indexWhere((rec) =>
               rec.date ==
@@ -73,15 +71,32 @@ class _DangoteDailySalesRecordPageState
               int prod = _prods
                   .indexWhere((p) => p.product.key == element.product.key);
 
-              var new_p = OutletDailySalesProductsModel(
+              var new_p = DailyStoreProductsModel(
                 key: element.product.key ?? '',
                 product: element.product,
                 openingQuantity:
                     element.openingQuantity + _prods[prod].openingQuantity,
                 storePrice: element.storePrice,
-                collected: element.collected + _prods[prod].collected,
-                returned: element.returned + _prods[prod].returned,
-                sold: element.sold + _prods[prod].sold,
+                onlinePrice: element.onlinePrice,
+                added: element.added + _prods[prod].added,
+                request: element.request + _prods[prod].request,
+                takeOut: element.takeOut + _prods[prod].takeOut,
+                returnn: element.returnn + _prods[prod].returnn,
+                outletCollected:
+                    element.outletCollected + _prods[prod].outletCollected,
+                outletReturn:
+                    element.outletReturn + _prods[prod].outletReturn,
+                terminalCollected:
+                    element.terminalCollected + _prods[prod].terminalCollected,
+                terminalReturn:
+                    element.terminalReturn + _prods[prod].terminalReturn,
+                dangoteCollected:
+                    element.dangoteCollected + _prods[prod].dangoteCollected,
+                dangoteReturn:
+                    element.dangoteReturn + _prods[prod].dangoteReturn,
+                badProduct: element.badProduct + _prods[prod].badProduct,
+                online: element.online + _prods[prod].online,
+                quantitySold: element.quantitySold + _prods[prod].quantitySold,
               );
 
               _prods[prod] = new_p;
@@ -92,7 +107,7 @@ class _DangoteDailySalesRecordPageState
             record[rec_int].products = _prods;
           }
         } else {
-          OutletDailySalesModel new_rec = OutletDailySalesModel(
+          DailyStoreModel new_rec = DailyStoreModel(
             key: clonedRecord.key,
             date: UniversalHelpers.get_raw_month(
                 DateTime.parse(clonedRecord.date)),
@@ -120,12 +135,12 @@ class _DangoteDailySalesRecordPageState
     setState(() {});
   }
 
-  List<OutletDailySalesProductsModel> map_record(
-      {required List<OutletDailySalesModel> recs}) {
-    List<OutletDailySalesProductsModel> products = [];
+  List<DailyStoreProductsModel> map_record(
+      {required List<DailyStoreModel> recs}) {
+    List<DailyStoreProductsModel> products = [];
 
     for (var r in recs) {
-      OutletDailySalesModel clonedRecord = OutletDailySalesModel.copy(r);
+      DailyStoreModel clonedRecord = DailyStoreModel.copy(r);
       for (var element in clonedRecord.products) {
         final check =
             products.where((p) => p.product.key == element.product.key);
@@ -134,15 +149,31 @@ class _DangoteDailySalesRecordPageState
           int prod =
               products.indexWhere((p) => p.product.key == element.product.key);
 
-          var new_p = OutletDailySalesProductsModel(
+          var new_p = DailyStoreProductsModel(
             key: element.product.key ?? '',
             product: element.product,
             openingQuantity:
                 element.openingQuantity + products[prod].openingQuantity,
             storePrice: element.storePrice,
-            collected: element.collected + products[prod].collected,
-            returned: element.returned + products[prod].returned,
-            sold: element.sold + products[prod].sold,
+            onlinePrice: element.onlinePrice,
+            added: element.added + products[prod].added,
+            request: element.request + products[prod].request,
+            takeOut: element.takeOut + products[prod].takeOut,
+            returnn: element.returnn + products[prod].returnn,
+            outletCollected:
+                element.outletCollected + products[prod].outletCollected,
+            outletReturn:
+                element.outletReturn + products[prod].outletReturn,
+            terminalCollected:
+                element.terminalCollected + products[prod].terminalCollected,
+            terminalReturn:
+                element.terminalReturn + products[prod].terminalReturn,
+            dangoteCollected:
+                element.dangoteCollected + products[prod].dangoteCollected,
+            dangoteReturn: element.dangoteReturn + products[prod].dangoteReturn,
+            badProduct: element.badProduct + products[prod].badProduct,
+            online: element.online + products[prod].online,
+            quantitySold: element.quantitySold + products[prod].quantitySold,
           );
 
           products[prod] = new_p;
@@ -200,7 +231,7 @@ class _DangoteDailySalesRecordPageState
 
           // content
           Expanded(
-            child: DangoteDailySaleRecordView(
+            child: DailyStoreRecordView(
                 record: (search_on) ? search_list : selected_record),
           ),
         ],
@@ -240,7 +271,7 @@ class _DangoteDailySalesRecordPageState
               Expanded(child: Container()),
 
               // search button
-              if (width > 600 && title == null)
+              if (width > 800 && title == null)
                 if (search_open)
                   search_bar()
                 else
@@ -272,7 +303,7 @@ class _DangoteDailySalesRecordPageState
           // title
           Center(
             child: Text(
-              title ?? 'Dangote Daily Store Record',
+              title ?? 'Daily Store Record',
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 16,
@@ -465,7 +496,7 @@ class _DangoteDailySalesRecordPageState
   }
 
   // date picker tile
-  Widget date_picker_tile(OutletDailySalesModel _record) {
+  Widget date_picker_tile(DailyStoreModel _record) {
     bool isDarkTheme =
         Provider.of<AppData>(context).themeMode == ThemeMode.dark;
 
@@ -528,14 +559,14 @@ class _DangoteDailySalesRecordPageState
     bool isDarkTheme =
         Provider.of<AppData>(context).themeMode == ThemeMode.dark;
 
-    List<OutletDailySalesModel> records = [];
+    List<DailyStoreModel> records = [];
 
     DateTime last_back =
         DateTime(DateTime.now().year, DateTime.now().month - 3, 1);
 
     bool isOffList = true;
 
-    List<OutletDailySalesModel> s_record = all_record;
+    List<DailyStoreModel> s_record = all_record;
 
     if (date != null) {
       if (date.isAfter(last_back) || date == last_back) {
@@ -576,21 +607,19 @@ class _DangoteDailySalesRecordPageState
       return Container();
     }
 
-    return FutureBuilder<List<OutletDailySalesModel>>(
+    return FutureBuilder<List<DailyStoreModel>>(
       initialData: records,
       future: records.isNotEmpty
           ? null
           : (date != null && isOffList)
-              ? SaleHelpers.get_selected_dangote_daily_sales_record(
+              ? SaleHelpers.get_selected_daily_store_record(
                   context, {'date': UniversalHelpers.get_raw_date(date)})
               : (month != null && isOffList)
-                  ? SaleHelpers.get_selected_dangote_daily_sales_record(
-                      context, {
+                  ? SaleHelpers.get_selected_daily_store_record(context, {
                       'month': UniversalHelpers.get_raw_month(month),
                     })
                   : (dateRange != null && isOffList)
-                      ? SaleHelpers.get_selected_dangote_daily_sales_record(
-                          context, {
+                      ? SaleHelpers.get_selected_daily_store_record(context, {
                           'timeFrame': [
                             UniversalHelpers.get_raw_date(dateRange.start),
                             UniversalHelpers.get_raw_date(dateRange.end)
@@ -612,7 +641,7 @@ class _DangoteDailySalesRecordPageState
 
         var rec = records.isNotEmpty ? records : snapshot.data ?? [];
 
-        List<OutletDailySalesProductsModel> s_rec = map_record(recs: rec);
+        List<DailyStoreProductsModel> s_rec = map_record(recs: rec);
 
         return Dialog(
           surfaceTintColor: Colors.transparent,
@@ -642,7 +671,7 @@ class _DangoteDailySalesRecordPageState
                     child: Container(
                       padding:
                           EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                      child: DangoteDailySaleRecordView(record: s_rec),
+                      child: DailyStoreRecordView(record: s_rec),
                     ),
                   ),
                 ),
@@ -658,8 +687,8 @@ class _DangoteDailySalesRecordPageState
 
   // FUNCTIONS
   // search products
-  List<OutletDailySalesProductsModel> search(
-      String value, List<OutletDailySalesProductsModel> record) {
+  List<DailyStoreProductsModel> search(
+      String value, List<DailyStoreProductsModel> record) {
     return record
         .where((product) =>
             product.product.name.toLowerCase().contains(value.toLowerCase()) ||
