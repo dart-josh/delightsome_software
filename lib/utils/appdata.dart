@@ -30,11 +30,13 @@ import 'package:flutter/material.dart';
 class AppData extends ChangeNotifier {
   // ! APP DEFAULTS
 
+  bool connection_status = false;
+
   bool can_refresh = false;
   bool can_logout = false;
 
   // theme
-  ThemeMode themeMode = ThemeMode.system;
+  ThemeMode themeMode = ThemeMode.light;
   bool drawer_expanded = false;
 
   // variables
@@ -99,6 +101,12 @@ class AppData extends ChangeNotifier {
   // SETTERS
 
   // ! APP DEFAULTS
+
+  void update_connection_status(bool value) {
+    connection_status = value;
+    notifyListeners();
+  }
+
   void update_can_refresh(bool value) {
     can_refresh = value;
     notifyListeners();
@@ -379,7 +387,7 @@ class AppData extends ChangeNotifier {
   }
 
   //?
-  
+
   // daily_store_record
   void update_daily_store_record(List<DailyStoreModel> value) {
     daily_store_record = value;

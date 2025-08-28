@@ -928,7 +928,7 @@ class _EnterDangotecollectionPageState
                         staff: staff,
                         note: shortNote,
                         date: widget.editModel?.recordDate,
-                        staff_list_type: 'Terminal',
+                        staff_list_type: 'Terminal, Dangote',
                       ),
                     );
 

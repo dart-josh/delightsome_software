@@ -911,7 +911,7 @@ class _EnterProductRequestPageState extends State<EnterProductRequestPage> {
                         staff: staff,
                         note: shortNote,
                         date: widget.editModel?.recordDate,
-                        staff_list_type: 'Production, Sales, Terminal, Admin, Management',
+                        staff_list_type: 'Production, Sales, Management',
                       ),
                     );
 

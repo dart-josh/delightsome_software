@@ -553,7 +553,7 @@ class _ProductionRecordPageState extends State<ProductionRecordPage> {
                       approve_label: 'Verify',
                       staff: record.producer!,
                       recordId: record.recordId ?? 'No ID',
-                      auth_approve_staff: 'Sales',
+                      auth_approve_staff: 'Admin',
                     ),
                   );
 

@@ -83,11 +83,13 @@ class _ManageCustomerPageState extends State<ManageCustomerPage> {
 
     auth_staff = Provider.of<AppData>(context).active_staff;
 
-    customer_type_list = auth_staff!.role == 'Terminal'
-        ? ['Terminal']
-        : auth_staff!.role == 'Sales'
-            ? ['Store', 'Online']
-            : ['Store', 'Online', 'Terminal'];
+    customer_type_list = auth_staff!.role == 'Dangote'
+        ? ['Dangote']
+        : (auth_staff!.role == 'Terminal')
+            ? ['Terminal', 'Dangote']
+            : auth_staff!.role == 'Sales'
+                ? ['Store']
+                : ['Store', 'Online', 'Terminal', 'Dangote'];
 
     return Dialog(
       surfaceTintColor: Colors.transparent,
@@ -187,7 +189,8 @@ class _ManageCustomerPageState extends State<ManageCustomerPage> {
                   (auth_staff!.fullaccess ||
                       auth_staff.role == 'Sales' ||
                       auth_staff.role == 'Admin' ||
-                      auth_staff.role == 'Terminal'))
+                      auth_staff.role == 'Terminal' ||
+                      auth_staff.role == 'Dangote'))
                 InkWell(
                   onTap: () {
                     edit = !edit;

@@ -566,7 +566,7 @@ class _TerminalCollectionRecordPageState
                       approve_label: 'Verify',
                       staff: record.staffResponsible!,
                       recordId: record.recordId ?? 'No ID',
-                      auth_approve_staff: 'Sales',
+                      auth_approve_staff: 'Admin',
                     ),
                   );
 

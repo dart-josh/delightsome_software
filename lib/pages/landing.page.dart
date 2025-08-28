@@ -33,10 +33,12 @@ import 'package:delightsome_software/pages/salePages/terminal_sales_record.page.
 import 'package:delightsome_software/pages/salePages/dangote_daily_sales_record.page.dart';
 import 'package:delightsome_software/pages/salePages/dangote_sales_record.page.dart';
 import 'package:delightsome_software/pages/universalPages/category_list.page.dart';
+import 'package:delightsome_software/pages/universalPages/offline_data_dialog.dart';
 import 'package:delightsome_software/pages/universalPages/sidebar.dart';
 import 'package:delightsome_software/pages/userPages/customer_list.page.dart';
 import 'package:delightsome_software/pages/userPages/staff_list.page.dart';
 import 'package:delightsome_software/utils/appdata.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -139,6 +141,7 @@ class _LandingPageState extends State<LandingPage> {
   // top bar
   Widget top_bar() {
     bool isCollapsed = !Provider.of<AppData>(context).drawer_expanded;
+    bool isConnected = Provider.of<AppData>(context).connection_status;
 
     return Container(
       height: 90,
@@ -177,6 +180,41 @@ class _LandingPageState extends State<LandingPage> {
                         color: Colors.white),
                   ),
               ],
+            ),
+          ),
+
+          // connection status
+          Positioned(
+            top: 15,
+            right: 15,
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () async {
+                  var conf = await showCupertinoDialog(
+                    context: context,
+                    builder: (context) => OfflineDataDialog(),
+                    
+                  );
+                },
+                child: Container(
+                  width: 43,
+                  height: 43,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: isConnected
+                        ? AppColors.light_dialogBackground_1
+                        : Colors.grey.shade300.withAlpha(200),
+                  ),
+                  child: Center(
+                    child: Icon(
+                      isConnected ? Icons.wifi : Icons.wifi_off,
+                      color: isConnected ? Colors.green : Colors.grey,
+                      size: 25,
+                    ),
+                  ),
+                ),
+              ),
             ),
           ),
         ],
@@ -256,7 +294,8 @@ class _LandingPageState extends State<LandingPage> {
                     ),
 
                   // terminal product list
-                  if (auth_staff!.role != 'Production')
+                  if (auth_staff!.role != 'Production' &&
+                      auth_staff!.role != 'Dangote')
                     menu_tile(
                       icon: FontAwesomeIcons.productHunt,
                       title: 'Terminal Products',
@@ -290,7 +329,7 @@ class _LandingPageState extends State<LandingPage> {
                   // product material list
                   if (auth_staff!.role == 'Management' ||
                       auth_staff!.role == 'Admin' ||
-                      auth_staff!.role != 'Production')
+                      auth_staff!.role == 'Production')
                     menu_tile(
                       icon: FontAwesomeIcons.toolbox,
                       title: 'Product Materials',
@@ -304,7 +343,7 @@ class _LandingPageState extends State<LandingPage> {
                   // raw material list
                   if (auth_staff!.role == 'Management' ||
                       auth_staff!.role == 'Admin' ||
-                      auth_staff!.role != 'Production')
+                      auth_staff!.role == 'Production')
                     menu_tile(
                       icon: FontAwesomeIcons.leaf,
                       title: 'Raw Materials',
@@ -392,9 +431,8 @@ class _LandingPageState extends State<LandingPage> {
                       icon: FontAwesomeIcons.store,
                       title: 'Outlet Store',
                       color: terminal_color,
-                      show_not: Provider.of<AppData>(context)
-                          .outlet_shops
-                          .isNotEmpty,
+                      show_not:
+                          Provider.of<AppData>(context).outlet_shops.isNotEmpty,
                       onClicked: () {
                         goto_page(dialog: false, page: OutletSalesPage());
                       },
@@ -1286,7 +1324,7 @@ class _LandingPageState extends State<LandingPage> {
 
     if (dialog == null) {
       if (width > 600) {
-        await showDialog(
+        await showCupertinoDialog(
           context: context,
           barrierDismissible: dismiss_dialog,
           builder: (context) => page,

@@ -78,17 +78,21 @@ class _CustomerListPageState extends State<CustomerListPage> {
   Widget build(BuildContext context) {
     auth_staff = Provider.of<AppData>(context).active_staff;
 
-    int tabs_length = auth_staff!.role == 'Terminal'
-        ? 2
-        : auth_staff!.role == 'Sales'
+    int tabs_length = auth_staff!.role == 'Dangote'
+        ? 1
+        : auth_staff!.role == 'Terminal'
             ? 2
-            : 4;
+            : auth_staff!.role == 'Sales'
+                ? 1
+                : 4;
 
-    pages = auth_staff!.role == 'Terminal'
-        ? ['Terminal', 'Dangote']
-        : auth_staff!.role == 'Sales'
-            ? ['Store', 'Online']
-            : ['Store', 'Online', 'Terminal', 'Dangote'];
+    pages = auth_staff!.role == 'Dangote'
+        ? ['Dangote']
+        : auth_staff!.role == 'Terminal'
+            ? ['Terminal', 'Dangote']
+            : auth_staff!.role == 'Sales'
+                ? ['Store']
+                : ['Store', 'Online', 'Terminal', 'Dangote'];
 
     get_list();
 
@@ -139,22 +143,21 @@ class _CustomerListPageState extends State<CustomerListPage> {
                           // list
                           Expanded(
                             child: TabBarView(
-                              children: auth_staff!.role == 'Terminal'
-                                  ? [
-                                      customer_list_area(terminal_list),
-                                      customer_list_area(dangote_list),
-                                    ]
-                                  : auth_staff!.role == 'Sales'
+                              children: auth_staff!.role == 'Dangote'
+                                  ? [customer_list_area(dangote_list)]
+                                  : auth_staff!.role == 'Terminal'
                                       ? [
-                                          customer_list_area(store_list),
-                                          customer_list_area(online_list),
-                                        ]
-                                      : [
-                                          customer_list_area(store_list),
-                                          customer_list_area(online_list),
                                           customer_list_area(terminal_list),
                                           customer_list_area(dangote_list),
-                                        ],
+                                        ]
+                                      : auth_staff!.role == 'Sales'
+                                          ? [customer_list_area(store_list)]
+                                          : [
+                                              customer_list_area(store_list),
+                                              customer_list_area(online_list),
+                                              customer_list_area(terminal_list),
+                                              customer_list_area(dangote_list),
+                                            ],
                             ),
                           ),
                         ],
@@ -207,22 +210,21 @@ class _CustomerListPageState extends State<CustomerListPage> {
                       // list
                       Expanded(
                         child: TabBarView(
-                          children: auth_staff!.role == 'Terminal'
-                              ? [
-                                  customer_list_area(terminal_list),
-                                  customer_list_area(dangote_list),
-                                ]
-                              : auth_staff!.role == 'Sales'
+                          children: auth_staff!.role == 'Dangote'
+                              ? [customer_list_area(dangote_list)]
+                              : auth_staff!.role == 'Terminal'
                                   ? [
-                                      customer_list_area(store_list),
-                                      customer_list_area(online_list),
-                                    ]
-                                  : [
-                                      customer_list_area(store_list),
-                                      customer_list_area(online_list),
                                       customer_list_area(terminal_list),
                                       customer_list_area(dangote_list),
-                                    ],
+                                    ]
+                                  : auth_staff!.role == 'Sales'
+                                      ? [customer_list_area(store_list)]
+                                      : [
+                                          customer_list_area(store_list),
+                                          customer_list_area(online_list),
+                                          customer_list_area(terminal_list),
+                                          customer_list_area(dangote_list),
+                                        ],
                         ),
                       ),
                     ],
@@ -339,22 +341,21 @@ class _CustomerListPageState extends State<CustomerListPage> {
       unselectedLabelColor: isDarkTheme
           ? AppColors.dark_secondaryTextColor
           : AppColors.light_secondaryTextColor,
-      tabs: auth_staff!.role == 'Terminal'
-          ? [
-              Tab(text: 'Terminal'),
-              Tab(text: 'Dangote'),
-            ]
-          : auth_staff!.role == 'Sales'
+      tabs: auth_staff!.role == 'Dangote'
+          ? [Tab(text: 'Dangote')]
+          : auth_staff!.role == 'Terminal'
               ? [
-                  Tab(text: 'Store'),
-                  Tab(text: 'Online'),
-                ]
-              : [
-                  Tab(text: 'Store'),
-                  Tab(text: 'Online'),
                   Tab(text: 'Terminal'),
                   Tab(text: 'Dangote'),
-                ],
+                ]
+              : auth_staff!.role == 'Sales'
+                  ? [Tab(text: 'Store')]
+                  : [
+                      Tab(text: 'Store'),
+                      Tab(text: 'Online'),
+                      Tab(text: 'Terminal'),
+                      Tab(text: 'Dangote'),
+                    ],
     );
   }
 

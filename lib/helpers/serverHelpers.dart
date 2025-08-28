@@ -2,6 +2,7 @@ import 'package:delightsome_software/globalvariables.dart';
 import 'package:delightsome_software/helpers/dataGetters.dart';
 import 'package:delightsome_software/helpers/universalHelpers.dart';
 import 'package:delightsome_software/utils/appdata.dart';
+import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
@@ -26,6 +27,8 @@ class ServerHelpers {
         );
 
     socket!.connect();
+
+    socket_listener(context);
 
     //? MATERIALS STORE
 
@@ -290,5 +293,22 @@ class ServerHelpers {
     is_socket_connected = false;
   }
 
+  static void socket_listener(BuildContext context) {
+    socket!.onConnect((_) {
+      Provider.of<AppData>(context, listen: false).update_connection_status(true);
+    });
+
+    socket!.onDisconnect((_) {
+      Provider.of<AppData>(context, listen: false).update_connection_status(false);
+    });
+
+    socket!.onError((_) {
+      Provider.of<AppData>(context, listen: false).update_connection_status(false);
+    });
+
+    socket!.onReconnect((_) {
+      Provider.of<AppData>(context, listen: false).update_connection_status(true);
+    });
+  }
   //
 }

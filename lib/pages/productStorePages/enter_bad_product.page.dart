@@ -910,7 +910,7 @@ class _EnterBadProductPageState extends State<EnterBadProductPage> {
                         staff: staff,
                         note: shortNote,
                         date: widget.editModel?.recordDate,
-                        staff_list_type: 'Production, Sales, Terminal',
+                        staff_list_type: 'Production, Sales, Terminal, Dangote',
                       ),
                     );
 

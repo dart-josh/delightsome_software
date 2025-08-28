@@ -595,6 +595,7 @@ class _StoreSalesPageState extends State<StoreSalesPage> {
           customer: null,
           products: [],
           position: set_offset(),
+          is_online: true,
         );
 
         Provider.of<AppData>(context, listen: false).new_store_shop(new_shop);

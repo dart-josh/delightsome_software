@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:delightsome_software/appColors.dart';
 import 'package:delightsome_software/dataModels/userModels/staff.model.dart';
 import 'package:delightsome_software/helpers/authHelpers.dart';
@@ -101,7 +102,7 @@ class _SideBarState extends State<SideBar> {
       );
 
     // terminal collection
-    if (auth_staff.role != 'Production')
+    if (auth_staff.role != 'Production' && auth_staff.role != 'Dangote')
       product_store_items.add(
         SidebarItemModel(
           title: 'Terminal Collection',
@@ -423,23 +424,52 @@ class _SideBarState extends State<SideBar> {
     required List<SidebarItemModel> items,
     int indexOffset = 0,
   }) {
-    return ListView.separated(
-      padding: EdgeInsets.zero,
-      shrinkWrap: true,
-      primary: false,
-      itemCount: items.length,
-      separatorBuilder: (context, index) => SizedBox(height: 8),
-      itemBuilder: (context, index) {
-        final item = items[index];
+    int listCount =
+        items.map((e) => get_not_byIndex(e.key)).reduce((a, b) => a + b);
+        
+    return Stack(
+      children: [
+        ListView.separated(
+          padding: EdgeInsets.zero,
+          shrinkWrap: true,
+          primary: false,
+          itemCount: items.length,
+          separatorBuilder: (context, index) => SizedBox(height: 8),
+          itemBuilder: (context, index) {
+            final item = items[index];
 
-        return buildMenuItem(
-          isCollapsed: isCollapsed,
-          text: item.title,
-          icon: item.icon,
-          onClicked: () => selectItem(context, item.key),
-          not_count: get_not_byIndex(item.key),
-        );
-      },
+            return buildMenuItem(
+              isCollapsed: isCollapsed,
+              text: item.title,
+              icon: item.icon,
+              onClicked: () => selectItem(context, item.key),
+              not_count: get_not_byIndex(item.key),
+            );
+          },
+        ),
+        
+        if (listCount != 0) Positioned(
+          top: 0,
+          right: 10,
+          child: Container(
+            width: 30,
+            height: 30,
+            decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppColors.dark_dialogBackground_1),
+            child: Center(
+              child: Text(
+                listCount.toString(),
+                style: TextStyle(
+                  color: Colors.blue,
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
