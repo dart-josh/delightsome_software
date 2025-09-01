@@ -978,7 +978,7 @@ class _EnterOutletcollectionPageState extends State<EnterOutletcollectionPage> {
                           editedBy: auth_staff.key ?? '');
 
                       bool done = await ProductStoreHelpers
-                          .enter_outletCollection_record(context, map);
+                          .enter_outletCollection_record(context, map, widget.editModel?.recordId);
 
                       if (widget.editModel?.key != null) {
                         Navigator.pop(context);

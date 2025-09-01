@@ -2,6 +2,7 @@ import 'package:delightsome_software/dataModels/saleModels/dailystore.model.dart
 import 'package:delightsome_software/dataModels/saleModels/outletDailysales.model.dart';
 import 'package:delightsome_software/dataModels/saleModels/sales.model.dart';
 import 'package:delightsome_software/utils/appdata.dart';
+import 'package:delightsome_software/utils/offlineStore.dart';
 import 'package:http/http.dart' as http;
 import 'package:delightsome_software/globalvariables.dart';
 import 'package:delightsome_software/helpers/universalHelpers.dart';
@@ -260,16 +261,24 @@ class SaleHelpers {
   // Get store sales record
   static Future<List<SalesModel>> get_store_sales_record(context) async {
     try {
-      var response = await post_getters(context, 'get_store_sales_record');
+      List<SalesModel> recordList = [];
+      List record = [];
 
-      var jsonResponse = jsonDecode(response.body);
+      if (isConnected(context)) {
+        var response = await post_getters(context, 'get_store_sales_record');
 
-      if (response.statusCode != 200) {
-        throw jsonResponse['message'];
+        var jsonResponse = jsonDecode(response.body);
+
+        if (response.statusCode != 200) {
+          throw jsonResponse['message'];
+        }
+
+        record = jsonResponse['record'];
+        OfflineStore.save_data('get_store_sales_record', record);
+      } else {
+        record = await OfflineStore.get_data('get_store_sales_record');
       }
 
-      List<SalesModel> recordList = [];
-      List record = jsonResponse['record'];
       for (var element in record) {
         SalesModel recordModel = SalesModel.fromJson(element);
 
@@ -286,16 +295,24 @@ class SaleHelpers {
   // Get Outlet sales record
   static Future<List<SalesModel>> get_outlet_sales_record(context) async {
     try {
-      var response = await post_getters(context, 'get_outlet_sales_record');
+      List<SalesModel> recordList = [];
+      List record = [];
 
-      var jsonResponse = jsonDecode(response.body);
+      if (isConnected(context)) {
+        var response = await post_getters(context, 'get_outlet_sales_record');
 
-      if (response.statusCode != 200) {
-        throw jsonResponse['message'];
+        var jsonResponse = jsonDecode(response.body);
+
+        if (response.statusCode != 200) {
+          throw jsonResponse['message'];
+        }
+
+        record = jsonResponse['record'];
+        OfflineStore.save_data('get_outlet_sales_record', record);
+      } else {
+        record = await OfflineStore.get_data('get_outlet_sales_record');
       }
 
-      List<SalesModel> recordList = [];
-      List record = jsonResponse['record'];
       for (var element in record) {
         SalesModel recordModel = SalesModel.fromJson(element);
 
@@ -312,16 +329,24 @@ class SaleHelpers {
   // Get Terminal sales record
   static Future<List<SalesModel>> get_terminal_sales_record(context) async {
     try {
-      var response = await post_getters(context, 'get_terminal_sales_record');
+      List<SalesModel> recordList = [];
+      List record = [];
 
-      var jsonResponse = jsonDecode(response.body);
+      if (isConnected(context)) {
+        var response = await post_getters(context, 'get_terminal_sales_record');
 
-      if (response.statusCode != 200) {
-        throw jsonResponse['message'];
+        var jsonResponse = jsonDecode(response.body);
+
+        if (response.statusCode != 200) {
+          throw jsonResponse['message'];
+        }
+
+        record = jsonResponse['record'];
+        OfflineStore.save_data('get_terminal_sales_record', record);
+      } else {
+        record = await OfflineStore.get_data('get_terminal_sales_record');
       }
 
-      List<SalesModel> recordList = [];
-      List record = jsonResponse['record'];
       for (var element in record) {
         SalesModel recordModel = SalesModel.fromJson(element);
 
@@ -338,16 +363,24 @@ class SaleHelpers {
   // Get Dangote sales record
   static Future<List<SalesModel>> get_dangote_sales_record(context) async {
     try {
-      var response = await post_getters(context, 'get_dangote_sales_record');
+      List<SalesModel> recordList = [];
+      List record = [];
 
-      var jsonResponse = jsonDecode(response.body);
+      if (isConnected(context)) {
+        var response = await post_getters(context, 'get_dangote_sales_record');
 
-      if (response.statusCode != 200) {
-        throw jsonResponse['message'];
+        var jsonResponse = jsonDecode(response.body);
+
+        if (response.statusCode != 200) {
+          throw jsonResponse['message'];
+        }
+
+        record = jsonResponse['record'];
+        OfflineStore.save_data('get_dangote_sales_record', record);
+      } else {
+        record = await OfflineStore.get_data('get_dangote_sales_record');
       }
 
-      List<SalesModel> recordList = [];
-      List record = jsonResponse['record'];
       for (var element in record) {
         SalesModel recordModel = SalesModel.fromJson(element);
 
@@ -444,16 +477,24 @@ class SaleHelpers {
   // Get daily store record
   static Future<List<DailyStoreModel>> get_daily_store_record(context) async {
     try {
-      var response = await post_getters(context, 'get_daily_store_record');
+      List<DailyStoreModel> recordList = [];
+      List record = [];
 
-      var jsonResponse = jsonDecode(response.body);
+      if (isConnected(context)) {
+        var response = await post_getters(context, 'get_daily_store_record');
 
-      if (response.statusCode != 200) {
-        throw jsonResponse['message'];
+        var jsonResponse = jsonDecode(response.body);
+
+        if (response.statusCode != 200) {
+          throw jsonResponse['message'];
+        }
+
+        record = jsonResponse['record'];
+        OfflineStore.save_data('get_daily_store_record', record);
+      } else {
+        record = await OfflineStore.get_data('get_daily_store_record');
       }
 
-      List<DailyStoreModel> recordList = [];
-      List record = jsonResponse['record'];
       for (var element in record) {
         DailyStoreModel recordModel = DailyStoreModel.fromJson(element);
 
@@ -471,17 +512,25 @@ class SaleHelpers {
   static Future<List<OutletDailySalesModel>> get_outlet_daily_sales_record(
       context) async {
     try {
-      var response =
-          await post_getters(context, 'get_outlet_daily_sales_record');
+      List<OutletDailySalesModel> recordList = [];
+      List record = [];
 
-      var jsonResponse = jsonDecode(response.body);
+      if (isConnected(context)) {
+        var response =
+            await post_getters(context, 'get_outlet_daily_sales_record');
 
-      if (response.statusCode != 200) {
-        throw jsonResponse['message'];
+        var jsonResponse = jsonDecode(response.body);
+
+        if (response.statusCode != 200) {
+          throw jsonResponse['message'];
+        }
+
+        record = jsonResponse['record'];
+        OfflineStore.save_data('get_outlet_daily_sales_record', record);
+      } else {
+        record = await OfflineStore.get_data('get_outlet_daily_sales_record');
       }
 
-      List<OutletDailySalesModel> recordList = [];
-      List record = jsonResponse['record'];
       for (var element in record) {
         OutletDailySalesModel recordModel =
             OutletDailySalesModel.fromJson(element);
@@ -500,17 +549,25 @@ class SaleHelpers {
   static Future<List<OutletDailySalesModel>> get_terminal_daily_sales_record(
       context) async {
     try {
-      var response =
-          await post_getters(context, 'get_terminal_daily_sales_record');
+      List<OutletDailySalesModel> recordList = [];
+      List record = [];
 
-      var jsonResponse = jsonDecode(response.body);
+      if (isConnected(context)) {
+        var response =
+            await post_getters(context, 'get_terminal_daily_sales_record');
 
-      if (response.statusCode != 200) {
-        throw jsonResponse['message'];
+        var jsonResponse = jsonDecode(response.body);
+
+        if (response.statusCode != 200) {
+          throw jsonResponse['message'];
+        }
+
+        record = jsonResponse['record'];
+        OfflineStore.save_data('get_terminal_daily_sales_record', record);
+      } else {
+        record = await OfflineStore.get_data('get_terminal_daily_sales_record');
       }
 
-      List<OutletDailySalesModel> recordList = [];
-      List record = jsonResponse['record'];
       for (var element in record) {
         OutletDailySalesModel recordModel =
             OutletDailySalesModel.fromJson(element);
@@ -529,17 +586,25 @@ class SaleHelpers {
   static Future<List<OutletDailySalesModel>> get_dangote_daily_sales_record(
       context) async {
     try {
-      var response =
-          await post_getters(context, 'get_dangote_daily_sales_record');
+      List<OutletDailySalesModel> recordList = [];
+      List record = [];
 
-      var jsonResponse = jsonDecode(response.body);
+      if (isConnected(context)) {
+        var response =
+            await post_getters(context, 'get_dangote_daily_sales_record');
 
-      if (response.statusCode != 200) {
-        throw jsonResponse['message'];
+        var jsonResponse = jsonDecode(response.body);
+
+        if (response.statusCode != 200) {
+          throw jsonResponse['message'];
+        }
+
+        record = jsonResponse['record'];
+        OfflineStore.save_data('get_dangote_daily_sales_record', record);
+      } else {
+        record = await OfflineStore.get_data('get_dangote_daily_sales_record');
       }
 
-      List<OutletDailySalesModel> recordList = [];
-      List record = jsonResponse['record'];
       for (var element in record) {
         OutletDailySalesModel recordModel =
             OutletDailySalesModel.fromJson(element);
@@ -643,6 +708,19 @@ class SaleHelpers {
   // Enter new sale
   static Future<List> enter_new_store_sale(
       BuildContext context, Map data) async {
+    if (!isConnected(context)) {
+      bool res = await save_offline(
+        context,
+        endpoint: 'enter_new_store_sale',
+        id: '',
+        data: data,
+        recordId: data['orderPrice']?.toString() ?? '',
+        type: 'New',
+      );
+
+      return [res, ''];
+    }
+
     return await sendShopDataToServer(context,
         route: 'enter_new_store_sale', data: data);
   }
@@ -650,6 +728,19 @@ class SaleHelpers {
   // Enter new outlet Sales
   static Future<List> enter_new_outlet_sale(
       BuildContext context, Map data) async {
+    if (!isConnected(context)) {
+      bool res = await save_offline(
+        context,
+        endpoint: 'enter_new_outlet_sale',
+        id: '',
+        data: data,
+        recordId: data['orderPrice']?.toString() ?? '',
+        type: 'New',
+      );
+
+      return [res, ''];
+    }
+
     return await sendShopDataToServer(context,
         route: 'enter_new_outlet_sale', data: data);
   }
@@ -657,6 +748,19 @@ class SaleHelpers {
   // Enter new terminal Sales
   static Future<List> enter_new_terminal_sale(
       BuildContext context, Map data) async {
+    if (!isConnected(context)) {
+      bool res = await save_offline(
+        context,
+        endpoint: 'enter_new_terminal_sale',
+        id: '',
+        data: data,
+        recordId: data['orderPrice']?.toString() ?? '',
+        type: 'New',
+      );
+
+      return [res, ''];
+    }
+
     return await sendShopDataToServer(context,
         route: 'enter_new_terminal_sale', data: data);
   }
@@ -664,6 +768,19 @@ class SaleHelpers {
   // Enter new dangote Sales
   static Future<List> enter_new_dangote_sale(
       BuildContext context, Map data) async {
+    if (!isConnected(context)) {
+      bool res = await save_offline(
+        context,
+        endpoint: 'enter_new_dangote_sale',
+        id: '',
+        data: data,
+        recordId: data['orderPrice']?.toString() ?? '',
+        type: 'New',
+      );
+
+      return [res, ''];
+    }
+
     return await sendShopDataToServer(context,
         route: 'enter_new_dangote_sale', data: data);
   }
@@ -677,7 +794,7 @@ class SaleHelpers {
         route: 'delete_store_sale_record', id: id);
   }
 
-    // Delete Outlet Sale record
+  // Delete Outlet Sale record
   static Future<bool> delete_outlet_sale_record(
       BuildContext context, String id) async {
     return await deleteFromServer(context,
@@ -696,6 +813,64 @@ class SaleHelpers {
       BuildContext context, String id) async {
     return await deleteFromServer(context,
         route: 'delete_dangote_sale_record', id: id);
+  }
+
+  //? UTILS
+  static bool isConnected(context) =>
+      Provider.of<AppData>(context, listen: false).connection_status;
+
+  static Future<bool> save_offline(BuildContext context,
+      {required String endpoint,
+      required Map data,
+      required String id,
+      required String recordId,
+      required String type}) async {
+    bool res = await OfflineStore.update_offline_data({
+      'endpoint': endpoint,
+      'data': data,
+      'id': id,
+      'recordId': recordId,
+      'type': type,
+      'helper': 'SaleHelpers',
+    });
+
+    if (res) {
+      UniversalHelpers.showToast(
+        context: context,
+        color: Colors.blue,
+        toastText: 'Saved Offline',
+        icon: Icons.save_rounded,
+      );
+      return true;
+    } else {
+      UniversalHelpers.showToast(
+        context: context,
+        color: Colors.redAccent,
+        toastText: 'Failed to save Offline',
+        icon: Icons.error_outline,
+      );
+      return false;
+    }
+  }
+
+  static Future<bool> send_online(BuildContext context, Map map) async {
+    String type = map['type'] ?? '';
+    String route = map['endpoint'] ?? '';
+    Map data = {...(map['data'])};
+    String id = map['id'] ?? '';
+
+    if (type == '') return false;
+    if (route == '') return false;
+
+    if (type == 'Delete') {
+      if (id == '') return false;
+
+      return await deleteFromServer(context, route: route, id: id);
+    } else {
+      if (data == {}) return false;
+      var res = await sendShopDataToServer(context, route: route, data: data);
+      return res[0] ?? false;
+    }
   }
 
   //

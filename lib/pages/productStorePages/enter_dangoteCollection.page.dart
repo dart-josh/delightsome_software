@@ -979,7 +979,7 @@ class _EnterDangotecollectionPageState
                           editedBy: auth_staff.key ?? '');
 
                       bool done = await ProductStoreHelpers
-                          .enter_dangoteCollection_record(context, map);
+                          .enter_dangoteCollection_record(context, map, widget.editModel?.recordId);
 
                       if (widget.editModel?.key != null) {
                         Navigator.pop(context);

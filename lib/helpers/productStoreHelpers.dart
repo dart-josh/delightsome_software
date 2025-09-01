@@ -9,6 +9,7 @@ import 'package:delightsome_software/dataModels/productStoreModels/productReturn
 import 'package:delightsome_software/dataModels/productStoreModels/productTakeOutRecord.model.dart';
 import 'package:delightsome_software/dataModels/productStoreModels/productionRecord.model.dart';
 import 'package:delightsome_software/utils/appdata.dart';
+import 'package:delightsome_software/utils/offlineStore.dart';
 import 'package:http/http.dart' as http;
 import 'package:delightsome_software/globalvariables.dart';
 import 'package:delightsome_software/helpers/universalHelpers.dart';
@@ -35,7 +36,7 @@ class ProductStoreHelpers {
     }
 
     // add current user to data
-    data.addAll({"user": auth_staff.key!});
+    data["user"] = auth_staff.key!;
     // Json encode data
     var body = jsonEncode(data);
 
@@ -94,7 +95,7 @@ class ProductStoreHelpers {
     }
 
     // add current user to data
-    data.addAll({'user': auth_staff.key!});
+    data["user"] = auth_staff.key!;
     // Json encode data
     var body = jsonEncode(data);
 
@@ -208,16 +209,25 @@ class ProductStoreHelpers {
   // Get all products
   static Future<List<ProductModel>> get_products(context) async {
     try {
-      var response = await post_getters(context, 'get_products');
+      List<ProductModel> productList = [];
+      List products = [];
 
-      var jsonResponse = jsonDecode(response.body);
+      if (isConnected(context)) {
+        var response = await post_getters(context, 'get_products');
 
-      if (response.statusCode != 200) {
-        throw jsonResponse['message'];
+        var jsonResponse = jsonDecode(response.body);
+
+        if (response.statusCode != 200) {
+          throw jsonResponse['message'];
+        }
+
+        products = jsonResponse['products'];
+
+        OfflineStore.save_data('get_products', products);
+      } else {
+        products = await OfflineStore.get_data('get_products');
       }
 
-      List<ProductModel> productList = [];
-      List products = jsonResponse['products'];
       for (var product in products) {
         ProductModel productModel = ProductModel.fromJson(product);
 
@@ -234,16 +244,24 @@ class ProductStoreHelpers {
   // get outlet products
   static Future<List<ProductModel>> get_outlet_products(context) async {
     try {
-      var response = await post_getters(context, 'get_outlet_products');
+      List<ProductModel> productList = [];
+      List products = [];
 
-      var jsonResponse = jsonDecode(response.body);
+      if (isConnected(context)) {
+        var response = await post_getters(context, 'get_outlet_products');
 
-      if (response.statusCode != 200) {
-        throw jsonResponse['message'];
+        var jsonResponse = jsonDecode(response.body);
+
+        if (response.statusCode != 200) {
+          throw jsonResponse['message'];
+        }
+
+        products = jsonResponse['products'];
+        OfflineStore.save_data('get_outlet_products', products);
+      } else {
+        products = await OfflineStore.get_data('get_outlet_products');
       }
 
-      List<ProductModel> productList = [];
-      List products = jsonResponse['products'];
       for (var product in products) {
         ProductModel productModel = ProductModel.fromJson(product);
 
@@ -260,16 +278,24 @@ class ProductStoreHelpers {
   // get terminal products
   static Future<List<ProductModel>> get_terminal_products(context) async {
     try {
-      var response = await post_getters(context, 'get_terminal_products');
+      List<ProductModel> productList = [];
+      List products = [];
 
-      var jsonResponse = jsonDecode(response.body);
+      if (isConnected(context)) {
+        var response = await post_getters(context, 'get_terminal_products');
 
-      if (response.statusCode != 200) {
-        throw jsonResponse['message'];
+        var jsonResponse = jsonDecode(response.body);
+
+        if (response.statusCode != 200) {
+          throw jsonResponse['message'];
+        }
+
+        products = jsonResponse['products'];
+        OfflineStore.save_data('get_terminal_products', products);
+      } else {
+        products = await OfflineStore.get_data('get_terminal_products');
       }
 
-      List<ProductModel> productList = [];
-      List products = jsonResponse['products'];
       for (var product in products) {
         ProductModel productModel = ProductModel.fromJson(product);
 
@@ -286,16 +312,25 @@ class ProductStoreHelpers {
   // get dangote products
   static Future<List<ProductModel>> get_dangote_products(context) async {
     try {
-      var response = await post_getters(context, 'get_dangote_products');
+      List<ProductModel> productList = [];
+      List products = [];
 
-      var jsonResponse = jsonDecode(response.body);
+      if (isConnected(context)) {
+        var response = await post_getters(context, 'get_dangote_products');
 
-      if (response.statusCode != 200) {
-        throw jsonResponse['message'];
+        var jsonResponse = jsonDecode(response.body);
+
+        if (response.statusCode != 200) {
+          throw jsonResponse['message'];
+        }
+
+        products = jsonResponse['products'];
+
+        OfflineStore.save_data('get_dangote_products', products);
+      } else {
+        products = await OfflineStore.get_data('get_dangote_products');
       }
 
-      List<ProductModel> productList = [];
-      List products = jsonResponse['products'];
       for (var product in products) {
         ProductModel productModel = ProductModel.fromJson(product);
 
@@ -313,16 +348,24 @@ class ProductStoreHelpers {
   static Future<List<ProductionRecordModel>> get_production_record(
       context) async {
     try {
-      var response = await post_getters(context, 'get_production_record');
+      List<ProductionRecordModel> recordList = [];
+      List record = [];
 
-      var jsonResponse = jsonDecode(response.body);
+      if (isConnected(context)) {
+        var response = await post_getters(context, 'get_production_record');
 
-      if (response.statusCode != 200) {
-        throw jsonResponse['message'];
+        var jsonResponse = jsonDecode(response.body);
+
+        if (response.statusCode != 200) {
+          throw jsonResponse['message'];
+        }
+
+        record = jsonResponse['record'];
+        OfflineStore.save_data('get_production_record', record);
+      } else {
+        record = await OfflineStore.get_data('get_production_record');
       }
 
-      List<ProductionRecordModel> recordList = [];
-      List record = jsonResponse['record'];
       for (var element in record) {
         ProductionRecordModel recordModel =
             ProductionRecordModel.fromJson(element);
@@ -341,16 +384,25 @@ class ProductStoreHelpers {
   static Future<List<ProductReceivedRecordModel>> get_product_received_record(
       context) async {
     try {
-      var response = await post_getters(context, 'get_product_received_record');
+      List<ProductReceivedRecordModel> recordList = [];
+      List record = [];
 
-      var jsonResponse = jsonDecode(response.body);
+      if (isConnected(context)) {
+        var response =
+            await post_getters(context, 'get_product_received_record');
 
-      if (response.statusCode != 200) {
-        throw jsonResponse['message'];
+        var jsonResponse = jsonDecode(response.body);
+
+        if (response.statusCode != 200) {
+          throw jsonResponse['message'];
+        }
+
+        record = jsonResponse['record'];
+        OfflineStore.save_data('get_product_received_record', record);
+      } else {
+        record = await OfflineStore.get_data('get_product_received_record');
       }
 
-      List<ProductReceivedRecordModel> recordList = [];
-      List record = jsonResponse['record'];
       for (var element in record) {
         ProductReceivedRecordModel recordModel =
             ProductReceivedRecordModel.fromJson(element);
@@ -369,16 +421,25 @@ class ProductStoreHelpers {
   static Future<List<ProductRequestRecordModel>> get_product_request_record(
       context) async {
     try {
-      var response = await post_getters(context, 'get_product_request_record');
+      List<ProductRequestRecordModel> recordList = [];
+      List record = [];
 
-      var jsonResponse = jsonDecode(response.body);
+      if (isConnected(context)) {
+        var response =
+            await post_getters(context, 'get_product_request_record');
 
-      if (response.statusCode != 200) {
-        throw jsonResponse['message'];
+        var jsonResponse = jsonDecode(response.body);
+
+        if (response.statusCode != 200) {
+          throw jsonResponse['message'];
+        }
+
+        record = jsonResponse['record'];
+        OfflineStore.save_data('get_product_request_record', record);
+      } else {
+        record = await OfflineStore.get_data('get_product_request_record');
       }
 
-      List<ProductRequestRecordModel> recordList = [];
-      List record = jsonResponse['record'];
       for (var element in record) {
         ProductRequestRecordModel recordModel =
             ProductRequestRecordModel.fromJson(element);
@@ -397,16 +458,25 @@ class ProductStoreHelpers {
   static Future<List<ProductTakeOutRecordModel>> get_product_takeOut_record(
       context) async {
     try {
-      var response = await post_getters(context, 'get_product_takeOut_record');
+      List<ProductTakeOutRecordModel> recordList = [];
+      List record = [];
 
-      var jsonResponse = jsonDecode(response.body);
+      if (isConnected(context)) {
+        var response =
+            await post_getters(context, 'get_product_takeOut_record');
 
-      if (response.statusCode != 200) {
-        throw jsonResponse['message'];
+        var jsonResponse = jsonDecode(response.body);
+
+        if (response.statusCode != 200) {
+          throw jsonResponse['message'];
+        }
+
+        record = jsonResponse['record'];
+        OfflineStore.save_data('get_product_takeOut_record', record);
+      } else {
+        record = await OfflineStore.get_data('get_product_takeOut_record');
       }
 
-      List<ProductTakeOutRecordModel> recordList = [];
-      List record = jsonResponse['record'];
       for (var element in record) {
         ProductTakeOutRecordModel recordModel =
             ProductTakeOutRecordModel.fromJson(element);
@@ -425,16 +495,24 @@ class ProductStoreHelpers {
   static Future<List<ProductReturnRecordModel>> get_product_return_record(
       context) async {
     try {
-      var response = await post_getters(context, 'get_product_return_record');
+      List<ProductReturnRecordModel> recordList = [];
+      List record = [];
 
-      var jsonResponse = jsonDecode(response.body);
+      if (isConnected(context)) {
+        var response = await post_getters(context, 'get_product_return_record');
 
-      if (response.statusCode != 200) {
-        throw jsonResponse['message'];
+        var jsonResponse = jsonDecode(response.body);
+
+        if (response.statusCode != 200) {
+          throw jsonResponse['message'];
+        }
+
+        record = jsonResponse['record'];
+        OfflineStore.save_data('get_product_return_record', record);
+      } else {
+        record = await OfflineStore.get_data('get_product_return_record');
       }
 
-      List<ProductReturnRecordModel> recordList = [];
-      List record = jsonResponse['record'];
       for (var element in record) {
         ProductReturnRecordModel recordModel =
             ProductReturnRecordModel.fromJson(element);
@@ -453,16 +531,24 @@ class ProductStoreHelpers {
   static Future<List<BadProductRecordModel>> get_bad_product_record(
       context) async {
     try {
-      var response = await post_getters(context, 'get_bad_product_record');
+      List<BadProductRecordModel> recordList = [];
+      List record = [];
 
-      var jsonResponse = jsonDecode(response.body);
+      if (isConnected(context)) {
+        var response = await post_getters(context, 'get_bad_product_record');
 
-      if (response.statusCode != 200) {
-        throw jsonResponse['message'];
+        var jsonResponse = jsonDecode(response.body);
+
+        if (response.statusCode != 200) {
+          throw jsonResponse['message'];
+        }
+
+        record = jsonResponse['record'];
+        OfflineStore.save_data('get_bad_product_record', record);
+      } else {
+        record = await OfflineStore.get_data('get_bad_product_record');
       }
 
-      List<BadProductRecordModel> recordList = [];
-      List record = jsonResponse['record'];
       for (var element in record) {
         BadProductRecordModel recordModel =
             BadProductRecordModel.fromJson(element);
@@ -481,16 +567,25 @@ class ProductStoreHelpers {
   static Future<List<CollectionRecordModel>> get_outletCollection_record(
       context) async {
     try {
-      var response = await post_getters(context, 'get_outletCollection_record');
+      List<CollectionRecordModel> recordList = [];
+      List record = [];
 
-      var jsonResponse = jsonDecode(response.body);
+      if (isConnected(context)) {
+        var response =
+            await post_getters(context, 'get_outletCollection_record');
 
-      if (response.statusCode != 200) {
-        throw jsonResponse['message'];
+        var jsonResponse = jsonDecode(response.body);
+
+        if (response.statusCode != 200) {
+          throw jsonResponse['message'];
+        }
+
+        record = jsonResponse['record'];
+        OfflineStore.save_data('get_outletCollection_record', record);
+      } else {
+        record = await OfflineStore.get_data('get_outletCollection_record');
       }
 
-      List<CollectionRecordModel> recordList = [];
-      List record = jsonResponse['record'];
       for (var element in record) {
         CollectionRecordModel recordModel =
             CollectionRecordModel.fromJson(element);
@@ -509,17 +604,25 @@ class ProductStoreHelpers {
   static Future<List<CollectionRecordModel>> get_terminalCollection_record(
       context) async {
     try {
-      var response =
-          await post_getters(context, 'get_terminalCollection_record');
+      List<CollectionRecordModel> recordList = [];
+      List record = [];
 
-      var jsonResponse = jsonDecode(response.body);
+      if (isConnected(context)) {
+        var response =
+            await post_getters(context, 'get_terminalCollection_record');
 
-      if (response.statusCode != 200) {
-        throw jsonResponse['message'];
+        var jsonResponse = jsonDecode(response.body);
+
+        if (response.statusCode != 200) {
+          throw jsonResponse['message'];
+        }
+
+        record = jsonResponse['record'];
+        OfflineStore.save_data('get_terminalCollection_record', record);
+      } else {
+        record = await OfflineStore.get_data('get_terminalCollection_record');
       }
 
-      List<CollectionRecordModel> recordList = [];
-      List record = jsonResponse['record'];
       for (var element in record) {
         CollectionRecordModel recordModel =
             CollectionRecordModel.fromJson(element);
@@ -538,17 +641,25 @@ class ProductStoreHelpers {
   static Future<List<CollectionRecordModel>> get_dangoteCollection_record(
       context) async {
     try {
-      var response =
-          await post_getters(context, 'get_dangoteCollection_record');
+      List<CollectionRecordModel> recordList = [];
+      List record = [];
 
-      var jsonResponse = jsonDecode(response.body);
+      if (isConnected(context)) {
+        var response =
+            await post_getters(context, 'get_dangoteCollection_record');
 
-      if (response.statusCode != 200) {
-        throw jsonResponse['message'];
+        var jsonResponse = jsonDecode(response.body);
+
+        if (response.statusCode != 200) {
+          throw jsonResponse['message'];
+        }
+
+        record = jsonResponse['record'];
+        OfflineStore.save_data('get_dangoteCollection_record', record);
+      } else {
+        record = await OfflineStore.get_data('get_dangoteCollection_record');
       }
 
-      List<CollectionRecordModel> recordList = [];
-      List record = jsonResponse['record'];
       for (var element in record) {
         CollectionRecordModel recordModel =
             CollectionRecordModel.fromJson(element);
@@ -566,16 +677,24 @@ class ProductStoreHelpers {
   // get product categories
   static Future<List<CategoryModel>> get_product_categories(context) async {
     try {
-      var response = await post_getters(context, 'get_product_categories');
+      List<CategoryModel> categories = [];
+      List items = [];
 
-      var jsonResponse = jsonDecode(response.body);
+      if (isConnected(context)) {
+        var response = await post_getters(context, 'get_product_categories');
 
-      if (response.statusCode != 200) {
-        throw jsonResponse['message'];
+        var jsonResponse = jsonDecode(response.body);
+
+        if (response.statusCode != 200) {
+          throw jsonResponse['message'];
+        }
+
+        items = jsonResponse['categories'];
+        OfflineStore.save_data('get_product_categories', items);
+      } else {
+        items = await OfflineStore.get_data('get_product_categories');
       }
 
-      List<CategoryModel> categories = [];
-      List items = jsonResponse['categories'];
       for (var item in items) {
         CategoryModel categoryModel = CategoryModel.fromJson(item);
 
@@ -735,7 +854,6 @@ class ProductStoreHelpers {
     return recordList;
   }
 
-
   // Get selected Terminal collection record
   static Future<List<CollectionRecordModel>>
       get_selected_terminalCollection_record(
@@ -780,134 +898,332 @@ class ProductStoreHelpers {
 
   // ! SETTERS
 
-// Add/update products
+  //? Add/update products (Not offline)
   static Future<bool> add_update_product(BuildContext context, Map data) async {
     return await sendDataToServer(context,
         route: 'add_update_product', data: data);
   }
 
-// Enter production record
+  // Enter production record
   static Future<bool> enter_production_record(
-      BuildContext context, Map data) async {
+      BuildContext context, Map data, String? recordId) async {
+    if (!isConnected(context)) {
+      String type = data['id'] != null && data['id'] != '' ? 'Edit' : 'New';
+
+      return save_offline(context,
+          endpoint: 'enter_production_record',
+          id: data['id'] ?? '',
+          data: data,
+          recordId: recordId ?? '',
+          type: type);
+    }
+
     return await sendDataToServer(context,
         route: 'enter_production_record', data: data);
   }
 
 // Verify production record
   static Future<bool> verify_production_record(
-      BuildContext context, Map data) async {
+      BuildContext context, Map data, String? recordId) async {
+    if (!isConnected(context)) {
+      String type = data['id'] != null && data['id'] != '' ? 'Verify' : '';
+
+      return save_offline(context,
+          endpoint: 'verify_production_record',
+          id: data['id'] ?? '',
+          data: data,
+          recordId: recordId ?? '',
+          type: type);
+    }
+
     return await sendDataToServer(context,
         route: 'verify_production_record', data: data);
   }
 
 // Enter product received record
   static Future<bool> enter_product_received_record(
-      BuildContext context, Map data) async {
+      BuildContext context, Map data, String? recordId) async {
+    if (!isConnected(context)) {
+      String type = data['id'] != null && data['id'] != '' ? 'Edit' : 'New';
+
+      return save_offline(context,
+          endpoint: 'enter_product_received_record',
+          id: data['id'] ?? '',
+          data: data,
+          recordId: recordId ?? '',
+          type: type);
+    }
+
     return await sendDataToServer(context,
         route: 'enter_product_received_record', data: data);
   }
 
 // Verify product received record
   static Future<bool> verify_product_received_record(
-      BuildContext context, Map data) async {
+      BuildContext context, Map data, String? recordId) async {
+    if (!isConnected(context)) {
+      String type = data['id'] != null && data['id'] != '' ? 'Verify' : '';
+
+      return save_offline(context,
+          endpoint: 'verify_product_received_record',
+          id: data['id'] ?? '',
+          data: data,
+          recordId: recordId ?? '',
+          type: type);
+    }
+
     return await sendDataToServer(context,
         route: 'verify_product_received_record', data: data);
   }
 
 // Enter product request record
   static Future<bool> enter_product_request_record(
-      BuildContext context, Map data) async {
+      BuildContext context, Map data, String? recordId) async {
+    if (!isConnected(context)) {
+      String type = data['id'] != null && data['id'] != '' ? 'Edit' : 'New';
+
+      return save_offline(context,
+          endpoint: 'enter_product_request_record',
+          id: data['id'] ?? '',
+          data: data,
+          recordId: recordId ?? '',
+          type: type);
+    }
+
     return await sendDataToServer(context,
         route: 'enter_product_request_record', data: data);
   }
 
 // Verify product request record
   static Future<bool> verify_product_request_record(
-      BuildContext context, Map data) async {
+      BuildContext context, Map data, String? recordId) async {
+    if (!isConnected(context)) {
+      String type = data['id'] != null && data['id'] != '' ? 'Verify' : '';
+
+      return save_offline(context,
+          endpoint: 'verify_product_request_record',
+          id: data['id'] ?? '',
+          data: data,
+          recordId: recordId ?? '',
+          type: type);
+    }
+
     return await sendDataToServer(context,
         route: 'verify_product_request_record', data: data);
   }
 
 // Enter product takeOut record
   static Future<bool> enter_product_takeOut_record(
-      BuildContext context, Map data) async {
+      BuildContext context, Map data, String? recordId) async {
+    if (!isConnected(context)) {
+      String type = data['id'] != null && data['id'] != '' ? 'Edit' : 'New';
+
+      return save_offline(context,
+          endpoint: 'enter_product_takeOut_record',
+          id: data['id'] ?? '',
+          data: data,
+          recordId: recordId ?? '',
+          type: type);
+    }
+
     return await sendDataToServer(context,
         route: 'enter_product_takeOut_record', data: data);
   }
 
 // Verify product takeOut record
   static Future<bool> verify_product_takeOut_record(
-      BuildContext context, Map data) async {
+      BuildContext context, Map data, String? recordId) async {
+    if (!isConnected(context)) {
+      String type = data['id'] != null && data['id'] != '' ? 'Verify' : '';
+
+      return save_offline(context,
+          endpoint: 'verify_product_takeOut_record',
+          id: data['id'] ?? '',
+          data: data,
+          recordId: recordId ?? '',
+          type: type);
+    }
+
     return await sendDataToServer(context,
         route: 'verify_product_takeOut_record', data: data);
   }
 
 // Enter product return record
   static Future<bool> enter_product_return_record(
-      BuildContext context, Map data) async {
+      BuildContext context, Map data, String? recordId) async {
+    if (!isConnected(context)) {
+      String type = data['id'] != null && data['id'] != '' ? 'Edit' : 'New';
+
+      return save_offline(context,
+          endpoint: 'enter_product_return_record',
+          id: data['id'] ?? '',
+          data: data,
+          recordId: recordId ?? '',
+          type: type);
+    }
+
     return await sendDataToServer(context,
         route: 'enter_product_return_record', data: data);
   }
 
 // Verify product return record
   static Future<bool> verify_product_return_record(
-      BuildContext context, Map data) async {
+      BuildContext context, Map data, String? recordId) async {
+    if (!isConnected(context)) {
+      String type = data['id'] != null && data['id'] != '' ? 'Verify' : '';
+
+      return save_offline(context,
+          endpoint: 'verify_product_return_record',
+          id: data['id'] ?? '',
+          data: data,
+          recordId: recordId ?? '',
+          type: type);
+    }
+
     return await sendDataToServer(context,
         route: 'verify_product_return_record', data: data);
   }
 
 // Enter bad product record
   static Future<bool> enter_bad_product_record(
-      BuildContext context, Map data) async {
+      BuildContext context, Map data, String? recordId) async {
+    if (!isConnected(context)) {
+      String type = data['id'] != null && data['id'] != '' ? 'Edit' : 'New';
+
+      return save_offline(context,
+          endpoint: 'enter_bad_product_record',
+          id: data['id'] ?? '',
+          data: data,
+          recordId: recordId ?? '',
+          type: type);
+    }
+
     return await sendDataToServer(context,
         route: 'enter_bad_product_record', data: data);
   }
 
 // Verify Bad product record
   static Future<bool> verify_bad_product_record(
-      BuildContext context, Map data) async {
+      BuildContext context, Map data, String? recordId) async {
+    if (!isConnected(context)) {
+      String type = data['id'] != null && data['id'] != '' ? 'Verify' : '';
+
+      return save_offline(context,
+          endpoint: 'verify_bad_product_record',
+          id: data['id'] ?? '',
+          data: data,
+          recordId: recordId ?? '',
+          type: type);
+    }
+
     return await sendDataToServer(context,
         route: 'verify_bad_product_record', data: data);
   }
 
 // Enter outlet collection record
   static Future<bool> enter_outletCollection_record(
-      BuildContext context, Map data) async {
+      BuildContext context, Map data, String? recordId) async {
+    if (!isConnected(context)) {
+      String type = data['id'] != null && data['id'] != '' ? 'Edit' : 'New';
+
+      return save_offline(context,
+          endpoint: 'enter_outletCollection_record',
+          id: data['id'] ?? '',
+          data: data,
+          recordId: recordId ?? '',
+          type: type);
+    }
+
     return await sendDataToServer(context,
         route: 'enter_outletCollection_record', data: data);
   }
 
 // Verify outlet collection record
   static Future<bool> verify_outletCollection_record(
-      BuildContext context, Map data) async {
+      BuildContext context, Map data, String? recordId) async {
+    if (!isConnected(context)) {
+      String type = data['id'] != null && data['id'] != '' ? 'Verify' : '';
+
+      return save_offline(context,
+          endpoint: 'verify_outletCollection_record',
+          id: data['id'] ?? '',
+          data: data,
+          recordId: recordId ?? '',
+          type: type);
+    }
+
     return await sendDataToServer(context,
         route: 'verify_outletCollection_record', data: data);
   }
 
 // Enter terminal collection record
   static Future<bool> enter_terminalCollection_record(
-      BuildContext context, Map data) async {
+      BuildContext context, Map data, String? recordId) async {
+    if (!isConnected(context)) {
+      String type = data['id'] != null && data['id'] != '' ? 'Edit' : 'New';
+
+      return save_offline(context,
+          endpoint: 'enter_terminalCollection_record',
+          id: data['id'] ?? '',
+          data: data,
+          recordId: recordId ?? '',
+          type: type);
+    }
+
     return await sendDataToServer(context,
         route: 'enter_terminalCollection_record', data: data);
   }
 
 // Verify terminal collection record
   static Future<bool> verify_terminalCollection_record(
-      BuildContext context, Map data) async {
+      BuildContext context, Map data, String? recordId) async {
+    if (!isConnected(context)) {
+      String type = data['id'] != null && data['id'] != '' ? 'Verify' : '';
+
+      return save_offline(context,
+          endpoint: 'verify_terminalCollection_record',
+          id: data['id'] ?? '',
+          data: data,
+          recordId: recordId ?? '',
+          type: type);
+    }
+
     return await sendDataToServer(context,
         route: 'verify_terminalCollection_record', data: data);
   }
 
 // Enter dangote collection record
   static Future<bool> enter_dangoteCollection_record(
-      BuildContext context, Map data) async {
+      BuildContext context, Map data, String? recordId) async {
+    if (!isConnected(context)) {
+      String type = data['id'] != null && data['id'] != '' ? 'Edit' : 'New';
+
+      return save_offline(context,
+          endpoint: 'enter_dangoteCollection_record',
+          id: data['id'] ?? '',
+          data: data,
+          recordId: recordId ?? '',
+          type: type);
+    }
+
     return await sendDataToServer(context,
         route: 'enter_dangoteCollection_record', data: data);
   }
 
 // Verify dangote collection record
   static Future<bool> verify_dangoteCollection_record(
-      BuildContext context, Map data) async {
+      BuildContext context, Map data, String? recordId) async {
+    if (!isConnected(context)) {
+      String type = data['id'] != null && data['id'] != '' ? 'Verify' : '';
+
+      return save_offline(context,
+          endpoint: 'verify_dangoteCollection_record',
+          id: data['id'] ?? '',
+          data: data,
+          recordId: recordId ?? '',
+          type: type);
+    }
+
     return await sendDataToServer(context,
         route: 'verify_dangoteCollection_record', data: data);
   }
@@ -928,63 +1244,143 @@ class ProductStoreHelpers {
 
 // Delete Production record
   static Future<bool> delete_production_record(
-      BuildContext context, String id) async {
+      BuildContext context, String id, String? recordId) async {
+    if (!isConnected(context)) {
+      return save_offline(context,
+          endpoint: 'delete_production_record',
+          data: {},
+          id: id,
+          recordId: recordId ?? '',
+          type: 'Delete');
+    }
+
     return await deleteFromServer(context,
         route: 'delete_production_record', id: id);
   }
 
 // Delete product received record
   static Future<bool> delete_product_received_record(
-      BuildContext context, String id) async {
+      BuildContext context, String id, String? recordId) async {
+    if (!isConnected(context)) {
+      return save_offline(context,
+          endpoint: 'delete_product_received_record',
+          data: {},
+          id: id,
+          recordId: recordId ?? '',
+          type: 'Delete');
+    }
     return await deleteFromServer(context,
         route: 'delete_product_received_record', id: id);
   }
 
 // Delete product request record
   static Future<bool> delete_product_request_record(
-      BuildContext context, String id) async {
+      BuildContext context, String id, String? recordId) async {
+    if (!isConnected(context)) {
+      return save_offline(context,
+          endpoint: 'delete_product_request_record',
+          data: {},
+          id: id,
+          recordId: recordId ?? '',
+          type: 'Delete');
+    }
+
     return await deleteFromServer(context,
         route: 'delete_product_request_record', id: id);
   }
 
 // Delete product takeOut record
   static Future<bool> delete_product_takeOut_record(
-      BuildContext context, String id) async {
+      BuildContext context, String id, String? recordId) async {
+    if (!isConnected(context)) {
+      return save_offline(context,
+          endpoint: 'delete_product_takeOut_record',
+          data: {},
+          id: id,
+          recordId: recordId ?? '',
+          type: 'Delete');
+    }
+
     return await deleteFromServer(context,
         route: 'delete_product_takeOut_record', id: id);
   }
 
   // Delete product return record
   static Future<bool> delete_product_return_record(
-      BuildContext context, String id) async {
+      BuildContext context, String id, String? recordId) async {
+    if (!isConnected(context)) {
+      return save_offline(context,
+          endpoint: 'delete_product_return_record',
+          data: {},
+          id: id,
+          recordId: recordId ?? '',
+          type: 'Delete');
+    }
+
     return await deleteFromServer(context,
         route: 'delete_product_return_record', id: id);
   }
 
 // Delete Bad product record
   static Future<bool> delete_bad_product_record(
-      BuildContext context, String id) async {
+      BuildContext context, String id, String? recordId) async {
+    if (!isConnected(context)) {
+      return save_offline(context,
+          endpoint: 'delete_bad_product_record',
+          data: {},
+          id: id,
+          recordId: recordId ?? '',
+          type: 'Delete');
+    }
+
     return await deleteFromServer(context,
         route: 'delete_bad_product_record', id: id);
   }
 
 // Delete outlet collection record
   static Future<bool> delete_outletCollection_record(
-      BuildContext context, String id) async {
+      BuildContext context, String id, String? recordId) async {
+    if (!isConnected(context)) {
+      return save_offline(context,
+          endpoint: 'delete_outletCollection_record',
+          data: {},
+          id: id,
+          recordId: recordId ?? '',
+          type: 'Delete');
+    }
+
     return await deleteFromServer(context,
         route: 'delete_outletCollection_record', id: id);
   }
 
 // Delete terminal collection record
   static Future<bool> delete_terminalCollection_record(
-      BuildContext context, String id) async {
+      BuildContext context, String id, String? recordId) async {
+    if (!isConnected(context)) {
+      return save_offline(context,
+          endpoint: 'delete_terminalCollection_record',
+          data: {},
+          id: id,
+          recordId: recordId ?? '',
+          type: 'Delete');
+    }
+
     return await deleteFromServer(context,
         route: 'delete_terminalCollection_record', id: id);
   }
 
 // Delete dangote collection record
   static Future<bool> delete_dangoteCollection_record(
-      BuildContext context, String id) async {
+      BuildContext context, String id, String? recordId) async {
+    if (!isConnected(context)) {
+      return save_offline(context,
+          endpoint: 'delete_dangoteCollection_record',
+          data: {},
+          id: id,
+          recordId: recordId ?? '',
+          type: 'Delete');
+    }
+
     return await deleteFromServer(context,
         route: 'delete_dangoteCollection_record', id: id);
   }
@@ -994,6 +1390,63 @@ class ProductStoreHelpers {
       BuildContext context, String id) async {
     return await deleteFromServer(context,
         route: 'delete_product_category', id: id);
+  }
+
+  //? UTILS
+  static bool isConnected(context) =>
+      Provider.of<AppData>(context, listen: false).connection_status;
+
+  static Future<bool> save_offline(BuildContext context,
+      {required String endpoint,
+      required Map data,
+      required String id,
+      required String recordId,
+      required String type}) async {
+    bool res = await OfflineStore.update_offline_data({
+      'endpoint': endpoint,
+      'data': data,
+      'id': id,
+      'recordId': recordId,
+      'type': type,
+      'helper': 'ProductStoreHelpers',
+    });
+
+    if (res) {
+      UniversalHelpers.showToast(
+        context: context,
+        color: Colors.blue,
+        toastText: 'Saved Offline',
+        icon: Icons.save_rounded,
+      );
+      return true;
+    } else {
+      UniversalHelpers.showToast(
+        context: context,
+        color: Colors.redAccent,
+        toastText: 'Failed to save Offline',
+        icon: Icons.error_outline,
+      );
+      return false;
+    }
+  }
+
+  static Future<bool> send_online(BuildContext context, Map map) async {
+    String type = map['type'] ?? '';
+    String route = map['endpoint'] ?? '';
+    Map data = {...(map['data'])};
+    String id = map['id'] ?? '';
+
+    if (type == '') return false;
+    if (route == '') return false;
+
+    if (type == 'Delete') {
+      if (id == '') return false;
+
+      return await deleteFromServer(context, route: route, id: id);
+    } else {
+      if (data == {}) return false;
+      return await sendDataToServer(context, route: route, data: data);
+    }
   }
 
 //

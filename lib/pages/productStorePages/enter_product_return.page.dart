@@ -940,7 +940,7 @@ class _EnterProductReturnPageState extends State<EnterProductReturnPage> {
 
                       bool done =
                           await ProductStoreHelpers.enter_product_return_record(
-                              context, map);
+                              context, map, widget.editModel?.recordId);
 
                       if (widget.editModel?.key != null) {
                         Navigator.pop(context);

@@ -2,6 +2,7 @@ import 'package:delightsome_software/appColors.dart';
 import 'package:delightsome_software/globalvariables.dart';
 import 'package:delightsome_software/pages/login.page.dart';
 import 'package:delightsome_software/utils/appdata.dart';
+import 'package:delightsome_software/utils/offlineStore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -11,7 +12,7 @@ void main() {
 
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
 
-  
+  OfflineStore.init();
 
   runApp(
     ChangeNotifierProvider(
@@ -21,8 +22,7 @@ void main() {
           // Resart the app if the appRestartNotifier changes
           valueListenable: appRestartNotifier,
           builder: (context, key, _) {
-          
-           return MyApp(key : key);
+            return MyApp(key: key);
           },
         );
       },

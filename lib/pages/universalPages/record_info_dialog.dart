@@ -3,10 +3,12 @@ import 'package:delightsome_software/dataModels/userModels/editedBy.model.dart';
 import 'package:delightsome_software/dataModels/userModels/staff.model.dart';
 import 'package:delightsome_software/helpers/universalHelpers.dart';
 import 'package:delightsome_software/utils/appdata.dart';
+import 'package:delightsome_software/widgets/offline_record_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class RecordInfoDialog extends StatefulWidget {
+  final String? rec_key;
   final bool approved;
   final String? approvedBy;
   final DateTime? approvedDate;
@@ -18,6 +20,7 @@ class RecordInfoDialog extends StatefulWidget {
 
   const RecordInfoDialog({
     super.key,
+    this.rec_key,
     required this.approved,
     required this.approvedBy,
     required this.approvedDate,
@@ -177,6 +180,10 @@ class _RecordInfoDialogState extends State<RecordInfoDialog> {
                           ),
 
                         SizedBox(height: 20),
+
+                        OfflineRecordIndicator(rec_key: widget.rec_key, showText: true),
+
+                        SizedBox(height: 10),
 
                         // edited by label
                         if (widget.editedBy.isNotEmpty)

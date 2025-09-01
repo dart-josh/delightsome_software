@@ -7,6 +7,8 @@ class Localstorage {
   static String saved_accounts_key = 'ACCOUNTS';
   static String saved_active_account_key = 'ACTIVE_ACCOUNT';
 
+  static String offline_data_key = 'OFFLINE_KEY';
+
   static Future<bool> save_accounts(List<AuthModel> accounts) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
 
@@ -57,4 +59,5 @@ class Localstorage {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     return await preferences.remove(saved_active_account_key);
   }
+
 }

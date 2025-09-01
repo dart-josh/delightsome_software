@@ -940,7 +940,7 @@ class _EnterProductionPageState extends State<EnterProductionPage> {
 
                       bool done =
                           await ProductStoreHelpers.enter_production_record(
-                              context, map);
+                              context, map, widget.editModel?.recordId);
 
                       if (widget.editModel?.key != null) {
                         Navigator.pop(context);

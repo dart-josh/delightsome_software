@@ -3,6 +3,7 @@ import 'package:delightsome_software/dataModels/userModels/staff.model.dart';
 import 'package:delightsome_software/globalvariables.dart';
 import 'package:delightsome_software/helpers/universalHelpers.dart';
 import 'package:delightsome_software/utils/appdata.dart';
+import 'package:delightsome_software/utils/offlineStore.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -147,16 +148,24 @@ class UserHelpers {
   // get all staff
   static Future<List<StaffModel>> get_all_staff(context) async {
     try {
-      var response = await post_getters(context, 'get_all_staff');
+      List<StaffModel> staffList = [];
+      List staffs = [];
 
-      var jsonResponse = jsonDecode(response.body);
+      if (isConnected(context)) {
+        var response = await post_getters(context, 'get_all_staff');
 
-      if (response.statusCode != 200) {
-        throw jsonResponse['message'];
+        var jsonResponse = jsonDecode(response.body);
+
+        if (response.statusCode != 200) {
+          throw jsonResponse['message'];
+        }
+
+        staffs = jsonResponse['staffs'];
+        OfflineStore.save_data('get_all_staff', staffs);
+      } else {
+        staffs = await OfflineStore.get_data('get_all_staff');
       }
 
-      List<StaffModel> staffList = [];
-      List staffs = jsonResponse['staffs'];
       for (var staff in staffs) {
         StaffModel staffModel = StaffModel.fromJson(staff);
 
@@ -173,16 +182,24 @@ class UserHelpers {
   // get all customer
   static Future<List<CustomerModel>> get_all_customer(context) async {
     try {
-      var response = await post_getters(context, 'get_all_customer');
+      List<CustomerModel> customerList = [];
+      List customers = [];
 
-      var jsonResponse = jsonDecode(response.body);
+      if (isConnected(context)) {
+        var response = await post_getters(context, 'get_all_customer');
 
-      if (response.statusCode != 200) {
-        throw jsonResponse['message'];
+        var jsonResponse = jsonDecode(response.body);
+
+        if (response.statusCode != 200) {
+          throw jsonResponse['message'];
+        }
+
+        customers = jsonResponse['customers'];
+        OfflineStore.save_data('get_all_customer', customers);
+      } else {
+        customers = await OfflineStore.get_data('get_all_customer');
       }
 
-      List<CustomerModel> customerList = [];
-      List customers = jsonResponse['customers'];
       for (var customer in customers) {
         CustomerModel customerModel = CustomerModel.fromJson(customer);
 
@@ -222,4 +239,10 @@ class UserHelpers {
   static Future<bool> delete_customer(BuildContext context, String id) async {
     return await deleteFromServer(context, route: 'delete_customer', id: id);
   }
+
+  //? UTILS
+  static bool isConnected(context) =>
+      Provider.of<AppData>(context, listen: false).connection_status;
+
+  //
 }

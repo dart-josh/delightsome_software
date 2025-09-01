@@ -4,6 +4,7 @@ import 'package:delightsome_software/helpers/serverHelpers.dart';
 import 'package:delightsome_software/helpers/universalHelpers.dart';
 import 'package:delightsome_software/utils/appdata.dart';
 import 'package:delightsome_software/utils/localStorage.dart';
+import 'package:delightsome_software/utils/offlineStore.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -92,7 +93,9 @@ class AuthHelpers {
                   e.toString().toLowerCase().contains('clientexception') ||
                   e.toString().toLowerCase().contains('socketexception') ||
                   e.toString().toLowerCase().contains('connection'))
-              ? 'Connection Error. Try again later'
+              ? (route == 'check_staff_id')
+                  ? 'Not Connected'
+                  : 'Connection Error. Try again later'
               : e.toString(),
           icon: Icons.check,
         );
@@ -206,31 +209,45 @@ class AuthHelpers {
     }
   }
 
-  // get active staff
-  static Future<StaffModel?> get_active_staff(String staff_id) async {
+  //? get active staff
+  static Future<StaffModel?> get_active_staff(context, String staff_id) async {
     try {
-      var response =
-          await http.get(Uri.parse('${authUrl}/get_active_staff/${staff_id}'));
+      if (isConnected(context)) {
+        var response = await http
+            .get(Uri.parse('${authUrl}/get_active_staff/${staff_id}'));
 
-      var jsonResponse = jsonDecode(response.body);
+        var jsonResponse = jsonDecode(response.body);
 
-      if (response.statusCode != 200) {
-        throw jsonResponse['message'];
+        if (response.statusCode != 200) {
+          throw jsonResponse['message'];
+        }
+
+        if (jsonResponse['success'] != null &&
+            jsonResponse['success'] == true) {
+          var staff = jsonResponse['staff'];
+          OfflineStore.save_data('get_active_staff', [staff]);
+          StaffModel staffModel = StaffModel.fromJson(staff);
+          return staffModel;
+        } else
+          return null;
+      } else {
+        var staff = await OfflineStore.get_data('get_active_staff');
+        if (staff.isNotEmpty) {
+          StaffModel staffModel = StaffModel.fromJson(staff[0]);
+          return staffModel;
+        } else
+          return null;
       }
-
-      if (jsonResponse['success'] != null && jsonResponse['success'] == true) {
-        var staff = jsonResponse['staff'];
-        StaffModel staffModel = StaffModel.fromJson(staff);
-        return staffModel;
-      } else
-        return null;
     } catch (e) {
       print(e);
       return null;
     }
   }
 
-  // ! UTILS
+  //? UTILS
+  static bool isConnected(context) =>
+      Provider.of<AppData>(context, listen: false).connection_status;
+
   static logout(BuildContext context) {
     saved_product_material_request_model = null;
     saved_raw_material_request_model = null;

@@ -393,7 +393,7 @@ class _LoginPageState extends State<LoginPage> {
             page_index == 5
                 ? pin_1_confirmation == 0
                     ? 'Create 4 digit pin'
-                    : 'Confrim 4 digit pin'
+                    : 'Confirm 4 digit pin'
                 : 'Enter 4 digit pin to login',
             textAlign: TextAlign.center,
             style: TextStyle(
@@ -1196,7 +1196,25 @@ class _LoginPageState extends State<LoginPage> {
 
     staff_id_controller.text = staff.staff_id;
 
+    bool isConnected =
+        Provider.of<AppData>(context, listen: false).connection_status;
+
     bool? staff_id_cr = await check_staff_id(staff.staff_id, check: true);
+
+    if (staff_id_cr == null || !staff_id_cr) {
+      Provider.of<AppData>(context, listen: false)
+          .update_connection_status(false);
+      isConnected = false;
+    } else {
+      Provider.of<AppData>(context, listen: false)
+          .update_connection_status(true);
+      isConnected = true;
+    }
+
+    if (!isConnected) {
+      login(disP: 6);
+      return;
+    }
 
     if (staff_id_cr == null || !staff_id_cr) {
       isLoading = false;
@@ -1233,9 +1251,9 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   // login
-  login() async {
+  login({int disP = 5}) async {
     isLoading = true;
-    page_index = 5;
+    page_index = disP;
     setState(() {});
 
     await DataGetters.get_active_staff(

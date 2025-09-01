@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:delightsome_software/appColors.dart';
 import 'package:delightsome_software/dataModels/userModels/staff.model.dart';
 import 'package:delightsome_software/helpers/authHelpers.dart';
@@ -210,10 +209,10 @@ class _SideBarState extends State<SideBar> {
         ),
       );
 
-    fecth_pending_records();
+    fetch_pending_records();
   }
 
-  fecth_pending_records() {
+  fetch_pending_records() {
     production_rec = Provider.of<AppData>(context)
         .production_record
         .where((rec) => !rec.verified!)

@@ -38,6 +38,7 @@ import 'package:delightsome_software/pages/universalPages/sidebar.dart';
 import 'package:delightsome_software/pages/userPages/customer_list.page.dart';
 import 'package:delightsome_software/pages/userPages/staff_list.page.dart';
 import 'package:delightsome_software/utils/appdata.dart';
+import 'package:delightsome_software/widgets/offline_notifier.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -187,35 +188,7 @@ class _LandingPageState extends State<LandingPage> {
           Positioned(
             top: 15,
             right: 15,
-            child: Material(
-              color: Colors.transparent,
-              child: InkWell(
-                onTap: () async {
-                  var conf = await showCupertinoDialog(
-                    context: context,
-                    builder: (context) => OfflineDataDialog(),
-                    
-                  );
-                },
-                child: Container(
-                  width: 43,
-                  height: 43,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: isConnected
-                        ? AppColors.light_dialogBackground_1
-                        : Colors.grey.shade300.withAlpha(200),
-                  ),
-                  child: Center(
-                    child: Icon(
-                      isConnected ? Icons.wifi : Icons.wifi_off,
-                      color: isConnected ? Colors.green : Colors.grey,
-                      size: 25,
-                    ),
-                  ),
-                ),
-              ),
-            ),
+            child: OfflineNotifier(),
           ),
         ],
       ),

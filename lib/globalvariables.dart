@@ -5,6 +5,7 @@ import 'package:delightsome_software/dataModels/materialStoreModels/restockProdu
 import 'package:delightsome_software/dataModels/materialStoreModels/restockRawMaterial.model.dart';
 import 'package:delightsome_software/dataModels/productStoreModels/badProductRecord.model.dart';
 import 'package:delightsome_software/dataModels/productStoreModels/collectionRecord.model.dart';
+import 'package:delightsome_software/dataModels/productStoreModels/productItem.model.dart';
 import 'package:delightsome_software/dataModels/productStoreModels/productReceivedRecord.model.dart';
 import 'package:delightsome_software/dataModels/productStoreModels/productRequestRecord.model.dart';
 import 'package:delightsome_software/dataModels/productStoreModels/productReturnRecord.model.dart';
@@ -12,8 +13,8 @@ import 'package:delightsome_software/dataModels/productStoreModels/productTakeOu
 import 'package:delightsome_software/dataModels/productStoreModels/productionRecord.model.dart';
 import 'package:flutter/material.dart';
 
-// String server_url = 'http://192.168.0.111:5000';
-String server_url = 'http://localhost:5000';
+String server_url = 'http://192.168.0.111:5000';
+// String server_url = 'http://localhost:5000';
 
 //? APP RESTART
 final ValueNotifier<UniqueKey> appRestartNotifier = ValueNotifier(UniqueKey());
@@ -52,5 +53,8 @@ bool product_store_forms_expanded = true;
 bool material_store_expanded = true;
 bool summaries_expanded = true;
 bool utilities_expanded = true;
+
+ValueNotifier<List<dynamic>> offline_data = ValueNotifier([]);
+ValueNotifier<List<ProductItemModel>> copied_product = ValueNotifier([]);
 
 // String current_version = '1.6.6';

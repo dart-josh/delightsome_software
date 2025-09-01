@@ -223,53 +223,55 @@ class ServerHelpers {
       Provider.of<AppData>(context, listen: false).update_can_refresh(false);
     }
 
-    // ? MATERIALS STORE
-    DataGetters.get_product_materials(context);
-    DataGetters.get_raw_materials(context);
+    // if (Provider.of<AppData>(context, listen: false).connection_status) {
+      // ? MATERIALS STORE
+      DataGetters.get_product_materials(context);
+      DataGetters.get_raw_materials(context);
 
-    DataGetters.get_restock_product_materials_record(context);
-    DataGetters.get_restock_raw_materials_record(context);
-    DataGetters.get_product_materials_request_record(context);
-    DataGetters.get_raw_materials_request_record(context);
-    DataGetters.get_product_materials_return_record(context);
+      DataGetters.get_restock_product_materials_record(context);
+      DataGetters.get_restock_raw_materials_record(context);
+      DataGetters.get_product_materials_request_record(context);
+      DataGetters.get_raw_materials_request_record(context);
+      DataGetters.get_product_materials_return_record(context);
 
-    DataGetters.get_product_materials_categories(context);
-    DataGetters.get_raw_materials_categories(context);
+      DataGetters.get_product_materials_categories(context);
+      DataGetters.get_raw_materials_categories(context);
 
-    //? PRODUCTS STORE
-    DataGetters.get_products(context);
-    DataGetters.get_outlet_products(context);
-    DataGetters.get_terminal_products(context);
-    DataGetters.get_dangote_products(context);
+      //? PRODUCTS STORE
+      DataGetters.get_products(context);
+      DataGetters.get_outlet_products(context);
+      DataGetters.get_terminal_products(context);
+      DataGetters.get_dangote_products(context);
 
-    DataGetters.get_product_categories(context);
+      DataGetters.get_product_categories(context);
 
-    DataGetters.get_production_record(context);
-    DataGetters.get_product_received_record(context);
-    DataGetters.get_product_request_record(context);
-    DataGetters.get_product_takeOut_record(context);
-    DataGetters.get_product_return_record(context);
-    DataGetters.get_bad_product_record(context);
-    DataGetters.get_outletCollection_record(context);
-    DataGetters.get_terminalCollection_record(context);
-    DataGetters.get_dangoteCollection_record(context);
+      DataGetters.get_production_record(context);
+      DataGetters.get_product_received_record(context);
+      DataGetters.get_product_request_record(context);
+      DataGetters.get_product_takeOut_record(context);
+      DataGetters.get_product_return_record(context);
+      DataGetters.get_bad_product_record(context);
+      DataGetters.get_outletCollection_record(context);
+      DataGetters.get_terminalCollection_record(context);
+      DataGetters.get_dangoteCollection_record(context);
 
-    // ? SALES
-    DataGetters.get_store_sales_record(context);
-    DataGetters.get_daily_store_record(context);
+      // ? SALES
+      DataGetters.get_store_sales_record(context);
+      DataGetters.get_daily_store_record(context);
 
-    DataGetters.get_outlet_sales_record(context);
-    DataGetters.get_outlet_daily_sales_record(context);
+      DataGetters.get_outlet_sales_record(context);
+      DataGetters.get_outlet_daily_sales_record(context);
 
-    DataGetters.get_terminal_sales_record(context);
-    DataGetters.get_terminal_daily_sales_record(context);
+      DataGetters.get_terminal_sales_record(context);
+      DataGetters.get_terminal_daily_sales_record(context);
 
-    DataGetters.get_dangote_sales_record(context);
-    DataGetters.get_dangote_daily_sales_record(context);
+      DataGetters.get_dangote_sales_record(context);
+      DataGetters.get_dangote_daily_sales_record(context);
 
-    // ? USER
-    DataGetters.get_all_staff(context);
-    DataGetters.get_all_customer(context);
+      // ? USER
+      DataGetters.get_all_staff(context);
+      DataGetters.get_all_customer(context);
+    // }
 
     // start db socket listeners
     if (!is_socket_connected) {
@@ -295,19 +297,23 @@ class ServerHelpers {
 
   static void socket_listener(BuildContext context) {
     socket!.onConnect((_) {
-      Provider.of<AppData>(context, listen: false).update_connection_status(true);
+      Provider.of<AppData>(context, listen: false)
+          .update_connection_status(true);
     });
 
     socket!.onDisconnect((_) {
-      Provider.of<AppData>(context, listen: false).update_connection_status(false);
+      Provider.of<AppData>(context, listen: false)
+          .update_connection_status(false);
     });
 
     socket!.onError((_) {
-      Provider.of<AppData>(context, listen: false).update_connection_status(false);
+      Provider.of<AppData>(context, listen: false)
+          .update_connection_status(false);
     });
 
     socket!.onReconnect((_) {
-      Provider.of<AppData>(context, listen: false).update_connection_status(true);
+      Provider.of<AppData>(context, listen: false)
+          .update_connection_status(true);
     });
   }
   //

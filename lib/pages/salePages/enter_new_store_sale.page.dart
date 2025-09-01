@@ -8,6 +8,7 @@ import 'package:delightsome_software/pages/salePages/store_sales_record.page.dar
 import 'package:delightsome_software/pages/salePages/widgets/shop_box.dart';
 import 'package:delightsome_software/utils/appdata.dart';
 import 'package:delightsome_software/widgets/enter_qty_dialog.dart';
+import 'package:delightsome_software/widgets/offline_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:indexed/indexed.dart';
@@ -63,77 +64,89 @@ class _StoreSalesPageState extends State<StoreSalesPage> {
       backgroundColor: isDarkTheme
           ? AppColors.dark_primaryBackgroundColor
           : AppColors.light_dialogBackground_2,
-      body: Column(
+      body: Stack(
         children: [
-          // top bar
-          top_bar(),
-      
-          // product selector
-          selection(),
-      
-          // content
-          Expanded(
-            child: Stack(
-              children: [
-                // shop
-                shop_area(),
-      
-                // search list
-                if (search_on)
-                  Positioned.fill(
-                    child: Stack(
-                      children: [
-                        // back cover
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              search_on = false;
-                            });
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.black.withOpacity(.8),
+          Column(
+            children: [
+              // top bar
+              top_bar(),
+          
+              // product selector
+              selection(),
+          
+              // content
+              Expanded(
+                child: Stack(
+                  children: [
+                    // shop
+                    shop_area(),
+          
+                    // search list
+                    if (search_on)
+                      Positioned.fill(
+                        child: Stack(
+                          children: [
+                            // back cover
+                            GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  search_on = false;
+                                });
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.black.withOpacity(.8),
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-      
-                        // list
-                        Positioned(
-                          top: 0,
-                          right: 0,
-                          left: (width > 600) ? null : 0,
-                          child: Container(
-                            height: (width > 600) ? 300 : 200,
-                            width: (width > 600) ? 350 : double.infinity,
-                            margin: (width > 600)
-                                ? EdgeInsets.symmetric(
-                                    horizontal: 10, vertical: 0)
-                                : null,
-                            decoration: BoxDecoration(
-                              color: isDarkTheme
-                                  ? AppColors.dark_primaryBackgroundColor
-                                  : AppColors.light_dialogBackground_3,
+          
+                            // list
+                            Positioned(
+                              top: 0,
+                              right: 0,
+                              left: (width > 600) ? null : 0,
+                              child: Container(
+                                height: (width > 600) ? 300 : 200,
+                                width: (width > 600) ? 350 : double.infinity,
+                                margin: (width > 600)
+                                    ? EdgeInsets.symmetric(
+                                        horizontal: 10, vertical: 0)
+                                    : null,
+                                decoration: BoxDecoration(
+                                  color: isDarkTheme
+                                      ? AppColors.dark_primaryBackgroundColor
+                                      : AppColors.light_dialogBackground_3,
+                                ),
+                                child: search_products.isNotEmpty
+                                    ? SingleChildScrollView(
+                                        child: Column(
+                                          children: search_products
+                                              .map((e) => search_tile(e))
+                                              .toList(),
+                                        ),
+                                      )
+                                    : Center(
+                                        child: Text('No Product Found !!'),
+                                      ),
+                              ),
                             ),
-                            child: search_products.isNotEmpty
-                                ? SingleChildScrollView(
-                                    child: Column(
-                                      children: search_products
-                                          .map((e) => search_tile(e))
-                                          .toList(),
-                                    ),
-                                  )
-                                : Center(
-                                    child: Text('No Product Found !!'),
-                                  ),
-                          ),
+          
+                            //
+                          ],
                         ),
-      
-                        //
-                      ],
-                    ),
-                  ),
-              ],
-            ),
+                      ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+
+          // connection status
+          Positioned(
+            bottom: (width < 800) ? 90 : 40,
+            left: (width < 800) ? null : 15,
+            right: (width < 800) ? 15 : null,
+            child: OfflineNotifier(),
           ),
         ],
       ),

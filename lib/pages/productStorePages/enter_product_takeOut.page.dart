@@ -955,7 +955,7 @@ class _EnterProductTakeOutPageState extends State<EnterProductTakeOutPage> {
                           editedBy: auth_staff.key ?? '');
 
                       bool done = await ProductStoreHelpers
-                          .enter_product_takeOut_record(context, map);
+                          .enter_product_takeOut_record(context, map, widget.editModel?.recordId);
 
                       if (widget.editModel?.key != null) {
                         Navigator.pop(context);

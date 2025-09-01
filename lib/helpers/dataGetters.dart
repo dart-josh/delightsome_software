@@ -281,7 +281,7 @@ class DataGetters {
 
   // get active staff
   static get_active_staff(context, String staff_id) async {
-    var staff = await AuthHelpers.get_active_staff(staff_id);
+    var staff = await AuthHelpers.get_active_staff(context, staff_id);
 
     Provider.of<AppData>(context, listen: false).update_active_staff(staff);
     return staff;

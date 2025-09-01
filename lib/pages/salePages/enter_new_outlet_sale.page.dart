@@ -8,6 +8,7 @@ import 'package:delightsome_software/pages/salePages/outlet_sales_record.page.da
 import 'package:delightsome_software/pages/salePages/widgets/shop_box.dart';
 import 'package:delightsome_software/utils/appdata.dart';
 import 'package:delightsome_software/widgets/enter_qty_dialog.dart';
+import 'package:delightsome_software/widgets/offline_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:indexed/indexed.dart';
 import 'package:provider/provider.dart';
@@ -63,77 +64,88 @@ class Outlet_SalesPageState extends State<OutletSalesPage> {
       backgroundColor: isDarkTheme
           ? AppColors.dark_primaryBackgroundColor
           : AppColors.light_dialogBackground_2,
-      body: Column(
+      body: Stack(
         children: [
-          // top bar
-          top_bar(),
+          Column(
+            children: [
+              // top bar
+              top_bar(),
 
-          // product selector
-          selection(),
+              // product selector
+              selection(),
 
-          // content
-          Expanded(
-            child: Stack(
-              children: [
-                // shop
-                shop_area(),
+              // content
+              Expanded(
+                child: Stack(
+                  children: [
+                    // shop
+                    shop_area(),
 
-                // search list
-                if (search_on)
-                  Positioned.fill(
-                    child: Stack(
-                      children: [
-                        // back cover
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              search_on = false;
-                            });
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.black.withOpacity(.8),
+                    // search list
+                    if (search_on)
+                      Positioned.fill(
+                        child: Stack(
+                          children: [
+                            // back cover
+                            GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  search_on = false;
+                                });
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.black.withOpacity(.8),
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
 
-                        // list
-                        Positioned(
-                          top: 0,
-                          right: 0,
-                          left: (width > 600) ? null : 0,
-                          child: Container(
-                            height: (width > 600) ? 300 : 200,
-                            width: (width > 600) ? 350 : double.infinity,
-                            margin: (width > 600)
-                                ? EdgeInsets.symmetric(
-                                    horizontal: 10, vertical: 0)
-                                : null,
-                            decoration: BoxDecoration(
-                              color: isDarkTheme
-                                  ? AppColors.dark_primaryBackgroundColor
-                                  : AppColors.light_dialogBackground_3,
+                            // list
+                            Positioned(
+                              top: 0,
+                              right: 0,
+                              left: (width > 600) ? null : 0,
+                              child: Container(
+                                height: (width > 600) ? 300 : 200,
+                                width: (width > 600) ? 350 : double.infinity,
+                                margin: (width > 600)
+                                    ? EdgeInsets.symmetric(
+                                        horizontal: 10, vertical: 0)
+                                    : null,
+                                decoration: BoxDecoration(
+                                  color: isDarkTheme
+                                      ? AppColors.dark_primaryBackgroundColor
+                                      : AppColors.light_dialogBackground_3,
+                                ),
+                                child: search_products.isNotEmpty
+                                    ? SingleChildScrollView(
+                                        child: Column(
+                                          children: search_products
+                                              .map((e) => search_tile(e))
+                                              .toList(),
+                                        ),
+                                      )
+                                    : Center(
+                                        child: Text('No Product Found !!'),
+                                      ),
+                              ),
                             ),
-                            child: search_products.isNotEmpty
-                                ? SingleChildScrollView(
-                                    child: Column(
-                                      children: search_products
-                                          .map((e) => search_tile(e))
-                                          .toList(),
-                                    ),
-                                  )
-                                : Center(
-                                    child: Text('No Product Found !!'),
-                                  ),
-                          ),
-                        ),
 
-                        //
-                      ],
-                    ),
-                  ),
-              ],
-            ),
+                            //
+                          ],
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+
+          // connection status
+          Positioned(
+            bottom: (width < 800) ? 90 : 40,
+            right: 15,
+            child: OfflineNotifier(),
           ),
         ],
       ),
@@ -171,7 +183,7 @@ class Outlet_SalesPageState extends State<OutletSalesPage> {
               Expanded(child: Container()),
 
               // search button
-              if (!(width > 600) && active_shop != null  && !active_shop!.done)
+              if (!(width > 600) && active_shop != null && !active_shop!.done)
                 InkWell(
                   onTap: () {
                     search_open = !search_open;
@@ -243,7 +255,9 @@ class Outlet_SalesPageState extends State<OutletSalesPage> {
       child: Row(
         children: [
           // selector
-          if ((!search_open || (width > 600)) && active_shop != null && !active_shop!.done)
+          if ((!search_open || (width > 600)) &&
+              active_shop != null &&
+              !active_shop!.done)
             InkWell(
               onTap: () async {
                 ProductModel? product = await showDialog(
@@ -580,8 +594,7 @@ class Outlet_SalesPageState extends State<OutletSalesPage> {
           position: set_offset(),
         );
 
-        Provider.of<AppData>(context, listen: false)
-            .new_outlet_shop(new_shop);
+        Provider.of<AppData>(context, listen: false).new_outlet_shop(new_shop);
         active_shop = new_shop;
         setState(() {});
       },
@@ -640,7 +653,13 @@ class Outlet_SalesPageState extends State<OutletSalesPage> {
         }
 
         active_shop!.products.add(
-          ProductItemModel(product: product, quantity: res, price: active_shop!.is_online ? product.onlinePrice : product.storePrice,),
+          ProductItemModel(
+            product: product,
+            quantity: res,
+            price: active_shop!.is_online
+                ? product.onlinePrice
+                : product.storePrice,
+          ),
         );
 
         Provider.of<AppData>(context, listen: false)

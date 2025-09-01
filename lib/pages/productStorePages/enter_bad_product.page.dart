@@ -9,6 +9,7 @@ import 'package:delightsome_software/helpers/universalHelpers.dart';
 import 'package:delightsome_software/pages/productStorePages/widgets/product_selector.dart';
 import 'package:delightsome_software/pages/universalPages/select_staff_dialog.dart';
 import 'package:delightsome_software/utils/appdata.dart';
+import 'package:delightsome_software/widgets/copied_products_notifier.dart';
 import 'package:delightsome_software/widgets/enter_qty_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -713,7 +714,16 @@ class _EnterBadProductPageState extends State<EnterBadProductPage> {
                     ),
                   )
                 : Center(
-                    child: Text('No Products Selected !!', style: header_style),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text('No Products Selected !!', style: header_style),
+                        CopiedProductsNotifier(pasteFn: (val) {
+                          selected_products = val;
+                          setState(() {});
+                        }),
+                      ],
+                    ),
                   ),
           ),
         ],
@@ -955,7 +965,7 @@ class _EnterBadProductPageState extends State<EnterBadProductPage> {
 
                       bool done =
                           await ProductStoreHelpers.enter_bad_product_record(
-                              context, map);
+                              context, map, widget.editModel?.recordId);
 
                       if (widget.editModel?.key != null) {
                         Navigator.pop(context);

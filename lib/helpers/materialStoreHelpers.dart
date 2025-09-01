@@ -9,6 +9,7 @@ import 'package:delightsome_software/dataModels/materialStoreModels/restockRawMa
 import 'package:delightsome_software/globalvariables.dart';
 import 'package:delightsome_software/helpers/universalHelpers.dart';
 import 'package:delightsome_software/utils/appdata.dart';
+import 'package:delightsome_software/utils/offlineStore.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -209,16 +210,24 @@ class MaterialStoreHelpers {
   static Future<List<ProductMaterialsModel>> get_product_materials(
       context) async {
     try {
-      var response = await post_getters(context, 'get_product_materials');
+      List<ProductMaterialsModel> productMaterialsList = [];
+      List items = [];
 
-      var jsonResponse = jsonDecode(response.body);
+      if (isConnected(context)) {
+        var response = await post_getters(context, 'get_product_materials');
 
-      if (response.statusCode != 200) {
-        throw jsonResponse['message'];
+        var jsonResponse = jsonDecode(response.body);
+
+        if (response.statusCode != 200) {
+          throw jsonResponse['message'];
+        }
+
+        items = jsonResponse['items'];
+        OfflineStore.save_data('get_product_materials', items);
+      } else {
+        items = await OfflineStore.get_data('get_product_materials');
       }
 
-      List<ProductMaterialsModel> productMaterialsList = [];
-      List items = jsonResponse['items'];
       for (var item in items) {
         ProductMaterialsModel productMaterialsModel =
             ProductMaterialsModel.fromJson(item);
@@ -236,16 +245,24 @@ class MaterialStoreHelpers {
   // Get raw materials
   static Future<List<RawMaterialsModel>> get_raw_materials(context) async {
     try {
-      var response = await post_getters(context, 'get_raw_materials');
+      List<RawMaterialsModel> rawMaterialsList = [];
+      List items = [];
 
-      var jsonResponse = jsonDecode(response.body);
+      if (isConnected(context)) {
+        var response = await post_getters(context, 'get_raw_materials');
 
-      if (response.statusCode != 200) {
-        throw jsonResponse['message'];
+        var jsonResponse = jsonDecode(response.body);
+
+        if (response.statusCode != 200) {
+          throw jsonResponse['message'];
+        }
+
+        items = jsonResponse['items'];
+        OfflineStore.save_data('get_raw_materials', items);
+      } else {
+        items = await OfflineStore.get_data('get_raw_materials');
       }
 
-      List<RawMaterialsModel> rawMaterialsList = [];
-      List items = jsonResponse['items'];
       for (var item in items) {
         RawMaterialsModel rawMaterialsModel = RawMaterialsModel.fromJson(item);
 
@@ -263,17 +280,25 @@ class MaterialStoreHelpers {
   static Future<List<RestockProductMaterialModel>>
       get_restock_product_materials_record(context) async {
     try {
-      var response =
-          await post_getters(context, 'get_restock_product_materials_record');
-
-      var jsonResponse = jsonDecode(response.body);
-
-      if (response.statusCode != 200) {
-        throw jsonResponse['message'];
-      }
-
       List<RestockProductMaterialModel> recordList = [];
-      List record = jsonResponse['record'];
+      List record = [];
+
+      if (isConnected(context)) {
+        var response =
+            await post_getters(context, 'get_restock_product_materials_record');
+
+        var jsonResponse = jsonDecode(response.body);
+
+        if (response.statusCode != 200) {
+          throw jsonResponse['message'];
+        }
+
+        record = jsonResponse['record'];
+        OfflineStore.save_data('get_restock_product_materials_record', record);
+      } else {
+        record =
+            await OfflineStore.get_data('get_restock_product_materials_record');
+      }
 
       for (var item in record) {
         RestockProductMaterialModel recordModel =
@@ -293,17 +318,26 @@ class MaterialStoreHelpers {
   static Future<List<RestockRawMaterialModel>> get_restock_raw_materials_record(
       context) async {
     try {
-      var response =
-          await post_getters(context, 'get_restock_raw_materials_record');
+      List<RestockRawMaterialModel> recordList = [];
+      List record = [];
 
-      var jsonResponse = jsonDecode(response.body);
+      if (isConnected(context)) {
+        var response =
+            await post_getters(context, 'get_restock_raw_materials_record');
 
-      if (response.statusCode != 200) {
-        throw jsonResponse['message'];
+        var jsonResponse = jsonDecode(response.body);
+
+        if (response.statusCode != 200) {
+          throw jsonResponse['message'];
+        }
+
+        record = jsonResponse['record'];
+        OfflineStore.save_data('get_restock_raw_materials_record', record);
+      } else {
+        record =
+            await OfflineStore.get_data('get_restock_raw_materials_record');
       }
 
-      List<RestockRawMaterialModel> recordList = [];
-      List record = jsonResponse['record'];
       for (var item in record) {
         RestockRawMaterialModel recordModel =
             RestockRawMaterialModel.fromJson(item);
@@ -322,17 +356,26 @@ class MaterialStoreHelpers {
   static Future<List<ProductMaterialsRequestModel>>
       get_product_materials_request_record(context) async {
     try {
-      var response =
-          await post_getters(context, 'get_product_materials_request_record');
+      List<ProductMaterialsRequestModel> recordList = [];
+      List record = [];
 
-      var jsonResponse = jsonDecode(response.body);
+      if (isConnected(context)) {
+        var response =
+            await post_getters(context, 'get_product_materials_request_record');
 
-      if (response.statusCode != 200) {
-        throw jsonResponse['message'];
+        var jsonResponse = jsonDecode(response.body);
+
+        if (response.statusCode != 200) {
+          throw jsonResponse['message'];
+        }
+
+        record = jsonResponse['record'];
+        OfflineStore.save_data('get_product_materials_request_record', record);
+      } else {
+        record =
+            await OfflineStore.get_data('get_product_materials_request_record');
       }
 
-      List<ProductMaterialsRequestModel> recordList = [];
-      List record = jsonResponse['record'];
       for (var item in record) {
         ProductMaterialsRequestModel recordModel =
             ProductMaterialsRequestModel.fromJson(item);
@@ -351,17 +394,26 @@ class MaterialStoreHelpers {
   static Future<List<RawMaterialsRequestModel>>
       get_raw_materials_request_record(context) async {
     try {
-      var response =
-          await post_getters(context, 'get_raw_materials_request_record');
+      List<RawMaterialsRequestModel> recordList = [];
+      List record = [];
 
-      var jsonResponse = jsonDecode(response.body);
+      if (isConnected(context)) {
+        var response =
+            await post_getters(context, 'get_raw_materials_request_record');
 
-      if (response.statusCode != 200) {
-        throw jsonResponse['message'];
+        var jsonResponse = jsonDecode(response.body);
+
+        if (response.statusCode != 200) {
+          throw jsonResponse['message'];
+        }
+
+        record = jsonResponse['record'];
+        OfflineStore.save_data('get_raw_materials_request_record', record);
+      } else {
+        record =
+            await OfflineStore.get_data('get_raw_materials_request_record');
       }
 
-      List<RawMaterialsRequestModel> recordList = [];
-      List record = jsonResponse['record'];
       for (var item in record) {
         RawMaterialsRequestModel recordModel =
             RawMaterialsRequestModel.fromJson(item);
@@ -380,17 +432,26 @@ class MaterialStoreHelpers {
   static Future<List<ProductMaterialsReturnModel>>
       get_product_materials_return_record(context) async {
     try {
-      var response =
-          await post_getters(context, 'get_product_materials_return_record');
+      List<ProductMaterialsReturnModel> recordList = [];
+      List record = [];
 
-      var jsonResponse = jsonDecode(response.body);
+      if (isConnected(context)) {
+        var response =
+            await post_getters(context, 'get_product_materials_return_record');
 
-      if (response.statusCode != 200) {
-        throw jsonResponse['message'];
+        var jsonResponse = jsonDecode(response.body);
+
+        if (response.statusCode != 200) {
+          throw jsonResponse['message'];
+        }
+
+        record = jsonResponse['record'];
+        OfflineStore.save_data('get_product_materials_return_record', record);
+      } else {
+        record =
+            await OfflineStore.get_data('get_product_materials_return_record');
       }
 
-      List<ProductMaterialsReturnModel> recordList = [];
-      List record = jsonResponse['record'];
       for (var item in record) {
         ProductMaterialsReturnModel recordModel =
             ProductMaterialsReturnModel.fromJson(item);
@@ -409,17 +470,25 @@ class MaterialStoreHelpers {
   static Future<List<CategoryModel>> get_product_materials_categories(
       context) async {
     try {
-      var response =
-          await post_getters(context, 'get_product_materials_categories');
+      List<CategoryModel> categories = [];
+      List items = [];
 
-      var jsonResponse = jsonDecode(response.body);
+      if (isConnected(context)) {
+        var response =
+            await post_getters(context, 'get_product_materials_categories');
 
-      if (response.statusCode != 200) {
-        throw jsonResponse['message'];
+        var jsonResponse = jsonDecode(response.body);
+
+        if (response.statusCode != 200) {
+          throw jsonResponse['message'];
+        }
+
+        items = jsonResponse['categories'];
+        OfflineStore.save_data('get_product_materials_categories', items);
+      } else {
+        items = await OfflineStore.get_data('get_product_materials_categories');
       }
 
-      List<CategoryModel> categories = [];
-      List items = jsonResponse['categories'];
       for (var item in items) {
         CategoryModel categoryModel = CategoryModel.fromJson(item);
 
@@ -437,17 +506,25 @@ class MaterialStoreHelpers {
   static Future<List<CategoryModel>> get_raw_materials_categories(
       context) async {
     try {
-      var response =
-          await post_getters(context, 'get_raw_materials_categories');
+      List<CategoryModel> categories = [];
+      List items = [];
 
-      var jsonResponse = jsonDecode(response.body);
+      if (isConnected(context)) {
+        var response =
+            await post_getters(context, 'get_raw_materials_categories');
 
-      if (response.statusCode != 200) {
-        throw jsonResponse['message'];
+        var jsonResponse = jsonDecode(response.body);
+
+        if (response.statusCode != 200) {
+          throw jsonResponse['message'];
+        }
+
+        items = jsonResponse['categories'];
+        OfflineStore.save_data('get_raw_materials_categories', items);
+      } else {
+        items = await OfflineStore.get_data('get_raw_materials_categories');
       }
 
-      List<CategoryModel> categories = [];
-      List items = jsonResponse['categories'];
       for (var item in items) {
         CategoryModel categoryModel = CategoryModel.fromJson(item);
 
@@ -584,9 +661,22 @@ class MaterialStoreHelpers {
         route: 'add_update_raw_materials', data: data);
   }
 
+  //?
+
 // Enter Restock product materials record
   static Future<bool> enter_restock_product_materials_record(
-      BuildContext context, Map data) async {
+      BuildContext context, Map data, String? recordId ) async {
+    //     if (!isConnected(context)) {
+    //   String type = data['id'] != null && data['id'] != '' ? 'Edit' : 'New';
+
+    //   return save_offline(context,
+    //       endpoint: 'enter_restock_product_materials_record',
+    //       id: data['id'] ?? '',
+    //       data: data,
+    //       recordId: recordId ?? '',
+    //       type: type);
+    // }
+
     return await sendDataToServer(context,
         route: 'enter_restock_product_materials_record', data: data);
   }
@@ -654,6 +744,8 @@ class MaterialStoreHelpers {
         route: 'verify_product_materials_return_record', data: data);
   }
 
+  //?
+
 // Add/Update product materials categories
   static Future<bool> add_update_product_materials_category(
       BuildContext context, Map data) async {
@@ -683,6 +775,8 @@ class MaterialStoreHelpers {
     return await deleteFromServer(context,
         route: 'delete_raw_materials', id: id);
   }
+
+  //?
 
 // Delete restock product materials record
   static Future<bool> delete_restock_product_materials_record(
@@ -719,6 +813,8 @@ class MaterialStoreHelpers {
         route: 'delete_product_materials_return_record', id: id);
   }
 
+  //?
+
 // Delete product materials categories
   static Future<bool> delete_product_materials_category(
       BuildContext context, String id) async {
@@ -732,4 +828,63 @@ class MaterialStoreHelpers {
     return await deleteFromServer(context,
         route: 'delete_raw_materials_category', id: id);
   }
+
+  //? UTILS
+  static bool isConnected(context) =>
+      Provider.of<AppData>(context, listen: false).connection_status;
+
+  static Future<bool> save_offline(BuildContext context,
+      {required String endpoint,
+      required Map data,
+      required String id,
+      required String recordId,
+      required String type}) async {
+    bool res = await OfflineStore.update_offline_data({
+      'endpoint': endpoint,
+      'data': data,
+      'id': id,
+      'recordId': recordId,
+      'type': type,
+      'helper': 'MaterialStoreHelpers',
+    });
+
+    if (res) {
+      UniversalHelpers.showToast(
+        context: context,
+        color: Colors.blue,
+        toastText: 'Saved Offline',
+        icon: Icons.save_rounded,
+      );
+      return true;
+    } else {
+      UniversalHelpers.showToast(
+        context: context,
+        color: Colors.redAccent,
+        toastText: 'Failed to save Offline',
+        icon: Icons.error_outline,
+      );
+      return false;
+    }
+  }
+
+  static Future<bool> send_online(BuildContext context, Map map) async {
+    String type = map['type'] ?? '';
+    String route = map['endpoint'] ?? '';
+    Map data = {...(map['data'])};
+    String id = map['id'] ?? '';
+
+    if (type == '') return false;
+    if (route == '') return false;
+
+    if (type == 'Delete') {
+      if (id == '') return false;
+
+      return await deleteFromServer(context, route: route, id: id);
+    } else {
+      if (data == {}) return false;
+      return await sendDataToServer(context, route: route, data: data);
+    }
+  }
+
+  //
 }

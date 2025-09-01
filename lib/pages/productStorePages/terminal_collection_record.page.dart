@@ -6,6 +6,8 @@ import 'package:delightsome_software/helpers/universalHelpers.dart';
 import 'package:delightsome_software/pages/productStorePages/enter_terminalCollection.page.dart';
 import 'package:delightsome_software/pages/universalPages/record_info_dialog.dart';
 import 'package:delightsome_software/utils/appdata.dart';
+import 'package:delightsome_software/widgets/offline_record_indicator.dart';
+import 'package:delightsome_software/widgets/offline_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:simple_month_year_picker/simple_month_year_picker.dart';
 import 'package:provider/provider.dart';
@@ -97,42 +99,53 @@ class _TerminalCollectionRecordPageState
         backgroundColor: isDarkTheme
             ? AppColors.dark_primaryBackgroundColor
             : AppColors.light_dialogBackground_3,
-        body: Column(
+        body: Stack(
           children: [
-            // top bar
-            top_bar(),
-
-            // tabs
-            TabBar(
-              onTap: (val) {
-                setState(() {
-                  index = val;
-                });
-              },
-              indicatorColor: AppColors.orange_1,
-              labelColor: isDarkTheme
-                  ? AppColors.dark_primaryTextColor
-                  : AppColors.light_primaryTextColor,
-              unselectedLabelColor: isDarkTheme
-                  ? AppColors.dark_secondaryTextColor
-                  : AppColors.light_secondaryTextColor,
-              tabs: [
-                Tab(text: 'Pending Record'),
-                Tab(text: 'Verified Record'),
+            Column(
+              children: [
+                // top bar
+                top_bar(),
+            
+                // tabs
+                TabBar(
+                  onTap: (val) {
+                    setState(() {
+                      index = val;
+                    });
+                  },
+                  indicatorColor: AppColors.orange_1,
+                  labelColor: isDarkTheme
+                      ? AppColors.dark_primaryTextColor
+                      : AppColors.light_primaryTextColor,
+                  unselectedLabelColor: isDarkTheme
+                      ? AppColors.dark_secondaryTextColor
+                      : AppColors.light_secondaryTextColor,
+                  tabs: [
+                    Tab(text: 'Pending Record'),
+                    Tab(text: 'Verified Record'),
+                  ],
+                ),
+            
+                // date selector
+                if (index == 1) date_selector_area(),
+            
+                // content
+                Expanded(
+                  child: TabBarView(
+                    children: [
+                      record_view(pending_record),
+                      record_view(selected_record),
+                    ],
+                  ),
+                ),
               ],
             ),
 
-            // date selector
-            if (index == 1) date_selector_area(),
-
-            // content
-            Expanded(
-              child: TabBarView(
-                children: [
-                  record_view(pending_record),
-                  record_view(selected_record),
-                ],
-              ),
+            // connection status
+            Positioned(
+              top: 15,
+              right: 15,
+              child: OfflineNotifier(),
             ),
           ],
         ),
@@ -426,16 +439,22 @@ class _TerminalCollectionRecordPageState
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // record Id
-                Text(
-                  record.recordId ?? 'No Id',
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    fontStyle: FontStyle.italic,
-                    color: isDarkTheme
-                        ? AppColors.dark_secondaryTextColor
-                        : AppColors.light_secondaryTextColor,
-                  ),
+                Row(
+                  children: [
+                    Text(
+                      record.recordId ?? 'No Id',
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        fontStyle: FontStyle.italic,
+                        color: isDarkTheme
+                            ? AppColors.dark_secondaryTextColor
+                            : AppColors.light_secondaryTextColor,
+                      ),
+                    ),
+                    SizedBox(width: 10),
+                    OfflineRecordIndicator(rec_key: record.key),
+                  ],
                 ),
 
                 SizedBox(height: 10),
@@ -559,6 +578,7 @@ class _TerminalCollectionRecordPageState
                   var res = await showDialog(
                     context: context,
                     builder: (context) => RecordInfoDialog(
+                      rec_key: record.key,
                       approved: record.verified ?? false,
                       approvedBy: record.verifiedBy?.nickName,
                       approvedDate: record.verifiedDate,
@@ -589,7 +609,8 @@ class _TerminalCollectionRecordPageState
                       ProductStoreHelpers.verify_terminalCollection_record(
                           context,
                           record.verify_toJson(
-                              verifiedBy: auth_staff.key ?? ''));
+                              verifiedBy: auth_staff.key ?? ''),
+                          record.recordId);
                     }
 
                     // edit
@@ -618,7 +639,7 @@ class _TerminalCollectionRecordPageState
 
                     if (res == 'delete') {
                       ProductStoreHelpers.delete_terminalCollection_record(
-                          context, record.key!);
+                          context, record.key!, record.recordId);
                     }
                   }
                 },

@@ -905,7 +905,7 @@ class _EnterRestockProductMaterialState
                       receiver: staff!.key!, editedBy: auth_staff.key ?? '');
 
                   bool done = await MaterialStoreHelpers
-                      .enter_restock_product_materials_record(context, map);
+                      .enter_restock_product_materials_record(context, map, widget.editModel?.recordId);
 
                   if (widget.editModel?.key != null) {
                     Navigator.pop(context);
