@@ -953,7 +953,8 @@ class _LandingPageState extends State<LandingPage> {
                 children: [
                   // sales report
                   if (auth_staff!.role == 'Management' ||
-                      auth_staff!.role == 'Admin')
+                      auth_staff!.role == 'Admin' ||
+                      auth_staff!.role == 'Sales')
                     menu_tile(
                       icon: FontAwesomeIcons.cashRegister,
                       title: 'Sales Report',

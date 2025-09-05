@@ -911,7 +911,7 @@ class _EnterProductTakeOutPageState extends State<EnterProductTakeOutPage> {
                         staff: staff,
                         note: shortNote,
                         date: widget.editModel?.recordDate,
-                        staff_list_type: 'Production, Sales, Terminal, Admin, Management',
+                        staff_list_type: 'Production, Sales, Terminal, Dangote, Admin, Management',
                       ),
                     );
 
