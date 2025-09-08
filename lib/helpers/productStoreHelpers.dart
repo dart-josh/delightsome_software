@@ -904,6 +904,27 @@ class ProductStoreHelpers {
         route: 'add_update_product', data: data);
   }
 
+  //? Add/update outlet products (Not offline)
+  static Future<bool> add_update_outlet_product(
+      BuildContext context, Map data) async {
+    return await sendDataToServer(context,
+        route: 'add_update_outlet_product', data: data);
+  }
+
+  //? Add/update terminal products (Not offline)
+  static Future<bool> add_update_terminal_product(
+      BuildContext context, Map data) async {
+    return await sendDataToServer(context,
+        route: 'add_update_terminal_product', data: data);
+  }
+
+  //? Add/update dangote products (Not offline)
+  static Future<bool> add_update_dangote_product(
+      BuildContext context, Map data) async {
+    return await sendDataToServer(context,
+        route: 'add_update_dangote_product', data: data);
+  }
+
   // Enter production record
   static Future<bool> enter_production_record(
       BuildContext context, Map data, String? recordId) async {

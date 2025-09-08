@@ -244,11 +244,7 @@ class _AddUpdateProductState extends State<AddUpdateProduct> {
               Expanded(child: Container()),
 
               // edit button
-              if (!new_product &&
-                  (widget.page != 'outlet_product') &&
-                  (widget.page != 'terminal_product') &&
-                  (widget.page != 'dangote_product') &&
-                  (auth_staff!.fullaccess))
+              if (!new_product && (auth_staff!.fullaccess))
                 InkWell(
                   onTap: () {
                     edit = !edit;
@@ -582,15 +578,15 @@ class _AddUpdateProductState extends State<AddUpdateProduct> {
             return;
           }
 
-          if (online_price_controller.text.isEmpty) {
-            UniversalHelpers.showToast(
-              context: context,
-              color: Colors.redAccent,
-              toastText: 'Enter online price!!',
-              icon: Icons.error,
-            );
-            return;
-          }
+          // if (online_price_controller.text.isEmpty) {
+          //   UniversalHelpers.showToast(
+          //     context: context,
+          //     color: Colors.redAccent,
+          //     toastText: 'Enter online price!!',
+          //     icon: Icons.error,
+          //   );
+          //   return;
+          // }
 
           int quantity = (old_qty_controller.text.isNotEmpty
                   ? int.parse(old_qty_controller.text.trim())
@@ -601,7 +597,8 @@ class _AddUpdateProductState extends State<AddUpdateProduct> {
 
           int store_price = int.parse(store_price_controller.text.trim());
 
-          int online_price = int.parse(online_price_controller.text.trim());
+          int online_price =
+              int.tryParse(online_price_controller.text.trim()) ?? 0;
 
           bool? response = await UniversalHelpers.showConfirmBox(
             context,
@@ -627,9 +624,25 @@ class _AddUpdateProductState extends State<AddUpdateProduct> {
             );
 
             Map map = new_product.toJson();
+            bool done = false;
 
-            bool done =
-                await ProductStoreHelpers.add_update_product(context, map);
+            if (widget.page == 'product') {
+              done = await ProductStoreHelpers.add_update_product(context, map);
+            }
+
+            if (widget.page == 'outlet_product') {
+              done = await ProductStoreHelpers.add_update_outlet_product(
+                  context, map);
+            }
+            if (widget.page == 'terminal_product') {
+              done = await ProductStoreHelpers.add_update_terminal_product(
+                  context, map);
+            }
+            if (widget.page == 'dangote_product') {
+              done = await ProductStoreHelpers.add_update_dangote_product(
+                  context, map);
+            }
+
             if (done) {
               Navigator.pop(context, true);
             }
